@@ -1,0 +1,2 @@
+const tasks=[['분기 회원등록','4건'],['이적 승인','2건'],['신규 회원','7건'],['리그 결과','3건']];
+export default function AdminPage(){return <><section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">ADMIN</span><h1>협회 관리</h1><p>협회 업무 처리 현황을 확인합니다.</p></div></section><div className="siteShell pageContent"><div className="adminGrid">{tasks.map(([name,count])=><article className="adminCard" key={name}><span>{name}</span><strong>{count}</strong><button>관리</button></article>)}</div></div></>}
