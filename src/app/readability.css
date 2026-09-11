@@ -1,0 +1,57 @@
+/* Desktop/laptop readability tuning */
+@media (min-width: 769px) {
+  body { font-size: 16px; }
+
+  .utilityBar { font-size: 12px; }
+  .utilityLinks { gap: 14px; }
+
+  .associationWordmark strong { font-size: 29px; }
+  .associationWordmark span { font-size: 9.5px; }
+  .headerCityVisual strong { font-size: 15px; }
+  .headerCityVisual span { font-size: 11px; }
+
+  .desktopNav a { font-size: 15px; }
+
+  .heroCopy h1 { font-size: 34px; }
+  .heroCopy p { font-size: 15px; }
+
+  .featureTile strong { font-size: 19px; }
+  .featureTile p { font-size: 12px; }
+  .featureTile > b { font-size: 12px; }
+
+  .portalHeading { height: 40px; }
+  .portalHeading h2 { font-size: 18px; }
+  .portalHeading > a { font-size: 11px; }
+
+  .noticeRow { min-height: 31px; grid-template-columns: 42px minmax(0,1fr) 52px; }
+  .noticeRow strong { font-size: 13px; }
+  .noticeRow time { font-size: 11px; }
+  .noticeBadge { width: 32px; height: 19px; font-size: 10px; }
+  .noticeBullet { font-size: 14px; }
+
+  .homeScheduleHead,
+  .homeScheduleRow { min-height: 36px; }
+  .homeScheduleHead { font-size: 11px; }
+  .homeScheduleRow { font-size: 12px; }
+  .homeScheduleRow strong { font-size: 12px; }
+  .homeScheduleRow b { font-size: 11px; }
+
+  .boardRow { min-height: 38px; grid-template-columns: 68px minmax(0,1fr) 100px 55px; }
+  .boardCategory { min-width: 44px; height: 21px; font-size: 10px; }
+  .boardRow strong { font-size: 13px; }
+  .boardAuthor,
+  .boardRow time { font-size: 11px; }
+
+  .footerInner strong { font-size: 17px; }
+  .footerInner p { font-size: 11px; }
+
+  .subHero .crumb { font-size: 11px; }
+  .subHero h1 { font-size: 30px; }
+  .subHero p { font-size: 13px; }
+  .sectionBar h2 { font-size: 19px; }
+  .sectionBar span { font-size: 11px; }
+  .dataTable th { font-size: 12px; }
+  .dataTable td { font-size: 13px; }
+  .subTabs button,
+  .subTabs a { font-size: 12px; }
+}
