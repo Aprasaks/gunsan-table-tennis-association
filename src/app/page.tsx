@@ -25,7 +25,10 @@ const boardPosts = [
 export default function Home() {
   return (
     <>
-      <section className="mainVisual">
+      <section
+        className="mainVisual"
+        style={{ backgroundImage: "url('/images/gunsan-table-tennis-hero.webp')" }}
+      >
         <div className="visualShade" />
         <div className="siteShell visualContent">
           <div className="heroCopy">
