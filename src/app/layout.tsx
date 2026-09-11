@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import './globals.css';
+import './readability.css';
 
 export const metadata: Metadata = {
   title: '군산시탁구협회',
