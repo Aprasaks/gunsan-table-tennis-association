@@ -14,15 +14,23 @@ type RegistrationMember = {
   nationality: string;
 };
 
+type OfficerInfo = {
+  name: string;
+  phone: string;
+};
+
+type Officers = {
+  manager: OfficerInfo;
+  president: OfficerInfo;
+  secretary: OfficerInfo;
+};
+
 type ExportPayload = {
   clubName: string;
   clubAddress: string;
+  officers?: Officers;
   members: RegistrationMember[];
 };
-
-function topOfficer(members: RegistrationMember[], position: string) {
-  return members.find((member) => member.position === position);
-}
 
 function noteFor(member: RegistrationMember) {
   const base = member.registrationType === '이적' ? '이적(기존클럽작성)' : member.registrationType;
@@ -46,10 +54,13 @@ function applyRangeBorder(sheet: ExcelJS.Worksheet, fromRow: number, toRow: numb
   }
 }
 
-function buildWorkbook(clubName: string, clubAddress: string, members: RegistrationMember[]) {
+function buildWorkbook(clubName: string, clubAddress: string, officers: Officers, members: RegistrationMember[]) {
   const workbook = new ExcelJS.Workbook();
   workbook.creator = '군산시탁구협회';
   workbook.created = new Date();
+
+  const memberRowCount = Math.max(31, members.length);
+  const finalRow = 9 + memberRowCount;
 
   const sheet = workbook.addWorksheet('Sheet1', {
     pageSetup: {
@@ -57,7 +68,7 @@ function buildWorkbook(clubName: string, clubAddress: string, members: Registrat
       paperSize: 9,
       fitToPage: true,
       fitToWidth: 1,
-      fitToHeight: 1,
+      fitToHeight: 0,
       margins: { left: 0.3, right: 0.3, top: 0.4, bottom: 0.4, header: 0.2, footer: 0.2 },
     },
   });
@@ -80,7 +91,7 @@ function buildWorkbook(clubName: string, clubAddress: string, members: Registrat
   for (const row of [3, 4, 5, 6, 8, 10, 11, 12, 13, 14]) sheet.getRow(row).height = 17.25;
   sheet.getRow(7).height = 47.45;
   sheet.getRow(9).height = 51.75;
-  for (let row = 15; row <= 40; row += 1) sheet.getRow(row).height = 17.25;
+  for (let row = 15; row <= finalRow; row += 1) sheet.getRow(row).height = 17.25;
 
   sheet.mergeCells('B2:J2');
   sheet.mergeCells('B3:D3');
@@ -112,23 +123,19 @@ function buildWorkbook(clubName: string, clubAddress: string, members: Registrat
   sheet.getCell('B8').value = '동호회 (직장명)';
   sheet.getCell('E8').value = clubName;
 
-  const manager = topOfficer(members, '관장');
-  const president = topOfficer(members, '회장');
-  const secretary = topOfficer(members, '총무');
-
-  sheet.getCell('D5').value = manager?.name ?? '';
-  sheet.getCell('D6').value = manager?.phone ?? '';
-  sheet.getCell('G5').value = president?.name ?? '';
-  sheet.getCell('G6').value = president?.phone ?? '';
-  sheet.getCell('I5').value = secretary?.name ?? '';
-  sheet.getCell('I6').value = secretary?.phone ?? '';
+  sheet.getCell('D5').value = officers.manager.name.trim();
+  sheet.getCell('D6').value = officers.manager.phone.trim();
+  sheet.getCell('G5').value = officers.president.name.trim();
+  sheet.getCell('G6').value = officers.president.phone.trim();
+  sheet.getCell('I5').value = officers.secretary.name.trim();
+  sheet.getCell('I6').value = officers.secretary.phone.trim();
 
   const headers = ['순', '성 명', '생년월일', '성별(남,여)', '부수', '주 소 [읍.면.동 까지기입]', '직위', '연 락 처(H.P)', '비고\n(신규,이적 표기)\n(외국인 국적표기)'];
   headers.forEach((value, index) => {
     sheet.getCell(9, index + 2).value = value;
   });
 
-  for (let index = 0; index < 31; index += 1) {
+  for (let index = 0; index < memberRowCount; index += 1) {
     const row = index + 10;
     sheet.getCell(row, 2).value = index + 1;
     const member = members[index];
@@ -172,7 +179,7 @@ function buildWorkbook(clubName: string, clubAddress: string, members: Registrat
     cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
   }
 
-  for (let row = 10; row <= 40; row += 1) {
+  for (let row = 10; row <= finalRow; row += 1) {
     for (let col = 2; col <= 10; col += 1) {
       const cell = sheet.getCell(row, col);
       cell.font = {
@@ -190,8 +197,8 @@ function buildWorkbook(clubName: string, clubAddress: string, members: Registrat
     if (member.registrationType === '이적') noteCell.fill = cyan;
   });
 
-  applyRangeBorder(sheet, 2, 40, 2, 10);
-  sheet.pageSetup.printArea = 'B2:J40';
+  applyRangeBorder(sheet, 2, finalRow, 2, 10);
+  sheet.pageSetup.printArea = `B2:J${finalRow}`;
 
   return workbook;
 }
@@ -201,16 +208,18 @@ export async function POST(request: Request) {
     const payload = await request.json() as ExportPayload;
     const clubName = payload.clubName?.trim();
     const clubAddress = payload.clubAddress?.trim() ?? '';
+    const officers: Officers = payload.officers ?? {
+      manager: { name: '', phone: '' },
+      president: { name: '', phone: '' },
+      secretary: { name: '', phone: '' },
+    };
     const members = (payload.members ?? []).filter((member) => member?.name?.trim());
 
     if (!clubName || members.length === 0) {
       return Response.json({ message: '동호회명과 등록 회원을 입력해주세요.' }, { status: 400 });
     }
-    if (members.length > 31) {
-      return Response.json({ message: '현재 양식은 최대 31명까지 등록할 수 있습니다.' }, { status: 400 });
-    }
 
-    const workbook = buildWorkbook(clubName, clubAddress, members);
+    const workbook = buildWorkbook(clubName, clubAddress, officers, members);
     const output = await workbook.xlsx.writeBuffer();
     const bytes = Uint8Array.from(output as unknown as Uint8Array);
     const responseBody = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
