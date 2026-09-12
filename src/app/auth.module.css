@@ -2,12 +2,16 @@
 .wrap h2{margin:0 0 22px;font-size:22px;letter-spacing:-.04em;color:#243746}
 .row{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
 .row label{font-size:13px;font-weight:700;color:#394a58}
+.row label small{font-size:11px;font-weight:500;color:#7b8790}
 .row input,.row select{width:100%;height:46px;border:1px solid #cbd5dd;border-radius:4px;background:#fff;padding:0 13px;font-size:14px;color:#222;outline:none}
 .row input:focus,.row select:focus{border-color:#167fb4;box-shadow:0 0 0 3px rgba(22,127,180,.10)}
+.row .readOnly{background:#f4f6f8;color:#586773;cursor:not-allowed}
 .action{width:100%;height:48px;border:0;border-radius:4px;background:#126da5;color:#fff;font-size:15px;font-weight:800;cursor:pointer;margin-top:4px}
 .action:hover{background:#0d5f8f}
 .links{display:flex;justify-content:space-between;gap:16px;margin-top:18px;font-size:12px;color:#60717e}
 .links a:hover{color:#126da5}
 .message{margin:0 0 16px;padding:11px 12px;border-radius:4px;background:#fff2f2;color:#a33232;font-size:12px}
+.success{margin:0 0 16px;padding:11px 12px;border-radius:4px;background:#eef8f1;color:#247044;font-size:12px}
 .note{margin:0 0 18px;padding:12px 14px;background:#f4f8fb;border-left:3px solid #167fb4;color:#52636f;font-size:12px;line-height:1.6}
+@media(min-width:769px){.wrap h2{font-size:25px}.row label{font-size:15px}.row label small{font-size:13px}.row input,.row select{height:50px;font-size:16px}.action{height:52px;font-size:17px}.message,.success,.note{font-size:14px}.links{font-size:14px}}
 @media(max-width:600px){.wrap{padding:22px 18px}.links{flex-direction:column}}
