@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "latest",
-    "exceljs": "latest",
+    "jszip": "latest",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"
