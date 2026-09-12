@@ -1,3 +1,5 @@
+export type MemberStatus = 'active' | 'withdrawn';
+
 export type MvpUser = {
   id: string;
   name: string;
@@ -6,6 +8,7 @@ export type MvpUser = {
   club: string;
   position: string;
   passwordHash: string;
+  memberStatus?: MemberStatus;
 };
 
 export type MvpSession = {
@@ -36,7 +39,11 @@ export async function hashPassword(password: string) {
 export function getUsers(): MvpUser[] {
   if (typeof window === 'undefined') return [];
   try {
-    return JSON.parse(localStorage.getItem(USERS_KEY) ?? '[]') as MvpUser[];
+    const users = JSON.parse(localStorage.getItem(USERS_KEY) ?? '[]') as MvpUser[];
+    return users.map((user) => ({
+      ...user,
+      memberStatus: user.memberStatus ?? 'active',
+    }));
   } catch {
     return [];
   }
@@ -44,6 +51,33 @@ export function getUsers(): MvpUser[] {
 
 export function saveUsers(users: MvpUser[]) {
   localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  notifyAuthChange();
+}
+
+export function updateUserBasicInfo(
+  userId: string,
+  changes: Partial<Pick<MvpUser, 'name' | 'gender' | 'phone' | 'passwordHash'>>,
+) {
+  const users = getUsers();
+  const index = users.findIndex((user) => user.id === userId);
+  if (index < 0) return null;
+
+  users[index] = { ...users[index], ...changes };
+  saveUsers(users);
+  return users[index];
+}
+
+export function applyMembershipChange(
+  userId: string,
+  changes: Partial<Pick<MvpUser, 'club' | 'position' | 'memberStatus'>>,
+) {
+  const users = getUsers();
+  const index = users.findIndex((user) => user.id === userId);
+  if (index < 0) return null;
+
+  users[index] = { ...users[index], ...changes };
+  saveUsers(users);
+  return users[index];
 }
 
 export function setSession(userId: string) {
