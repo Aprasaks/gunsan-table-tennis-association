@@ -39,9 +39,15 @@ export default function AuthStatus() {
 
   return (
     <>
-      <span className="welcomeUser">{user.name} 회원님 환영합니다.</span>
+      <span>{user.name} 회원님 환영합니다.</span>
       <i aria-hidden="true" />
-      <button className="utilityLogout" type="button" onClick={logout}>로그아웃</button>
+      <button
+        type="button"
+        onClick={logout}
+        style={{ background: 'none', border: 0, padding: 0, color: 'inherit', cursor: 'pointer' }}
+      >
+        로그아웃
+      </button>
     </>
   );
 }
