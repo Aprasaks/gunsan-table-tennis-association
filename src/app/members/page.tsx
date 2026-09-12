@@ -10,6 +10,18 @@ const registrationManagers = new Set(['회장', '부회장', '총무']);
 export default function MembersPage() {
   const router = useRouter();
 
+  function requireLogin(event: MouseEvent<HTMLAnchorElement>, destination: string) {
+    event.preventDefault();
+    const currentUser = getCurrentUser();
+
+    if (!currentUser) {
+      router.push('/login');
+      return;
+    }
+
+    router.push(destination);
+  }
+
   function openRegistration(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
     const currentUser = getCurrentUser();
@@ -38,11 +50,11 @@ export default function MembersPage() {
           </article>
           <article className="memberServiceCard">
             <span>02</span><h2>회원 이적신청</h2><p>기존 클럽 회장부터 새 클럽 회장, 협회장까지 이어지는 이적 흐름을 처리합니다.</p>
-            <Link href="/login">이적 신청하기</Link>
+            <Link href="/members/transfer" onClick={(event) => requireLogin(event, '/members/transfer')}>이적 신청하기</Link>
           </article>
           <article className="memberServiceCard">
             <span>03</span><h2>승인 알림</h2><p>이적 확인이 필요한 회장과 협회장에게 처리할 문서를 알림으로 보여줍니다.</p>
-            <Link href="/login">승인 업무 보기</Link>
+            <Link href="/members/approvals" onClick={(event) => requireLogin(event, '/members/approvals')}>승인 업무 보기</Link>
           </article>
         </div>
       </section>
