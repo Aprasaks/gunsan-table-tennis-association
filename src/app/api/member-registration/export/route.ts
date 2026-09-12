@@ -1,5 +1,4 @@
 import JSZip from 'jszip';
-import { MEMBER_REGISTRATION_TEMPLATE_BASE64 } from '@/lib/memberRegistrationTemplate';
 
 export const runtime = 'nodejs';
 
@@ -77,7 +76,13 @@ export async function POST(request: Request) {
       return Response.json({ message: '현재 원본 양식은 최대 31명까지 등록할 수 있습니다.' }, { status: 400 });
     }
 
-    const templateBytes = Buffer.from(MEMBER_REGISTRATION_TEMPLATE_BASE64, 'base64');
+    const templateUrl = new URL('/templates/member-registration.xlsx', request.url);
+    const templateResponse = await fetch(templateUrl, { cache: 'no-store' });
+    if (!templateResponse.ok) {
+      throw new Error(`원본 엑셀 파일을 불러오지 못했습니다. (${templateResponse.status})`);
+    }
+
+    const templateBytes = new Uint8Array(await templateResponse.arrayBuffer());
     const zip = await JSZip.loadAsync(templateBytes);
     const sheetFile = zip.file('xl/worksheets/sheet1.xml');
     if (!sheetFile) {
