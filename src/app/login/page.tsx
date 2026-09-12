@@ -30,7 +30,7 @@ export default function LoginPage() {
     }
 
     setSession(user.id);
-    router.push('/members/register');
+    router.push('/');
   }
 
   return (
@@ -60,7 +60,7 @@ export default function LoginPage() {
           <button type="submit" className={styles.action}>로그인</button>
           <div className={styles.links}>
             <Link href="/signup">회원가입</Link>
-            <span>회원등록 검증 화면으로 이동합니다.</span>
+            <span>로그인 후 메인페이지로 이동합니다.</span>
           </div>
         </form>
       </div>
