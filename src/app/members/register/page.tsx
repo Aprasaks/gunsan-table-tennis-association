@@ -22,10 +22,17 @@ type Draft = {
   clubName: string;
   clubAddress: string;
   members: RegistrationMember[];
+  savedAt?: string;
+};
+
+type RankOption = {
+  value: string;
+  label: string;
 };
 
 const positions = ['관장', '회장', '부회장', '총무', '재무', '이사', '회원', '기타'];
 const registrationTypes = ['기존', '신규', '이적'];
+const registrationManagers = new Set(['회장', '부회장', '총무']);
 
 function blankMember(id: string): RegistrationMember {
   return {
@@ -42,6 +49,42 @@ function blankMember(id: string): RegistrationMember {
   };
 }
 
+function rankOptions(gender: string): RankOption[] {
+  if (gender === '남') {
+    return [
+      { value: '남 Ace', label: '선수부 (Ace)' },
+      { value: '남 1부', label: '1부' },
+      { value: '남 2부', label: '2부' },
+      { value: '남 3부', label: '3부' },
+      { value: '남 4부', label: '4부' },
+      { value: '남 5부', label: '5부' },
+      { value: '남 6부', label: '6부' },
+      { value: '남 7부', label: '7부' },
+      { value: '남 희망부', label: '희망부' },
+    ];
+  }
+
+  if (gender === '여') {
+    return [
+      { value: '여 Ace', label: '선수부 (Ace)' },
+      { value: '여 1부', label: '1부' },
+      { value: '여 2부', label: '2부' },
+      { value: '여 3부', label: '3부' },
+      { value: '여 4부', label: '4부' },
+      { value: '여 5부', label: '5부' },
+      { value: '여 6부', label: '6부' },
+      { value: '여 희망부', label: '희망부' },
+    ];
+  }
+
+  return [];
+}
+
+function savedTimeText(value: string) {
+  if (!value) return '아직 저장되지 않음';
+  return `저장됨 ${new Date(value).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+}
+
 export default function MemberRegistrationPage() {
   const router = useRouter();
   const [user, setUser] = useState<MvpUser | null>(null);
@@ -52,11 +95,18 @@ export default function MemberRegistrationPage() {
   const [downloading, setDownloading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [lastSavedAt, setLastSavedAt] = useState('');
 
   useEffect(() => {
     const currentUser = getCurrentUser();
     if (!currentUser) {
       router.replace('/login');
+      return;
+    }
+
+    if (!registrationManagers.has(currentUser.position)) {
+      alert('회원등록 권한이 없습니다. 회장, 부회장, 총무만 회원등록 업무를 이용할 수 있습니다.');
+      router.replace('/members');
       return;
     }
 
@@ -69,6 +119,8 @@ export default function MemberRegistrationPage() {
         setClubName(draft.clubName || currentUser.club);
         setClubAddress(draft.clubAddress || '');
         setMembers(draft.members?.length ? draft.members : []);
+        setLastSavedAt(draft.savedAt || '');
+        setMessage('저장된 입력내용을 불러왔습니다.');
         setLoaded(true);
         return;
       } catch {
@@ -89,12 +141,23 @@ export default function MemberRegistrationPage() {
 
   useEffect(() => {
     if (!loaded || !user) return;
-    const draft: Draft = { clubName, clubAddress, members };
-    localStorage.setItem(`gunsan-tt-registration-draft-${user.id}`, JSON.stringify(draft));
+
+    const timer = window.setTimeout(() => {
+      const savedAt = new Date().toISOString();
+      const draft: Draft = { clubName, clubAddress, members, savedAt };
+      localStorage.setItem(`gunsan-tt-registration-draft-${user.id}`, JSON.stringify(draft));
+      setLastSavedAt(savedAt);
+    }, 400);
+
+    return () => window.clearTimeout(timer);
   }, [clubName, clubAddress, loaded, members, user]);
 
   function updateMember(id: string, field: keyof RegistrationMember, value: string) {
     setMembers((current) => current.map((member) => member.id === id ? { ...member, [field]: value } : member));
+  }
+
+  function updateGender(id: string, gender: string) {
+    setMembers((current) => current.map((member) => member.id === id ? { ...member, gender, rank: '' } : member));
   }
 
   function addMember() {
@@ -120,8 +183,13 @@ export default function MemberRegistrationPage() {
   }
 
   function saveDraft() {
+    if (!user) return;
+    const savedAt = new Date().toISOString();
+    const draft: Draft = { clubName, clubAddress, members, savedAt };
+    localStorage.setItem(`gunsan-tt-registration-draft-${user.id}`, JSON.stringify(draft));
+    setLastSavedAt(savedAt);
     setError('');
-    setMessage('현재 입력내용을 이 브라우저에 저장했습니다.');
+    setMessage(`입력내용을 저장했습니다. (${new Date(savedAt).toLocaleTimeString('ko-KR')})`);
   }
 
   async function downloadExcel() {
@@ -147,8 +215,15 @@ export default function MemberRegistrationPage() {
       });
 
       if (!response.ok) {
-        const result = await response.json() as { message?: string };
-        throw new Error(result.message || '엑셀 생성에 실패했습니다.');
+        const text = await response.text();
+        let apiMessage = '엑셀 생성에 실패했습니다.';
+        try {
+          const result = JSON.parse(text) as { message?: string };
+          apiMessage = result.message || apiMessage;
+        } catch {
+          if (text.trim()) apiMessage = text;
+        }
+        throw new Error(apiMessage);
       }
 
       const blob = await response.blob();
@@ -197,7 +272,7 @@ export default function MemberRegistrationPage() {
             <button className={styles.logout} type="button" onClick={logout}>로그아웃</button>
           </div>
 
-          <p className={styles.notice}>이번 화면은 실제 업무 흐름을 먼저 검증하기 위한 버전입니다. 회원가입 정보와 등록 명단을 넣고 엑셀 파일이 원하는 위치에 정확히 들어가는지 확인해주세요.</p>
+          <p className={styles.notice}>회원등록 업무는 회장·부회장·총무만 이용할 수 있습니다. 입력내용은 이 브라우저에 자동 저장되며, 아래 저장상태에서 마지막 저장 시각을 확인할 수 있습니다.</p>
 
           <div className={styles.clubGrid}>
             <div className={styles.field}>
@@ -223,21 +298,29 @@ export default function MemberRegistrationPage() {
                 </tr>
               </thead>
               <tbody>
-                {members.map((member, index) => (
-                  <tr key={member.id}>
-                    <td>{index + 1}</td>
-                    <td><input value={member.name} onChange={(e) => updateMember(member.id, 'name', e.target.value)} /></td>
-                    <td><input value={member.birthDate} onChange={(e) => updateMember(member.id, 'birthDate', e.target.value.replace(/[^0-9]/g, '').slice(0, 6))} placeholder="900101" inputMode="numeric" /></td>
-                    <td><select value={member.gender} onChange={(e) => updateMember(member.id, 'gender', e.target.value)}><option value="">선택</option><option value="남">남</option><option value="여">여</option></select></td>
-                    <td><input value={member.rank} onChange={(e) => updateMember(member.id, 'rank', e.target.value)} placeholder="남 5부" /></td>
-                    <td><input value={member.address} onChange={(e) => updateMember(member.id, 'address', e.target.value)} placeholder="군산시 나운동" /></td>
-                    <td><select value={member.position} onChange={(e) => updateMember(member.id, 'position', e.target.value)}>{positions.map((position) => <option key={position} value={position}>{position}</option>)}</select></td>
-                    <td><input value={member.phone} onChange={(e) => updateMember(member.id, 'phone', e.target.value)} placeholder="010-0000-0000" /></td>
-                    <td><select value={member.registrationType} onChange={(e) => updateMember(member.id, 'registrationType', e.target.value)}>{registrationTypes.map((type) => <option key={type} value={type}>{type}</option>)}</select></td>
-                    <td><input value={member.nationality} onChange={(e) => updateMember(member.id, 'nationality', e.target.value)} placeholder="선택사항" /></td>
-                    <td><button className={styles.deleteButton} type="button" onClick={() => removeMember(member.id)} aria-label={`${member.name || index + 1} 삭제`}>×</button></td>
-                  </tr>
-                ))}
+                {members.map((member, index) => {
+                  const options = rankOptions(member.gender);
+                  return (
+                    <tr key={member.id}>
+                      <td>{index + 1}</td>
+                      <td><input value={member.name} onChange={(e) => updateMember(member.id, 'name', e.target.value)} /></td>
+                      <td><input value={member.birthDate} onChange={(e) => updateMember(member.id, 'birthDate', e.target.value.replace(/[^0-9]/g, '').slice(0, 6))} placeholder="900101" inputMode="numeric" /></td>
+                      <td><select value={member.gender} onChange={(e) => updateGender(member.id, e.target.value)}><option value="">선택</option><option value="남">남</option><option value="여">여</option></select></td>
+                      <td>
+                        <select value={member.rank} disabled={!member.gender} onChange={(e) => updateMember(member.id, 'rank', e.target.value)}>
+                          <option value="">{member.gender ? '부수 선택' : '성별 먼저 선택'}</option>
+                          {options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                        </select>
+                      </td>
+                      <td><input value={member.address} onChange={(e) => updateMember(member.id, 'address', e.target.value)} placeholder="군산시 나운동" /></td>
+                      <td><select value={member.position} onChange={(e) => updateMember(member.id, 'position', e.target.value)}>{positions.map((position) => <option key={position} value={position}>{position}</option>)}</select></td>
+                      <td><input value={member.phone} onChange={(e) => updateMember(member.id, 'phone', e.target.value)} placeholder="010-0000-0000" /></td>
+                      <td><select value={member.registrationType} onChange={(e) => updateMember(member.id, 'registrationType', e.target.value)}>{registrationTypes.map((type) => <option key={type} value={type}>{type}</option>)}</select></td>
+                      <td><input value={member.nationality} onChange={(e) => updateMember(member.id, 'nationality', e.target.value)} placeholder="선택사항" /></td>
+                      <td><button className={styles.deleteButton} type="button" onClick={() => removeMember(member.id)} aria-label={`${member.name || index + 1} 삭제`}>×</button></td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -246,6 +329,7 @@ export default function MemberRegistrationPage() {
             <div>
               <strong>등록 대상 {members.length}명</strong>
               <span>입력한 순서대로 원본 엑셀 1번부터 채워집니다.</span>
+              <span className={styles.saveStatus}>{savedTimeText(lastSavedAt)}</span>
             </div>
             <div className={styles.actions}>
               <button className={styles.secondary} type="button" onClick={saveDraft}>입력내용 저장</button>
