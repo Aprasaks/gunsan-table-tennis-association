@@ -39,18 +39,24 @@ export default function Home() {
       </section>
 
       <section className="siteShell featureTiles" aria-label="주요 서비스">
-        <Link href="/league" className="featureTile leagueTile">
-          <div><strong>동호인리그 최근 결과</strong><p>클럽별 경기결과와 전적을 확인하세요.</p></div>
-          <b>바로가기 ›</b>
-        </Link>
-        <Link href="/schedule" className="featureTile scheduleTile">
-          <div><strong>다가오는 대회 일정</strong><p>군산시에서 열리는 주요 대회 일정을 확인하세요.</p></div>
-          <b>바로가기 ›</b>
-        </Link>
-        <Link href="/notice" className="featureTile noticeTile">
-          <div><strong>협회 공지</strong><p>군산시탁구협회의 주요 공지사항을 알려드립니다.</p></div>
-          <b>바로가기 ›</b>
-        </Link>
+        <Link
+          href="/league"
+          className="featureTile featureImageTile"
+          style={{ backgroundImage: "url('/images/feature-league.webp')" }}
+          aria-label="동호인리그 최근 결과 바로가기"
+        />
+        <Link
+          href="/schedule"
+          className="featureTile featureImageTile"
+          style={{ backgroundImage: "url('/images/feature-schedule.webp')" }}
+          aria-label="다가오는 대회 일정 바로가기"
+        />
+        <Link
+          href="/notice"
+          className="featureTile featureImageTile"
+          style={{ backgroundImage: "url('/images/feature-notice.webp')" }}
+          aria-label="협회 공지 바로가기"
+        />
       </section>
 
       <section className="siteShell portalGrid">
