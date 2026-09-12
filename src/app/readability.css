@@ -1,57 +1,88 @@
 /* Desktop/laptop readability tuning */
 @media (min-width: 769px) {
-  body { font-size: 16px; }
+  body { font-size: 17px; }
 
-  .utilityBar { font-size: 12px; }
+  .utilityBar { font-size: 13px; }
   .utilityLinks { gap: 14px; }
+  .welcomeUser,
+  .utilityLogout { font-size: 13px; }
 
-  .associationWordmark strong { font-size: 29px; }
-  .associationWordmark span { font-size: 9.5px; }
-  .headerCityVisual strong { font-size: 15px; }
-  .headerCityVisual span { font-size: 11px; }
+  .associationWordmark strong { font-size: 30px; }
+  .associationWordmark span { font-size: 10.5px; }
+  .headerCityVisual strong { font-size: 16px; }
+  .headerCityVisual span { font-size: 12px; }
 
-  .desktopNav a { font-size: 15px; }
+  .desktopNav a { font-size: 16px; }
 
-  .heroCopy h1 { font-size: 34px; }
-  .heroCopy p { font-size: 15px; }
+  .heroCopy h1 { font-size: 36px; }
+  .heroCopy p { font-size: 17px; }
 
-  .featureTile strong { font-size: 19px; }
-  .featureTile p { font-size: 12px; }
-  .featureTile > b { font-size: 12px; }
+  .featureTile strong { font-size: 20px; }
+  .featureTile p { font-size: 14px; }
+  .featureTile > b { font-size: 13px; }
 
-  .portalHeading { height: 40px; }
-  .portalHeading h2 { font-size: 18px; }
-  .portalHeading > a { font-size: 11px; }
+  .portalHeading { height: 42px; }
+  .portalHeading h2 { font-size: 19px; }
+  .portalHeading > a { font-size: 13px; }
 
-  .noticeRow { min-height: 31px; grid-template-columns: 42px minmax(0,1fr) 52px; }
-  .noticeRow strong { font-size: 13px; }
-  .noticeRow time { font-size: 11px; }
-  .noticeBadge { width: 32px; height: 19px; font-size: 10px; }
-  .noticeBullet { font-size: 14px; }
+  .noticeRow { min-height: 34px; grid-template-columns: 44px minmax(0,1fr) 58px; }
+  .noticeRow strong { font-size: 14px; }
+  .noticeRow time { font-size: 12px; }
+  .noticeBadge { width: 34px; height: 20px; font-size: 11px; }
+  .noticeBullet { font-size: 15px; }
+
+  .compactTable { font-size: 12px; }
+  .compactTable th { font-size: 12px; }
+  .compactTable td { font-size: 12px; }
+
+  .serviceGrid b { font-size: 13px; }
+  .serviceGrid span { font-size: 12px; }
+  .sideBanner b { font-size: 14px; }
+  .sideBanner small,
+  .sideBanner em { font-size: 12px; }
 
   .homeScheduleHead,
-  .homeScheduleRow { min-height: 36px; }
-  .homeScheduleHead { font-size: 11px; }
-  .homeScheduleRow { font-size: 12px; }
-  .homeScheduleRow strong { font-size: 12px; }
-  .homeScheduleRow b { font-size: 11px; }
+  .homeScheduleRow { min-height: 38px; }
+  .homeScheduleHead { font-size: 13px; }
+  .homeScheduleRow { font-size: 13px; }
+  .homeScheduleRow strong { font-size: 14px; }
+  .homeScheduleRow b { font-size: 12px; }
 
-  .boardRow { min-height: 38px; grid-template-columns: 68px minmax(0,1fr) 100px 55px; }
-  .boardCategory { min-width: 44px; height: 21px; font-size: 10px; }
-  .boardRow strong { font-size: 13px; }
+  .boardRow { min-height: 40px; grid-template-columns: 72px minmax(0,1fr) 105px 62px; }
+  .boardCategory { min-width: 46px; height: 23px; font-size: 11px; }
+  .boardRow strong { font-size: 14px; }
   .boardAuthor,
-  .boardRow time { font-size: 11px; }
+  .boardRow time { font-size: 12px; }
 
-  .footerInner strong { font-size: 17px; }
-  .footerInner p { font-size: 11px; }
+  .miniOrgTop span { font-size: 12px; }
+  .miniOrgTop strong { font-size: 11px; }
+  .miniOrgRow span,
+  .miniOrgClub span { font-size: 11px; }
 
-  .subHero .crumb { font-size: 11px; }
-  .subHero h1 { font-size: 30px; }
-  .subHero p { font-size: 13px; }
-  .sectionBar h2 { font-size: 19px; }
-  .sectionBar span { font-size: 11px; }
-  .dataTable th { font-size: 12px; }
-  .dataTable td { font-size: 13px; }
+  .footerInner strong { font-size: 18px; }
+  .footerInner p { font-size: 13px; }
+
+  .subHero .crumb { font-size: 13px; }
+  .subHero h1 { font-size: 32px; }
+  .subHero p { font-size: 16px; }
+  .sectionBar h2 { font-size: 21px; }
+  .sectionBar span { font-size: 13px; }
+  .dataTable th { font-size: 14px; }
+  .dataTable td { font-size: 15px; }
   .subTabs button,
-  .subTabs a { font-size: 12px; }
+  .subTabs a { font-size: 14px; }
+
+  .memberServiceCard > span { font-size: 13px; }
+  .memberServiceCard h2 { font-size: 21px; }
+  .memberServiceCard p { font-size: 15px; line-height: 1.75; }
+  .memberServiceCard a { font-size: 14px; padding: 10px 14px; }
+
+  .workflowPanel {
+    border: 1px solid #d8e0e6;
+    border-top: 4px solid #167fb4;
+    background: #fff;
+    padding: 28px 30px;
+  }
+  .workflowPanel h2 { margin: 0 0 12px; font-size: 23px; }
+  .workflowPanel p { margin: 0; font-size: 16px; line-height: 1.75; color: #5f6d78; }
 }
