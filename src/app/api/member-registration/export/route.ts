@@ -121,10 +121,11 @@ export async function POST(request: Request) {
 
     zip.file('xl/worksheets/sheet1.xml', sheetXml);
     const output = await zip.generateAsync({ type: 'uint8array', compression: 'DEFLATE' });
+    const responseBody = output.buffer.slice(output.byteOffset, output.byteOffset + output.byteLength) as ArrayBuffer;
     const safeClubName = clubName.replace(/[\\/:*?"<>|]/g, '_');
     const filename = `${safeClubName}_2026_회원등록신청서.xlsx`;
 
-    return new Response(output, {
+    return new Response(responseBody, {
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`,
