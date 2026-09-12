@@ -44,7 +44,8 @@ export async function POST(request: Request) {
 
     const workbook = new ExcelJS.Workbook();
     const templateBuffer = Buffer.from(MEMBER_REGISTRATION_TEMPLATE_BASE64, 'base64');
-    await workbook.xlsx.load(templateBuffer);
+    type ExcelLoadBuffer = Parameters<typeof workbook.xlsx.load>[0];
+    await workbook.xlsx.load(templateBuffer as unknown as ExcelLoadBuffer);
     const sheet = workbook.getWorksheet(1);
     if (!sheet) {
       return Response.json({ message: '회원등록 엑셀 템플릿을 읽지 못했습니다.' }, { status: 500 });
@@ -91,8 +92,9 @@ export async function POST(request: Request) {
     const output = await workbook.xlsx.writeBuffer();
     const safeClubName = clubName.replace(/[\\/:*?"<>|]/g, '_');
     const filename = `${safeClubName}_2026_회원등록신청서.xlsx`;
+    const responseBytes = new Uint8Array(output);
 
-    return new Response(Buffer.from(output), {
+    return new Response(responseBytes, {
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`,
