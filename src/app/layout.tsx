@@ -3,6 +3,7 @@ import Link from 'next/link';
 import AuthStatus from './AuthStatus';
 import './globals.css';
 import './readability.css';
+import './feature-cards.css';
 import './sticky-footer.css';
 
 export const metadata: Metadata = {
