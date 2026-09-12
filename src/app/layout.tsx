@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import AuthStatus from './AuthStatus';
 import './globals.css';
 import './readability.css';
 import './sticky-footer.css';
@@ -48,9 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="siteShell utilityInner">
               <span>군산시 탁구, 오늘도 더 가까이</span>
               <div className="utilityLinks">
-                <Link href="/login">로그인</Link>
-                <i aria-hidden="true" />
-                <Link href="/signup">회원가입</Link>
+                <AuthStatus />
               </div>
             </div>
           </div>
@@ -82,8 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <nav>
                   {nav.map(([href, label]) => <Link key={href} href={href}>{label}</Link>)}
                   <div className="mobileUtilityLinks">
-                    <Link href="/login">로그인</Link>
-                    <Link href="/signup">회원가입</Link>
+                    <AuthStatus />
                   </div>
                 </nav>
               </details>
