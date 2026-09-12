@@ -18,9 +18,21 @@ type RegistrationMember = {
   nationality: string;
 };
 
+type OfficerInfo = {
+  name: string;
+  phone: string;
+};
+
+type Officers = {
+  manager: OfficerInfo;
+  president: OfficerInfo;
+  secretary: OfficerInfo;
+};
+
 type Draft = {
   clubName: string;
   clubAddress: string;
+  officers?: Officers;
   members: RegistrationMember[];
   savedAt?: string;
 };
@@ -47,6 +59,18 @@ function blankMember(id: string): RegistrationMember {
     registrationType: '기존',
     nationality: '',
   };
+}
+
+function blankOfficers(user?: MvpUser | null): Officers {
+  const officers: Officers = {
+    manager: { name: '', phone: '' },
+    president: { name: '', phone: '' },
+    secretary: { name: '', phone: '' },
+  };
+
+  if (user?.position === '회장') officers.president = { name: user.name, phone: user.phone };
+  if (user?.position === '총무') officers.secretary = { name: user.name, phone: user.phone };
+  return officers;
 }
 
 function rankOptions(gender: string): RankOption[] {
@@ -90,6 +114,7 @@ export default function MemberRegistrationPage() {
   const [user, setUser] = useState<MvpUser | null>(null);
   const [clubName, setClubName] = useState('');
   const [clubAddress, setClubAddress] = useState('');
+  const [officers, setOfficers] = useState<Officers>(blankOfficers());
   const [members, setMembers] = useState<RegistrationMember[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -118,7 +143,8 @@ export default function MemberRegistrationPage() {
         const draft = JSON.parse(rawDraft) as Draft;
         setClubName(draft.clubName || currentUser.club);
         setClubAddress(draft.clubAddress || '');
-        setMembers(draft.members?.length ? draft.members : []);
+        setOfficers(draft.officers || blankOfficers(currentUser));
+        setMembers(draft.members?.length ? draft.members : [blankMember('member-1')]);
         setLastSavedAt(draft.savedAt || '');
         setMessage('저장된 입력내용을 불러왔습니다.');
         setLoaded(true);
@@ -129,13 +155,8 @@ export default function MemberRegistrationPage() {
     }
 
     setClubName(currentUser.club);
-    setMembers([{
-      ...blankMember('member-1'),
-      name: currentUser.name,
-      gender: currentUser.gender,
-      position: currentUser.position,
-      phone: currentUser.phone,
-    }]);
+    setOfficers(blankOfficers(currentUser));
+    setMembers([blankMember('member-1')]);
     setLoaded(true);
   }, [router]);
 
@@ -144,13 +165,20 @@ export default function MemberRegistrationPage() {
 
     const timer = window.setTimeout(() => {
       const savedAt = new Date().toISOString();
-      const draft: Draft = { clubName, clubAddress, members, savedAt };
+      const draft: Draft = { clubName, clubAddress, officers, members, savedAt };
       localStorage.setItem(`gunsan-tt-registration-draft-${user.id}`, JSON.stringify(draft));
       setLastSavedAt(savedAt);
     }, 400);
 
     return () => window.clearTimeout(timer);
-  }, [clubName, clubAddress, loaded, members, user]);
+  }, [clubName, clubAddress, loaded, members, officers, user]);
+
+  function updateOfficer(role: keyof Officers, field: keyof OfficerInfo, value: string) {
+    setOfficers((current) => ({
+      ...current,
+      [role]: { ...current[role], [field]: value },
+    }));
+  }
 
   function updateMember(id: string, field: keyof RegistrationMember, value: string) {
     setMembers((current) => current.map((member) => member.id === id ? { ...member, [field]: value } : member));
@@ -161,10 +189,6 @@ export default function MemberRegistrationPage() {
   }
 
   function addMember() {
-    if (members.length >= 31) {
-      setError('원본 엑셀 양식은 최대 31명까지 입력할 수 있습니다.');
-      return;
-    }
     setError('');
     setMembers((current) => [...current, blankMember(crypto.randomUUID())]);
   }
@@ -175,9 +199,10 @@ export default function MemberRegistrationPage() {
 
   function validate() {
     if (!clubName.trim() || !clubAddress.trim()) return '동호회명과 동호회 주소를 입력해주세요.';
-    if (members.length === 0) return '등록할 회원을 한 명 이상 추가해주세요.';
+    const activeMembers = members.filter((member) => member.name.trim());
+    if (activeMembers.length === 0) return '등록할 회원을 한 명 이상 입력해주세요.';
 
-    const incomplete = members.find((member) => !member.name.trim() || !member.birthDate.trim() || !member.gender || !member.rank.trim() || !member.address.trim() || !member.position || !member.phone.trim());
+    const incomplete = activeMembers.find((member) => !member.birthDate.trim() || !member.gender || !member.rank.trim() || !member.address.trim() || !member.position || !member.phone.trim());
     if (incomplete) return '회원 명단의 성명, 생년월일, 성별, 부수, 주소, 직위, 연락처를 모두 입력해주세요.';
     return '';
   }
@@ -185,7 +210,7 @@ export default function MemberRegistrationPage() {
   function saveDraft() {
     if (!user) return;
     const savedAt = new Date().toISOString();
-    const draft: Draft = { clubName, clubAddress, members, savedAt };
+    const draft: Draft = { clubName, clubAddress, officers, members, savedAt };
     localStorage.setItem(`gunsan-tt-registration-draft-${user.id}`, JSON.stringify(draft));
     setLastSavedAt(savedAt);
     setError('');
@@ -210,7 +235,8 @@ export default function MemberRegistrationPage() {
         body: JSON.stringify({
           clubName,
           clubAddress,
-          members: members.map(({ id, ...member }) => member),
+          officers,
+          members: members.filter((member) => member.name.trim()).map(({ id, ...member }) => member),
         }),
       });
 
@@ -235,7 +261,7 @@ export default function MemberRegistrationPage() {
       anchor.click();
       anchor.remove();
       URL.revokeObjectURL(url);
-      setMessage('원본 양식에 회원정보를 채운 엑셀 파일을 생성했습니다.');
+      setMessage('회원정보를 채운 제출용 엑셀 파일을 생성했습니다.');
     } catch (downloadError) {
       setError(downloadError instanceof Error ? downloadError.message : '엑셀 생성에 실패했습니다.');
     } finally {
@@ -252,13 +278,15 @@ export default function MemberRegistrationPage() {
     return <div className="siteShell pageContent">회원정보를 확인하고 있습니다.</div>;
   }
 
+  const activeMemberCount = members.filter((member) => member.name.trim()).length;
+
   return (
     <>
       <section className="subHero">
         <div className="siteShell subHeroInner">
           <span className="crumb">HOME &gt; 회원등록/이적 &gt; 회원등록</span>
           <h1>2026 회원등록 검증</h1>
-          <p>동호회 명단을 입력한 뒤 전라북도탁구협회 원본 양식으로 바로 내려받습니다.</p>
+          <p>동호회 담당자와 등록 회원 명단을 입력한 뒤 제출용 Excel 파일로 내려받습니다.</p>
         </div>
       </section>
 
@@ -267,12 +295,12 @@ export default function MemberRegistrationPage() {
           <div className={styles.topbar}>
             <div>
               <h2>{user.name}님 회원등록</h2>
-              <p>관장·회장·총무로 입력된 회원은 엑셀 상단 담당자 정보에도 자동으로 들어갑니다.</p>
+              <p>관장·회장·총무 정보는 엑셀 상단에, 아래 회원 명단은 등록 대상 목록에 들어갑니다.</p>
             </div>
             <button className={styles.logout} type="button" onClick={logout}>로그아웃</button>
           </div>
 
-          <p className={styles.notice}>회원등록 업무는 회장·부회장·총무만 이용할 수 있습니다. 입력내용은 이 브라우저에 자동 저장되며, 아래 저장상태에서 마지막 저장 시각을 확인할 수 있습니다.</p>
+          <p className={styles.notice}>회원등록 업무는 회장·부회장·총무만 이용할 수 있습니다. 관장·회장·총무가 실제 등록 대상이면 아래 회원 명단에도 별도로 추가해주세요.</p>
 
           <div className={styles.clubGrid}>
             <div className={styles.field}>
@@ -285,8 +313,33 @@ export default function MemberRegistrationPage() {
             </div>
           </div>
 
+          <div className={styles.sectionTitle}>
+            <h3>담당자 정보</h3>
+            <span>엑셀 상단 관장 · 회장 · 총무란에 입력됩니다.</span>
+          </div>
+          <div className={styles.officerGrid}>
+            <div className={styles.officerCard}>
+              <strong>관장</strong>
+              <div className={styles.field}><label htmlFor="manager-name">성명</label><input id="manager-name" value={officers.manager.name} onChange={(e) => updateOfficer('manager', 'name', e.target.value)} placeholder="관장 성명" /></div>
+              <div className={styles.field}><label htmlFor="manager-phone">연락처</label><input id="manager-phone" value={officers.manager.phone} onChange={(e) => updateOfficer('manager', 'phone', e.target.value)} placeholder="010-0000-0000" /></div>
+            </div>
+            <div className={styles.officerCard}>
+              <strong>회장</strong>
+              <div className={styles.field}><label htmlFor="president-name">성명</label><input id="president-name" value={officers.president.name} onChange={(e) => updateOfficer('president', 'name', e.target.value)} placeholder="회장 성명" /></div>
+              <div className={styles.field}><label htmlFor="president-phone">연락처</label><input id="president-phone" value={officers.president.phone} onChange={(e) => updateOfficer('president', 'phone', e.target.value)} placeholder="010-0000-0000" /></div>
+            </div>
+            <div className={styles.officerCard}>
+              <strong>총무</strong>
+              <div className={styles.field}><label htmlFor="secretary-name">성명</label><input id="secretary-name" value={officers.secretary.name} onChange={(e) => updateOfficer('secretary', 'name', e.target.value)} placeholder="총무 성명" /></div>
+              <div className={styles.field}><label htmlFor="secretary-phone">연락처</label><input id="secretary-phone" value={officers.secretary.phone} onChange={(e) => updateOfficer('secretary', 'phone', e.target.value)} placeholder="010-0000-0000" /></div>
+            </div>
+          </div>
+
           <div className={styles.memberHeader}>
-            <h3>등록 회원 명단 ({members.length}/31)</h3>
+            <div>
+              <h3>등록 회원 명단</h3>
+              <span className={styles.unlimited}>인원 제한 없음 · 현재 {activeMemberCount}명 입력</span>
+            </div>
             <button className={styles.addButton} type="button" onClick={addMember}>+ 회원 추가</button>
           </div>
 
@@ -327,8 +380,8 @@ export default function MemberRegistrationPage() {
 
           <div className={styles.summary}>
             <div>
-              <strong>등록 대상 {members.length}명</strong>
-              <span>입력한 순서대로 원본 엑셀 1번부터 채워집니다.</span>
+              <strong>등록 대상 {activeMemberCount}명</strong>
+              <span>회원 수만큼 엑셀 행이 자동으로 늘어납니다.</span>
               <span className={styles.saveStatus}>{savedTimeText(lastSavedAt)}</span>
             </div>
             <div className={styles.actions}>
