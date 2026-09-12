@@ -48,7 +48,7 @@ export default function SignupPage() {
               <option value="secretary">총무</option>
               <option value="other">기타</option>
             </select>
-            <small>직책 선택만으로 관리 권한이 생기지 않으며, 협회 확인 후 권한이 적용됩니다.</small>
+            <small>가입 시 선택한 직책으로 등록됩니다.</small>
           </div>
 
           <div className="formRow">
