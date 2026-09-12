@@ -15,6 +15,13 @@ export type MvpSession = {
 
 const USERS_KEY = 'gunsan-tt-mvp-users';
 const SESSION_KEY = 'gunsan-tt-mvp-session';
+export const AUTH_CHANGE_EVENT = 'gunsan-tt-auth-change';
+
+function notifyAuthChange() {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(AUTH_CHANGE_EVENT));
+  }
+}
 
 export function normalizePhone(phone: string) {
   return phone.replace(/[^0-9]/g, '');
@@ -42,6 +49,7 @@ export function saveUsers(users: MvpUser[]) {
 export function setSession(userId: string) {
   const session: MvpSession = { userId, loggedInAt: new Date().toISOString() };
   localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  notifyAuthChange();
 }
 
 export function getSession(): MvpSession | null {
@@ -62,4 +70,5 @@ export function getCurrentUser(): MvpUser | null {
 
 export function clearSession() {
   localStorage.removeItem(SESSION_KEY);
+  notifyAuthChange();
 }
