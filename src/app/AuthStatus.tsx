@@ -41,6 +41,8 @@ export default function AuthStatus() {
     <>
       <span>{user.name} 회원님 환영합니다.</span>
       <i aria-hidden="true" />
+      <Link href="/profile">정보수정</Link>
+      <i aria-hidden="true" />
       <button
         type="button"
         onClick={logout}
