@@ -72,6 +72,13 @@
   .subTabs button,
   .subTabs a { font-size: 14px; }
 
+  .noticeTable th { font-size: 15px; }
+  .noticeTable td { font-size: 16px; }
+  .noticeTable .num { width: 82px; font-size: 14px; color: #77838d; }
+  .noticeTable .date { width: 132px; font-size: 14px; color: #65737d; }
+  .noticeTable th:nth-child(2),
+  .noticeTable td:nth-child(2) { text-align: left; }
+
   .memberServiceCard > span { font-size: 13px; }
   .memberServiceCard h2 { font-size: 21px; }
   .memberServiceCard p { font-size: 15px; line-height: 1.75; }
@@ -149,6 +156,12 @@
   .dataTable td { font-size: 14px; }
   .subTabs button,
   .subTabs a { font-size: 14px; padding: 11px 14px; }
+
+  .noticeTable th { font-size: 14px; }
+  .noticeTable td { font-size: 15px; }
+  .noticeTable .date { width: 108px; font-size: 13px; color: #65737d; }
+  .noticeTable th:nth-child(2),
+  .noticeTable td:nth-child(2) { text-align: left; }
 
   .scheduleCard .dateBig { font-size: 18px; }
   .scheduleCard h3 { font-size: 17px; }
