@@ -86,3 +86,96 @@
   .workflowPanel h2 { margin: 0 0 12px; font-size: 23px; }
   .workflowPanel p { margin: 0; font-size: 16px; line-height: 1.75; color: #5f6d78; }
 }
+
+/* Mobile readability tuning - older members should be able to read without zooming */
+@media (max-width: 768px) {
+  body { font-size: 16px; line-height: 1.6; }
+
+  .utilityBar { font-size: 13px; }
+  .utilityLinks { gap: 10px; }
+  .utilityLinks a,
+  .utilityLinks span,
+  .utilityLinks button { font-size: 13px !important; }
+
+  .associationWordmark strong { font-size: 24px; }
+  .associationWordmark span { font-size: 8px; letter-spacing: .08em; }
+
+  .mobileMenu summary { font-size: 15px; }
+  .mobileMenu nav > a { font-size: 16px; padding: 14px 16px; }
+  .mobileUtilityLinks a,
+  .mobileUtilityLinks span,
+  .mobileUtilityLinks button { font-size: 14px !important; }
+
+  .heroCopy { width: 78%; }
+  .heroCopy h1 { font-size: 28px; line-height: 1.35; }
+  .heroCopy p { font-size: 15px; }
+
+  .portalHeading { height: 44px; }
+  .portalHeading h2 { font-size: 19px; }
+  .portalHeading > a { font-size: 13px; }
+
+  .noticeRow { min-height: 42px; grid-template-columns: 42px minmax(0,1fr) 52px; }
+  .noticeRow strong { font-size: 14px; }
+  .noticeRow time { font-size: 12px; }
+  .noticeBadge { width: 34px; height: 21px; font-size: 11px; }
+  .noticeBullet { font-size: 16px; }
+
+  .homeScheduleHead,
+  .homeScheduleRow { min-height: 44px; }
+  .homeScheduleHead { font-size: 13px; }
+  .homeScheduleRow { font-size: 13px; }
+  .homeScheduleRow strong { font-size: 14px; line-height: 1.45; }
+  .homeScheduleRow b { font-size: 12px; }
+
+  .boardRow { min-height: 44px; grid-template-columns: 58px minmax(0,1fr) 52px; }
+  .boardCategory { min-width: 46px; height: 24px; font-size: 11px; }
+  .boardRow strong { font-size: 14px; }
+  .boardRow time { font-size: 12px; }
+
+  .compactTable,
+  .compactTable th,
+  .compactTable td { font-size: 13px; }
+
+  .footerInner strong { font-size: 18px; }
+  .footerInner p { font-size: 13px; line-height: 1.65; }
+
+  .subHero .crumb { font-size: 12px; }
+  .subHero h1 { font-size: 28px; line-height: 1.3; }
+  .subHero p { font-size: 15px; line-height: 1.65; }
+
+  .sectionBar h2 { font-size: 20px; }
+  .sectionBar span { font-size: 13px; }
+  .dataTable th { font-size: 13px; }
+  .dataTable td { font-size: 14px; }
+  .subTabs button,
+  .subTabs a { font-size: 14px; padding: 11px 14px; }
+
+  .scheduleCard .dateBig { font-size: 18px; }
+  .scheduleCard h3 { font-size: 17px; }
+  .scheduleCard p { font-size: 14px; line-height: 1.6; }
+
+  .orgTopBox span,
+  .orgBox span { font-size: 12px; }
+  .orgTopBox strong { font-size: 19px; }
+  .orgBox strong { font-size: 16px; }
+
+  .memberServiceCard { padding: 22px 18px; }
+  .memberServiceCard > span { font-size: 12px; }
+  .memberServiceCard h2 { font-size: 20px; }
+  .memberServiceCard p { font-size: 15px; line-height: 1.7; }
+  .memberServiceCard a { font-size: 15px; padding: 11px 14px; }
+
+  .workflowPanel { padding: 22px 18px; }
+  .workflowPanel h2 { font-size: 21px; }
+  .workflowPanel p { font-size: 15px; line-height: 1.7; }
+
+  .matchBoardRow time { font-size: 12px; }
+  .matchBoardRow strong { font-size: 14px; }
+  .matchBoardRow b { font-size: 15px; }
+
+  .adminCard span { font-size: 13px; }
+  .adminCard strong { font-size: 28px; }
+  .adminCard button { font-size: 14px; }
+
+  .boardToolbar button { font-size: 14px; height: 40px; }
+}
