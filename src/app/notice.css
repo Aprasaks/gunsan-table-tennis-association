@@ -1,0 +1,158 @@
+.noticeTable th,
+.noticeTable td{
+  text-align:center !important;
+  vertical-align:middle;
+}
+
+.noticeTable .num{
+  width:90px;
+}
+
+.noticeTable .date{
+  width:150px;
+}
+
+.noticeTitleLink{
+  display:block;
+  width:100%;
+  padding:2px 8px;
+  font-weight:600;
+  color:#2d3943;
+  text-align:center;
+  transition:color .15s ease;
+}
+
+.noticeTitleLink:hover{
+  color:#126da5;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+
+.noticeDetailWrap{
+  max-width:980px;
+}
+
+.noticeDetail{
+  border-top:3px solid #263b4c;
+  border-bottom:1px solid #dce3e8;
+  background:#fff;
+}
+
+.noticeDetailHeader{
+  padding:28px 26px 22px;
+  border-bottom:1px solid #dce3e8;
+  text-align:center;
+}
+
+.noticeDetailHeader h2{
+  margin:0 0 18px;
+  font-size:28px;
+  line-height:1.45;
+  letter-spacing:-.035em;
+  color:#243746;
+}
+
+.noticeDetailMeta{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  color:#6d7983;
+  font-size:14px;
+}
+
+.noticeDetailMeta span{
+  font-weight:700;
+  color:#475763;
+}
+
+.noticeDetailBody{
+  min-height:280px;
+  padding:38px 32px 52px;
+  font-size:16px;
+  line-height:1.9;
+  color:#3e4a53;
+}
+
+.noticeDetailBody p{
+  margin:0 0 18px;
+}
+
+.noticeDetailActions{
+  display:flex;
+  justify-content:center;
+  margin-top:24px;
+}
+
+.noticeListButton{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:120px;
+  height:46px;
+  border:1px solid #aebdca;
+  background:#fff;
+  color:#344d61;
+  font-size:15px;
+  font-weight:700;
+}
+
+.noticeListButton:hover{
+  background:#f5f9fc;
+  border-color:#7f9bb0;
+}
+
+@media(max-width:768px){
+  .noticeTable .num{
+    width:58px;
+    font-size:13px !important;
+  }
+
+  .noticeTable .date{
+    width:96px;
+    font-size:13px !important;
+  }
+
+  .noticeTable th{
+    font-size:14px !important;
+    padding:12px 6px;
+  }
+
+  .noticeTable td{
+    font-size:14px !important;
+    padding:13px 5px;
+  }
+
+  .noticeTitleLink{
+    padding:3px 2px;
+    font-size:14px;
+    line-height:1.5;
+    word-break:keep-all;
+  }
+
+  .noticeDetailHeader{
+    padding:22px 16px 18px;
+  }
+
+  .noticeDetailHeader h2{
+    font-size:22px;
+    margin-bottom:14px;
+  }
+
+  .noticeDetailMeta{
+    font-size:14px;
+  }
+
+  .noticeDetailBody{
+    min-height:220px;
+    padding:28px 18px 40px;
+    font-size:16px;
+    line-height:1.85;
+  }
+
+  .noticeListButton{
+    width:100%;
+    height:50px;
+    font-size:16px;
+  }
+}
