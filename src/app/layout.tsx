@@ -5,6 +5,7 @@ import './globals.css';
 import './readability.css';
 import './feature-cards.css';
 import './sticky-footer.css';
+import './notice.css';
 
 export const metadata: Metadata = {
   title: '군산시탁구협회',
