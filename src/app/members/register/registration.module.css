@@ -11,4 +11,35 @@
 .tableWrap{overflow-x:auto;border:1px solid #d8e0e6}.table{width:100%;border-collapse:collapse;min-width:1180px}.table th{background:#eef2f5;font-size:11px;color:#4d5c67;padding:9px 7px;border-right:1px solid #d8e0e6;border-bottom:1px solid #cfd8df;white-space:nowrap}.table td{padding:6px;border-right:1px solid #e4e9ed;border-bottom:1px solid #e4e9ed}.table input,.table select{width:100%;height:36px;border:1px solid #d1dae1;border-radius:3px;padding:0 7px;font-size:12px;background:#fff}.table select:disabled{background:#f1f3f5;color:#9aa3aa}.deleteButton{width:32px;height:32px;border:1px solid #e0c7c7;background:#fff;color:#b54141;border-radius:3px;cursor:pointer}
 .summary{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:20px;padding-top:18px;border-top:1px solid #dce3e8}.summary strong{font-size:15px}.summary span{display:block;margin-top:4px;color:#73808a;font-size:12px}.summary .saveStatus{display:inline-flex;margin-top:8px;padding:4px 8px;border:1px solid #cfe0ec;background:#f4f9fc;color:#2e6f96;font-weight:700;border-radius:3px}.actions{display:flex;gap:10px}.secondary,.primary{height:44px;border-radius:4px;padding:0 16px;font-weight:800;cursor:pointer}.secondary{background:#fff;border:1px solid #bdc9d2;color:#4d5f6c}.primary{border:0;background:#126da5;color:#fff}.primary:disabled{opacity:.55;cursor:wait}.error{margin-top:14px;color:#a63131;font-size:12px}.success{margin-top:14px;color:#197047;font-size:12px}
 @media(max-width:900px){.officerGrid{grid-template-columns:1fr}}
-@media(max-width:760px){.panel{padding:16px}.topbar{flex-direction:column}.clubGrid{grid-template-columns:1fr}.sectionTitle{align-items:flex-start;flex-direction:column}.summary{align-items:stretch;flex-direction:column}.actions{width:100%;flex-direction:column}.secondary,.primary{width:100%}}
+@media(max-width:760px){
+  .panel{padding:18px 14px}
+  .topbar{flex-direction:column;gap:14px}
+  .topbar h2{font-size:23px}
+  .topbar p{font-size:15px;line-height:1.7}
+  .logout{font-size:15px;padding:10px 14px}
+  .clubGrid{grid-template-columns:1fr;padding:16px;gap:16px}
+  .field{gap:8px}
+  .field label{font-size:15px}
+  .field input,.field select{height:50px;font-size:16px;padding:0 12px}
+  .notice{font-size:14px;line-height:1.7;padding:13px 14px}
+  .sectionTitle{align-items:flex-start;flex-direction:column;gap:6px}
+  .sectionTitle h3{font-size:20px}
+  .sectionTitle span{font-size:14px;line-height:1.6}
+  .officerCard{padding:16px}
+  .officerCard>strong{font-size:17px}
+  .memberHeader{align-items:flex-start;gap:12px}
+  .memberHeader h3{font-size:20px}
+  .memberHeader .unlimited{font-size:14px;line-height:1.5}
+  .addButton{font-size:15px;padding:11px 14px}
+  .table{min-width:1220px}
+  .table th{font-size:13px;padding:10px 8px}
+  .table input,.table select{height:42px;font-size:14px;padding:0 8px}
+  .deleteButton{width:38px;height:38px;font-size:16px}
+  .summary{align-items:stretch;flex-direction:column}
+  .summary strong{font-size:17px}
+  .summary span{font-size:14px;line-height:1.6}
+  .summary .saveStatus{font-size:13px}
+  .actions{width:100%;flex-direction:column}
+  .secondary,.primary{width:100%;height:50px;font-size:16px}
+  .error,.success{font-size:14px;line-height:1.6}
+}
