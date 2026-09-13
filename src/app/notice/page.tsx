@@ -21,13 +21,21 @@ export default function NoticePage(){
         </thead>
         <tbody>
           {notices.map((notice)=><tr key={notice.id}>
-            <td className="num">{notice.id}</td>
+            <td className="num">
+              <Link className="noticeCellLink" href={`/notice/${notice.id}`} aria-label={`${notice.title} 상세보기`}>
+                {notice.id}
+              </Link>
+            </td>
             <td>
-              <Link className="noticeTitleLink" href={`/notice/${notice.id}`}>
+              <Link className="noticeCellLink noticeTitleLink" href={`/notice/${notice.id}`}>
                 {notice.title}
               </Link>
             </td>
-            <td className="date">{notice.date}</td>
+            <td className="date">
+              <Link className="noticeCellLink" href={`/notice/${notice.id}`} aria-label={`${notice.title} 상세보기`}>
+                {notice.date}
+              </Link>
+            </td>
           </tr>)}
         </tbody>
       </table>
