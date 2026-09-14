@@ -1,2 +1,57 @@
-const tasks=[['분기 회원등록','4건'],['이적 승인','2건'],['신규 회원','7건'],['리그 결과','3건']];
-export default function AdminPage(){return <><section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">ADMIN</span><h1>협회 관리</h1><p>협회 업무 처리 현황을 확인합니다.</p></div></section><div className="siteShell pageContent"><div className="adminGrid">{tasks.map(([name,count])=><article className="adminCard" key={name}><span>{name}</span><strong>{count}</strong><button>관리</button></article>)}</div></div></>}
+'use client';
+
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { getCurrentUser, isAdmin } from '@/lib/mvpAuth';
+
+export default function AdminPage() {
+  const router = useRouter();
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const currentUser = getCurrentUser();
+    if (!currentUser || !isAdmin(currentUser)) {
+      router.replace('/login');
+      return;
+    }
+    setReady(true);
+  }, [router]);
+
+  if (!ready) return <div className="siteShell pageContent">관리자 권한을 확인하고 있습니다.</div>;
+
+  return (
+    <>
+      <section className="subHero">
+        <div className="siteShell subHeroInner">
+          <span className="crumb">HOME / 관리자</span>
+          <h1>협회 관리자</h1>
+          <p>공지사항, 대회정보와 협회 승인 업무를 관리합니다.</p>
+        </div>
+      </section>
+
+      <section className="siteShell pageContent">
+        <div className="memberServiceGrid">
+          <article className="memberServiceCard">
+            <span>01</span>
+            <h2>공지사항 관리</h2>
+            <p>협회 공식 공지사항을 작성하고 공개하는 관리 영역입니다.</p>
+            <Link href="/notice">공지사항 관리</Link>
+          </article>
+          <article className="memberServiceCard">
+            <span>02</span>
+            <h2>대회정보 관리</h2>
+            <p>대회 일정과 참가 안내 등 대회 관련 정보를 등록하는 관리 영역입니다.</p>
+            <Link href="/schedule">대회정보 관리</Link>
+          </article>
+          <article className="memberServiceCard">
+            <span>03</span>
+            <h2>전체 승인 업무</h2>
+            <p>회원 이적 등 협회에서 최종 확인해야 하는 승인 업무를 확인합니다.</p>
+            <Link href="/members/approvals">승인 업무 보기</Link>
+          </article>
+        </div>
+      </section>
+    </>
+  );
+}
