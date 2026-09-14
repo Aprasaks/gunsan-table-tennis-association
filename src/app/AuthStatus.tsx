@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { AUTH_CHANGE_EVENT, clearSession, getCurrentUser, type MvpUser } from '@/lib/mvpAuth';
+import { AUTH_CHANGE_EVENT, clearSession, getCurrentUser, isAdmin, type MvpUser } from '@/lib/mvpAuth';
 
 export default function AuthStatus() {
   const router = useRouter();
@@ -37,11 +37,13 @@ export default function AuthStatus() {
     );
   }
 
+  const admin = isAdmin(user);
+
   return (
     <>
-      <span>{user.name} 회원님 환영합니다.</span>
+      <span>{admin ? '관리자님 환영합니다.' : `${user.name} 회원님 환영합니다.`}</span>
       <i aria-hidden="true" />
-      <Link href="/profile">정보수정</Link>
+      <Link href={admin ? '/admin' : '/profile'}>{admin ? '관리화면' : '정보수정'}</Link>
       <i aria-hidden="true" />
       <button
         type="button"
