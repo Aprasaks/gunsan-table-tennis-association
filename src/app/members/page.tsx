@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { getCurrentUser } from '@/lib/mvpAuth';
+import { getCurrentUser, isAdmin } from '@/lib/mvpAuth';
 
 const registrationManagers = new Set(['회장', '부회장', '총무']);
 
@@ -31,8 +31,8 @@ export default function MembersPage() {
       return;
     }
 
-    if (!registrationManagers.has(currentUser.position)) {
-      alert('회원등록 권한이 없습니다. 회장, 부회장, 총무만 회원등록 업무를 이용할 수 있습니다.');
+    if (!isAdmin(currentUser) && !registrationManagers.has(currentUser.position)) {
+      alert('회원등록 권한이 없습니다. 회장, 부회장, 총무 또는 관리자만 회원등록 업무를 이용할 수 있습니다.');
       return;
     }
 
@@ -53,7 +53,7 @@ export default function MembersPage() {
             <Link href="/members/transfer" onClick={(event) => requireLogin(event, '/members/transfer')}>이적 신청하기</Link>
           </article>
           <article className="memberServiceCard">
-            <span>03</span><h2>승인 알림</h2><p>이적 확인이 필요한 회장과 협회장에게 처리할 문서를 알림으로 보여줍니다.</p>
+            <span>03</span><h2>승인 알림</h2><p>이적 확인이 필요한 회장과 협회장, 관리자가 처리할 문서를 알림으로 보여줍니다.</p>
             <Link href="/members/approvals" onClick={(event) => requireLogin(event, '/members/approvals')}>승인 업무 보기</Link>
           </article>
         </div>
