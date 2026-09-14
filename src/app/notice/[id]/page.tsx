@@ -1,12 +1,29 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { notices } from '../data';
+import { notices, type NoticeItem } from '../data';
+import { getAdminNotices } from '@/lib/mvpContent';
 
 export default function NoticeDetailPage(){
   const params = useParams<{ id: string }>();
-  const notice = notices.find((item) => item.id === params.id);
+  const [notice, setNotice] = useState<NoticeItem | null | undefined>(undefined);
+
+  useEffect(() => {
+    const staticNotice = notices.find((item) => item.id === params.id);
+    if (staticNotice) {
+      setNotice(staticNotice);
+      return;
+    }
+
+    const adminNotice = getAdminNotices().find((item) => item.id === params.id);
+    setNotice(adminNotice ?? null);
+  }, [params.id]);
+
+  if (notice === undefined) {
+    return <div className="siteShell pageContent">공지사항을 불러오고 있습니다.</div>;
+  }
 
   if (!notice) {
     return <>
