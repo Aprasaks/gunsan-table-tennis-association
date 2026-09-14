@@ -1,14 +1,17 @@
 export type MemberStatus = 'active' | 'withdrawn';
+export type UserRole = 'member' | 'admin';
 
 export type MvpUser = {
   id: string;
   name: string;
-  gender: '남' | '여';
+  gender: '남' | '여' | '';
   phone: string;
   club: string;
   position: string;
   passwordHash: string;
   memberStatus?: MemberStatus;
+  role?: UserRole;
+  loginId?: string;
 };
 
 export type MvpSession = {
@@ -19,6 +22,20 @@ export type MvpSession = {
 const USERS_KEY = 'gunsan-tt-mvp-users';
 const SESSION_KEY = 'gunsan-tt-mvp-session';
 export const AUTH_CHANGE_EVENT = 'gunsan-tt-auth-change';
+export const ADMIN_USER_ID = 'admin-root';
+
+const ADMIN_USER: MvpUser = {
+  id: ADMIN_USER_ID,
+  loginId: 'admin',
+  name: '관리자',
+  gender: '',
+  phone: '',
+  club: '군산시탁구협회',
+  position: '관리자',
+  passwordHash: '',
+  memberStatus: 'active',
+  role: 'admin',
+};
 
 function notifyAuthChange() {
   if (typeof window !== 'undefined') {
@@ -36,6 +53,10 @@ export async function hashPassword(password: string) {
   return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
+export function isAdmin(user: MvpUser | null | undefined) {
+  return user?.role === 'admin' || user?.id === ADMIN_USER_ID;
+}
+
 export function getUsers(): MvpUser[] {
   if (typeof window === 'undefined') return [];
   try {
@@ -43,6 +64,7 @@ export function getUsers(): MvpUser[] {
     return users.map((user) => ({
       ...user,
       memberStatus: user.memberStatus ?? 'active',
+      role: user.role ?? 'member',
     }));
   } catch {
     return [];
@@ -86,6 +108,10 @@ export function setSession(userId: string) {
   notifyAuthChange();
 }
 
+export function setAdminSession() {
+  setSession(ADMIN_USER_ID);
+}
+
 export function getSession(): MvpSession | null {
   if (typeof window === 'undefined') return null;
   try {
@@ -99,6 +125,7 @@ export function getSession(): MvpSession | null {
 export function getCurrentUser(): MvpUser | null {
   const session = getSession();
   if (!session) return null;
+  if (session.userId === ADMIN_USER_ID) return ADMIN_USER;
   return getUsers().find((user) => user.id === session.userId) ?? null;
 }
 
