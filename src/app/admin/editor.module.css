@@ -1,0 +1,11 @@
+.wrap{max-width:760px;margin:0 auto;background:#fff;border:1px solid #d8e0e6;padding:28px 30px;box-shadow:0 8px 24px rgba(21,59,91,.06)}
+.row{display:flex;flex-direction:column;gap:7px;margin-bottom:18px}
+.row label{font-size:15px;font-weight:800;color:#394a58}
+.row input,.row select,.row textarea{width:100%;border:1px solid #cbd5dd;border-radius:4px;background:#fff;padding:0 13px;font-size:16px;color:#222;outline:none}
+.row input,.row select{height:50px}.row textarea{min-height:220px;padding:13px;line-height:1.7;resize:vertical}
+.row input:focus,.row select:focus,.row textarea:focus{border-color:#167fb4;box-shadow:0 0 0 3px rgba(22,127,180,.10)}
+.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}
+.cancel,.submit{display:inline-flex;align-items:center;justify-content:center;height:48px;padding:0 18px;border-radius:4px;font-size:15px;font-weight:800}
+.cancel{border:1px solid #bdc9d2;background:#fff;color:#4d5f6c}.submit{border:0;background:#126da5;color:#fff;cursor:pointer}
+.message{margin:0 0 16px;padding:11px 12px;border-radius:4px;background:#fff2f2;color:#a33232;font-size:14px}
+@media(max-width:768px){.wrap{padding:22px 18px}.row label{font-size:15px}.row input,.row select,.row textarea{font-size:16px}.actions{flex-direction:column}.cancel,.submit{width:100%;font-size:16px}}
