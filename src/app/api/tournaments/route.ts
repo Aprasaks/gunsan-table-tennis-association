@@ -113,6 +113,7 @@ export async function POST(request: NextRequest) {
   if (!supabase || !baseUrl) {
     return NextResponse.json({ error: 'SUPABASE_SERVICE_ROLE_KEY 설정이 필요합니다.' }, { status: 503 });
   }
+  const adminSupabase = supabase;
 
   const formData = await request.formData();
   const title = textValue(formData, 'title');
@@ -129,7 +130,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '대회명, 대회날짜, 장소, 상태를 확인해주세요.' }, { status: 400 });
   }
 
-  const { data: inserted, error: insertError } = await supabase
+  const { data: inserted, error: insertError } = await adminSupabase
     .from('tournaments')
     .insert({
       title,
@@ -166,7 +167,7 @@ export async function POST(request: NextRequest) {
       const file = files[index];
       const path = tournamentId + '/' + kind + '/' + randomUUID() + '-' + safeFileName(file.name);
       const bytes = Buffer.from(await file.arrayBuffer());
-      const { error } = await supabase.storage.from('tournament-files').upload(path, bytes, {
+      const { error } = await adminSupabase.storage.from('tournament-files').upload(path, bytes, {
         contentType: file.type || 'application/octet-stream',
         upsert: false,
       });
@@ -191,16 +192,16 @@ export async function POST(request: NextRequest) {
     await upload(attachments, 'attachment', 100);
 
     if (fileRows.length > 0) {
-      const { error } = await supabase.from('tournament_files').insert(fileRows);
+      const { error } = await adminSupabase.from('tournament_files').insert(fileRows);
       if (error) throw new Error(error.message);
     }
   } catch (error) {
-    if (uploadedPaths.length > 0) await supabase.storage.from('tournament-files').remove(uploadedPaths);
-    await supabase.from('tournaments').delete().eq('id', tournamentId);
+    if (uploadedPaths.length > 0) await adminSupabase.storage.from('tournament-files').remove(uploadedPaths);
+    await adminSupabase.from('tournaments').delete().eq('id', tournamentId);
     return NextResponse.json({ error: error instanceof Error ? error.message : '첨부파일을 저장하지 못했습니다.' }, { status: 500 });
   }
 
-  const { data, error } = await supabase.from('tournaments').select('*, tournament_files(*)').eq('id', tournamentId).single();
+  const { data, error } = await adminSupabase.from('tournaments').select('*, tournament_files(*)').eq('id', tournamentId).single();
   if (error || !data) return NextResponse.json({ error: error?.message ?? '저장된 대회를 불러오지 못했습니다.' }, { status: 500 });
 
   return NextResponse.json({ item: normalizeTournament(data as TournamentRow, baseUrl) }, { status: 201 });
