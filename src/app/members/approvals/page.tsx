@@ -16,7 +16,7 @@ export default function ApprovalsPage() {
     }
 
     if (currentUser.position !== '회장' && !isAdmin(currentUser)) {
-      alert('승인 업무는 회장 또는 관리자만 확인할 수 있습니다.');
+      alert('알림 · 승인 업무는 회장 또는 관리자만 확인할 수 있습니다.');
       router.replace('/members');
       return;
     }
@@ -32,15 +32,23 @@ export default function ApprovalsPage() {
     <>
       <section className="subHero">
         <div className="siteShell subHeroInner">
-          <span className="crumb">HOME / 회원등록·이적 / 승인알림</span>
-          <h1>이적 승인 알림</h1>
-          <p>{admin ? '관리자가 최종 확인해야 할 전체 승인 요청을 이곳에 표시합니다.' : `${user.name} 회장님이 확인해야 할 이적 요청을 이곳에 표시합니다.`}</p>
+          <span className="crumb">HOME / 회원등록·이적 / 알림·승인</span>
+          <h1>알림 · 승인</h1>
+          <p>
+            {admin
+              ? '회원등록 변동과 회장 승인이 완료된 이적 요청 등 관리자가 확인해야 할 업무를 표시합니다.'
+              : user.name + ' 회장님이 확인하고 승인해야 할 이적 요청을 표시합니다.'}
+          </p>
         </div>
       </section>
       <section className="siteShell pageContent">
         <div className="workflowPanel">
-          <h2>{admin ? '전체 승인 요청' : '확인요망 이적 요청'}</h2>
-          <p>현재 검증 단계에서는 승인 목록 화면만 연결했습니다. 다음 단계에서 실제 이적 요청과 승인 버튼을 붙이면 됩니다.</p>
+          <h2>{admin ? '관리자 업무 알림' : '회장 승인 요청'}</h2>
+          <p>
+            {admin
+              ? '회원등록 변동사항과 각 구장 회장 승인이 끝난 이적 요청이 이곳에 모입니다.'
+              : '회원님의 소속 구장에 승인이 필요한 이적 요청이 이곳에 표시됩니다.'}
+          </p>
         </div>
       </section>
     </>

@@ -39,6 +39,23 @@ export default function MembersPage() {
     router.push('/members/register');
   }
 
+  function openApprovals(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    const currentUser = getCurrentUser();
+
+    if (!currentUser) {
+      router.push('/login');
+      return;
+    }
+
+    if (!isAdmin(currentUser) && currentUser.position !== '회장') {
+      alert('알림 · 승인 업무는 회장 또는 관리자만 이용할 수 있습니다.');
+      return;
+    }
+
+    router.push('/members/approvals');
+  }
+
   return (
     <>
       <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME / 회원등록·이적</span><h1>회원등록 · 이적</h1><p>상·하반기 회원등록과 클럽 이적 업무를 온라인으로 처리합니다.</p></div></section>
@@ -53,8 +70,8 @@ export default function MembersPage() {
             <Link href="/members/transfer" onClick={(event) => requireLogin(event, '/members/transfer')}>이적 신청하기</Link>
           </article>
           <article className="memberServiceCard">
-            <span>03</span><h2>승인 알림</h2><p>이적 확인이 필요한 회장과 협회장, 관리자가 처리할 문서를 알림으로 보여줍니다.</p>
-            <Link href="/members/approvals" onClick={(event) => requireLogin(event, '/members/approvals')}>승인 업무 보기</Link>
+            <span>03</span><h2>알림 · 승인</h2><p>회원등록 변동과 이적 승인 등 권한에 따라 확인하거나 처리해야 할 업무 알림을 보여줍니다.</p>
+            <Link href="/members/approvals" onClick={openApprovals}>알림 · 승인 보기</Link>
           </article>
         </div>
       </section>
