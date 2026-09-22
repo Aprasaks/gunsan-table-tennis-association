@@ -6,28 +6,68 @@ import { useRouter } from 'next/navigation';
 import styles from '../auth.module.css';
 import { getUsers, hashPassword, normalizePhone, saveUsers } from '@/lib/mvpAuth';
 
-const positions = ['회원', '관장', '회장', '부회장', '총무', '재무', '이사', '기타'];
+const positions = ['회장', '총무', '일반'];
+
+const maleRanks = [
+  ['남 Ace', '선수부 (Ace)'],
+  ['남 1부', '1부'],
+  ['남 2부', '2부'],
+  ['남 3부', '3부'],
+  ['남 4부', '4부'],
+  ['남 5부', '5부'],
+  ['남 6부', '6부'],
+  ['남 7부', '7부'],
+  ['남 희망부', '희망부'],
+];
+
+const femaleRanks = [
+  ['여 Ace', '선수부 (Ace)'],
+  ['여 1부', '1부'],
+  ['여 2부', '2부'],
+  ['여 3부', '3부'],
+  ['여 4부', '4부'],
+  ['여 5부', '5부'],
+  ['여 6부', '6부'],
+  ['여 희망부', '희망부'],
+];
 
 export default function SignupPage() {
   const router = useRouter();
   const [message, setMessage] = useState('');
   const [form, setForm] = useState({
     name: '',
+    birthDate: '',
     gender: '' as '' | '남' | '여',
     phone: '',
     club: '',
-    position: '회원',
+    rank: '',
+    position: '일반',
     password: '',
     passwordConfirm: '',
   });
+
+  const rankOptions = form.gender === '남' ? maleRanks : form.gender === '여' ? femaleRanks : [];
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage('');
 
     const phone = normalizePhone(form.phone);
-    if (!form.name.trim() || !form.gender || !phone || !form.club.trim() || !form.password) {
+    if (
+      !form.name.trim()
+      || !form.birthDate
+      || !form.gender
+      || !phone
+      || !form.club.trim()
+      || !form.rank
+      || !form.position
+      || !form.password
+    ) {
       setMessage('모든 필수 항목을 입력해주세요.');
+      return;
+    }
+    if (!/^\d{6}$/.test(form.birthDate)) {
+      setMessage('생년월일은 6자리 숫자로 입력해주세요. 예: 900101');
       return;
     }
     if (phone.length < 10 || phone.length > 11) {
@@ -53,11 +93,15 @@ export default function SignupPage() {
     users.push({
       id: crypto.randomUUID(),
       name: form.name.trim(),
+      birthDate: form.birthDate,
       gender: form.gender,
       phone,
       club: form.club.trim(),
+      rank: form.rank,
       position: form.position,
       passwordHash,
+      role: 'member',
+      memberStatus: 'active',
     });
     saveUsers(users);
     alert('회원가입이 완료되었습니다. 로그인해 주세요.');
@@ -85,8 +129,25 @@ export default function SignupPage() {
           </div>
 
           <div className={styles.row}>
+            <label htmlFor="birthDate">생년월일 <small>6자리</small></label>
+            <input
+              id="birthDate"
+              inputMode="numeric"
+              maxLength={6}
+              value={form.birthDate}
+              onChange={(e) => setForm({ ...form, birthDate: e.target.value.replace(/[^0-9]/g, '').slice(0, 6) })}
+              placeholder="예: 900101"
+              autoComplete="bday"
+            />
+          </div>
+
+          <div className={styles.row}>
             <label htmlFor="gender">성별</label>
-            <select id="gender" value={form.gender} onChange={(e) => setForm({ ...form, gender: e.target.value as '' | '남' | '여' })}>
+            <select
+              id="gender"
+              value={form.gender}
+              onChange={(e) => setForm({ ...form, gender: e.target.value as '' | '남' | '여', rank: '' })}
+            >
               <option value="">성별을 선택하세요</option>
               <option value="남">남</option>
               <option value="여">여</option>
@@ -94,13 +155,26 @@ export default function SignupPage() {
           </div>
 
           <div className={styles.row}>
-            <label htmlFor="phone">휴대폰번호</label>
+            <label htmlFor="phone">핸드폰번호</label>
             <input id="phone" type="tel" inputMode="numeric" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="010-0000-0000" autoComplete="tel" />
           </div>
 
           <div className={styles.row}>
-            <label htmlFor="club">소속 구장/클럽</label>
-            <input id="club" value={form.club} onChange={(e) => setForm({ ...form, club: e.target.value })} placeholder="예: 웰빙탁구클럽" />
+            <label htmlFor="club">소속</label>
+            <input id="club" value={form.club} onChange={(e) => setForm({ ...form, club: e.target.value })} placeholder="소속 구장 또는 동호회를 입력하세요" />
+          </div>
+
+          <div className={styles.row}>
+            <label htmlFor="rank">부수</label>
+            <select
+              id="rank"
+              value={form.rank}
+              onChange={(e) => setForm({ ...form, rank: e.target.value })}
+              disabled={!form.gender}
+            >
+              <option value="">{form.gender ? '부수를 선택하세요' : '성별을 먼저 선택하세요'}</option>
+              {rankOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            </select>
           </div>
 
           <div className={styles.row}>

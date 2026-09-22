@@ -4,9 +4,11 @@ export type UserRole = 'member' | 'admin';
 export type MvpUser = {
   id: string;
   name: string;
+  birthDate?: string;
   gender: '남' | '여' | '';
   phone: string;
   club: string;
+  rank?: string;
   position: string;
   passwordHash: string;
   memberStatus?: MemberStatus;
