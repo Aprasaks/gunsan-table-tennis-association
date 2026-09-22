@@ -7,6 +7,7 @@ import './feature-cards.css';
 import './sticky-footer.css';
 import './notice.css';
 import './board.css';
+import './schedule.css';
 import './admin-controls.css';
 
 export const metadata: Metadata = {
