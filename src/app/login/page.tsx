@@ -24,10 +24,10 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: loginValue.toLowerCase(), password }),
       });
-      const result = await response.json().catch(() => ({ ok: false, message: '관리자 로그인 처리 중 오류가 발생했습니다.' })) as { ok: boolean; message?: string };
+      const result = await response.json().catch(() => ({ ok: false, message: '로그인 처리 중 오류가 발생했습니다.' })) as { ok: boolean; message?: string };
 
       if (!response.ok || !result.ok) {
-        setMessage(result.message ?? '관리자 로그인에 실패했습니다.');
+        setMessage(result.message ?? '로그인에 실패했습니다.');
         return;
       }
 
@@ -59,7 +59,7 @@ export default function LoginPage() {
         <div className="siteShell subHeroInner">
           <span className="crumb">HOME &gt; 로그인</span>
           <h1>로그인</h1>
-          <p>회원은 휴대폰번호로, 관리자는 관리자 아이디로 로그인합니다.</p>
+          <p>회원가입 시 등록한 휴대폰번호와 비밀번호로 로그인합니다.</p>
         </div>
       </section>
 
@@ -69,18 +69,17 @@ export default function LoginPage() {
           {message && <p className={styles.message}>{message}</p>}
 
           <div className={styles.row}>
-            <label htmlFor="identifier">휴대폰번호 또는 관리자 아이디</label>
-            <input id="identifier" type="text" value={identifier} onChange={(e) => setIdentifier(e.target.value)} placeholder="010-0000-0000 또는 관리자 아이디" autoComplete="username" />
+            <label htmlFor="identifier">휴대폰번호</label>
+            <input id="identifier" type="text" value={identifier} onChange={(e) => setIdentifier(e.target.value)} autoComplete="username" />
           </div>
           <div className={styles.row}>
             <label htmlFor="password">비밀번호</label>
-            <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="비밀번호" autoComplete="current-password" />
+            <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
           </div>
 
           <button type="submit" className={styles.action}>로그인</button>
           <div className={styles.links}>
             <Link href="/signup">회원가입</Link>
-            <span>관리자 로그인 후 관리화면으로 이동합니다.</span>
           </div>
         </form>
       </div>
