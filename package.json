@@ -12,7 +12,8 @@
     "exceljs": "latest",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "js-hwp": "latest"
   },
   "devDependencies": {
     "@types/node": "latest",

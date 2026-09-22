@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '../auth.module.css';
+import SignatureModal from '../SignatureModal';
 import { getUsers, hashPassword, normalizePhone, saveUsers } from '@/lib/mvpAuth';
 
 const positions = ['회장', '총무', '일반'];
@@ -34,6 +35,8 @@ const femaleRanks = [
 export default function SignupPage() {
   const router = useRouter();
   const [message, setMessage] = useState('');
+  const [signatureOpen, setSignatureOpen] = useState(false);
+  const [signatureDataUrl, setSignatureDataUrl] = useState('');
   const [form, setForm] = useState({
     name: '',
     birthDate: '',
@@ -53,16 +56,7 @@ export default function SignupPage() {
     setMessage('');
 
     const phone = normalizePhone(form.phone);
-    if (
-      !form.name.trim()
-      || !form.birthDate
-      || !form.gender
-      || !phone
-      || !form.club.trim()
-      || !form.rank
-      || !form.position
-      || !form.password
-    ) {
+    if (!form.name.trim() || !form.birthDate || !form.gender || !phone || !form.club.trim() || !form.rank || !form.position || !form.password) {
       setMessage('모든 필수 항목을 입력해주세요.');
       return;
     }
@@ -72,6 +66,11 @@ export default function SignupPage() {
     }
     if (phone.length < 10 || phone.length > 11) {
       setMessage('휴대폰번호를 확인해주세요.');
+      return;
+    }
+    if (form.position === '회장' && !signatureDataUrl) {
+      setMessage('회장 계정은 문서 승인에 사용할 서명을 등록해주세요.');
+      setSignatureOpen(true);
       return;
     }
     if (form.password.length < 4) {
@@ -100,6 +99,7 @@ export default function SignupPage() {
       rank: form.rank,
       position: form.position,
       passwordHash,
+      signatureDataUrl: form.position === '회장' ? signatureDataUrl : undefined,
       role: 'member',
       memberStatus: 'active',
     });
@@ -123,83 +123,37 @@ export default function SignupPage() {
           <h2>회원 기본정보</h2>
           {message && <p className={styles.message}>{message}</p>}
 
-          <div className={styles.row}>
-            <label htmlFor="name">이름</label>
-            <input id="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="이름을 입력하세요" autoComplete="name" />
-          </div>
-
-          <div className={styles.row}>
-            <label htmlFor="birthDate">생년월일 <small>6자리</small></label>
-            <input
-              id="birthDate"
-              inputMode="numeric"
-              maxLength={6}
-              value={form.birthDate}
-              onChange={(e) => setForm({ ...form, birthDate: e.target.value.replace(/[^0-9]/g, '').slice(0, 6) })}
-              placeholder="예: 900101"
-              autoComplete="bday"
-            />
-          </div>
-
-          <div className={styles.row}>
-            <label htmlFor="gender">성별</label>
-            <select
-              id="gender"
-              value={form.gender}
-              onChange={(e) => setForm({ ...form, gender: e.target.value as '' | '남' | '여', rank: '' })}
-            >
-              <option value="">성별을 선택하세요</option>
-              <option value="남">남</option>
-              <option value="여">여</option>
-            </select>
-          </div>
-
-          <div className={styles.row}>
-            <label htmlFor="phone">핸드폰번호</label>
-            <input id="phone" type="tel" inputMode="numeric" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="010-0000-0000" autoComplete="tel" />
-          </div>
-
-          <div className={styles.row}>
-            <label htmlFor="club">소속</label>
-            <input id="club" value={form.club} onChange={(e) => setForm({ ...form, club: e.target.value })} placeholder="소속 구장 또는 동호회를 입력하세요" />
-          </div>
-
-          <div className={styles.row}>
-            <label htmlFor="rank">부수</label>
-            <select
-              id="rank"
-              value={form.rank}
-              onChange={(e) => setForm({ ...form, rank: e.target.value })}
-              disabled={!form.gender}
-            >
-              <option value="">{form.gender ? '부수를 선택하세요' : '성별을 먼저 선택하세요'}</option>
-              {rankOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-            </select>
-          </div>
+          <div className={styles.row}><label htmlFor="name">이름</label><input id="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="이름을 입력하세요" autoComplete="name" /></div>
+          <div className={styles.row}><label htmlFor="birthDate">생년월일 <small>6자리</small></label><input id="birthDate" inputMode="numeric" maxLength={6} value={form.birthDate} onChange={(e) => setForm({ ...form, birthDate: e.target.value.replace(/[^0-9]/g, '').slice(0, 6) })} placeholder="예: 900101" autoComplete="bday" /></div>
+          <div className={styles.row}><label htmlFor="gender">성별</label><select id="gender" value={form.gender} onChange={(e) => setForm({ ...form, gender: e.target.value as '' | '남' | '여', rank: '' })}><option value="">성별을 선택하세요</option><option value="남">남</option><option value="여">여</option></select></div>
+          <div className={styles.row}><label htmlFor="phone">핸드폰번호</label><input id="phone" type="tel" inputMode="numeric" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="010-0000-0000" autoComplete="tel" /></div>
+          <div className={styles.row}><label htmlFor="club">소속</label><input id="club" value={form.club} onChange={(e) => setForm({ ...form, club: e.target.value })} placeholder="소속 구장 또는 동호회를 입력하세요" /></div>
+          <div className={styles.row}><label htmlFor="rank">부수</label><select id="rank" value={form.rank} onChange={(e) => setForm({ ...form, rank: e.target.value })} disabled={!form.gender}><option value="">{form.gender ? '부수를 선택하세요' : '성별을 먼저 선택하세요'}</option>{rankOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>
 
           <div className={styles.row}>
             <label htmlFor="position">직책</label>
-            <select id="position" value={form.position} onChange={(e) => setForm({ ...form, position: e.target.value })}>
+            <select id="position" value={form.position} onChange={(e) => { const position = e.target.value; setForm({ ...form, position }); if (position === '회장') setSignatureOpen(true); }}>
               {positions.map((position) => <option key={position} value={position}>{position}</option>)}
             </select>
           </div>
 
-          <div className={styles.row}>
-            <label htmlFor="password">비밀번호</label>
-            <input id="password" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="비밀번호를 입력하세요" autoComplete="new-password" />
-          </div>
+          {form.position === '회장' && (
+            <div className={styles.signatureBox}>
+              <div><strong>회장 서명</strong><span>{signatureDataUrl ? '서명이 등록되었습니다.' : '이적동의서 등에 사용할 서명을 등록해주세요.'}</span></div>
+              {signatureDataUrl && <img src={signatureDataUrl} alt="등록된 회장 서명" />}
+              <button type="button" onClick={() => setSignatureOpen(true)}>{signatureDataUrl ? '서명 다시 등록' : '서명 등록'}</button>
+            </div>
+          )}
 
-          <div className={styles.row}>
-            <label htmlFor="password-confirm">비밀번호 확인</label>
-            <input id="password-confirm" type="password" value={form.passwordConfirm} onChange={(e) => setForm({ ...form, passwordConfirm: e.target.value })} placeholder="비밀번호를 다시 입력하세요" autoComplete="new-password" />
-          </div>
+          <div className={styles.row}><label htmlFor="password">비밀번호</label><input id="password" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="비밀번호를 입력하세요" autoComplete="new-password" /></div>
+          <div className={styles.row}><label htmlFor="password-confirm">비밀번호 확인</label><input id="password-confirm" type="password" value={form.passwordConfirm} onChange={(e) => setForm({ ...form, passwordConfirm: e.target.value })} placeholder="비밀번호를 다시 입력하세요" autoComplete="new-password" /></div>
 
           <button className={styles.action} type="submit">가입하기</button>
-          <div className={styles.links}>
-            <Link href="/login">이미 회원이신가요? 로그인</Link>
-          </div>
+          <div className={styles.links}><Link href="/login">이미 회원이신가요? 로그인</Link></div>
         </form>
       </div>
+
+      <SignatureModal open={signatureOpen} initialValue={signatureDataUrl} onClose={() => setSignatureOpen(false)} onSave={setSignatureDataUrl} />
     </>
   );
 }

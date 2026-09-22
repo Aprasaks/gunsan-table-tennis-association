@@ -11,6 +11,7 @@ export type MvpUser = {
   rank?: string;
   position: string;
   passwordHash: string;
+  signatureDataUrl?: string;
   memberStatus?: MemberStatus;
   role?: UserRole;
   loginId?: string;
@@ -80,7 +81,7 @@ export function saveUsers(users: MvpUser[]) {
 
 export function updateUserBasicInfo(
   userId: string,
-  changes: Partial<Pick<MvpUser, 'name' | 'gender' | 'phone' | 'passwordHash'>>,
+  changes: Partial<Pick<MvpUser, 'name' | 'gender' | 'phone' | 'passwordHash' | 'signatureDataUrl'>>,
 ) {
   const users = getUsers();
   const index = users.findIndex((user) => user.id === userId);
