@@ -12,8 +12,10 @@ export default function NoticePage() {
 
   useEffect(() => {
     const sync = () => {
-      setAdminNotices(getAdminNotices());
-      setAdmin(isAdmin(getCurrentUser()));
+      const currentUser = getCurrentUser();
+      const adminMode = isAdmin(currentUser);
+      setAdmin(adminMode);
+      setAdminNotices(getAdminNotices().filter((item) => adminMode || item.visibility !== 'private'));
     };
     sync();
     window.addEventListener(CONTENT_CHANGE_EVENT, sync);
@@ -45,11 +47,19 @@ export default function NoticePage() {
           </tr>
         </thead>
         <tbody>
-          {rows.map((r, index) => <tr key={r.id}>
-            <td className="num">{rows.length - index}</td>
-            <td><Link href={`/notice/${r.id}`} className="noticeTitleLink">{r.title}</Link></td>
-            <td className="date">{r.date}</td>
-          </tr>)}
+          {rows.map((r, index) => {
+            const privateNotice = 'visibility' in r && r.visibility === 'private';
+            return <tr key={r.id}>
+              <td className="num">{rows.length - index}</td>
+              <td>
+                <Link href={`/notice/${r.id}`} className="noticeTitleLink">
+                  {r.title}
+                  {admin && privateNotice && <span className="noticePrivateBadge">비공개</span>}
+                </Link>
+              </td>
+              <td className="date">{r.date}</td>
+            </tr>;
+          })}
         </tbody>
       </table>
     </div>
