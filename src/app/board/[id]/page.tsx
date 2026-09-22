@@ -1,0 +1,61 @@
+'use client';
+
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import { getBoardPosts, type BoardPost } from '@/lib/mvpBoard';
+
+export default function BoardDetailPage() {
+  const params = useParams<{ id: string }>();
+  const [post, setPost] = useState<BoardPost | null | undefined>(undefined);
+
+  useEffect(() => {
+    setPost(getBoardPosts().find((item) => item.id === params.id) ?? null);
+  }, [params.id]);
+
+  if (post === undefined) return <div className="siteShell pageContent">게시글을 불러오고 있습니다.</div>;
+
+  if (!post) {
+    return <>
+      <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME &gt; 게시판</span><h1>게시판</h1><p>요청하신 게시글을 찾을 수 없습니다.</p></div></section>
+      <div className="siteShell pageContent boardDetailWrap"><Link href="/board" className="boardListButton">목록으로</Link></div>
+    </>;
+  }
+
+  return <>
+    <section className="subHero">
+      <div className="siteShell subHeroInner">
+        <span className="crumb">HOME &gt; 게시판 &gt; 상세</span>
+        <h1>게시판</h1>
+        <p>군산시 탁구 동호인들이 자유롭게 의견과 정보를 나누는 공간입니다.</p>
+      </div>
+    </section>
+
+    <div className="siteShell pageContent boardDetailWrap">
+      <article className="boardDetail">
+        <header className="boardDetailHeader">
+          <h2>{post.title}</h2>
+          <div className="boardDetailMeta">
+            <span><strong>작성자</strong> {post.authorName}</span>
+            <span><strong>등록일</strong> {post.date}</span>
+          </div>
+        </header>
+
+        <div className="boardDetailBody" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
+
+        {post.attachments.length > 0 && (
+          <div className="boardAttachments">
+            <strong>첨부파일</strong>
+            <ul>
+              {post.attachments.map((file) => (
+                <li key={file.id}><a href={file.dataUrl} download={file.name}>{file.name}</a></li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </article>
+
+      <div className="boardDetailActions"><Link href="/board" className="boardListButton">목록으로</Link></div>
+    </div>
+  </>;
+}

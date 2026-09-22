@@ -1,0 +1,49 @@
+.boardToolbarLarge{display:flex;justify-content:flex-end;margin-bottom:16px}
+.boardToolbarLarge button{min-width:112px;height:48px;padding:0 22px;border:0;border-radius:4px;background:#126da5;color:#fff;font-size:16px;font-weight:800;cursor:pointer}
+.boardToolbarLarge button:hover{background:#0d5f8f}
+.boardTable th,.boardTable td{text-align:center!important;vertical-align:middle}
+.boardTable .boardNumber{width:82px}
+.boardTable .boardAuthorColumn{width:150px}
+.boardTable .boardDateColumn{width:120px}
+.boardTitleCell{text-align:left!important}
+.boardTitleCell a{display:block;padding:2px 6px;font-weight:600;color:#2d3943}
+.boardTitleCell a:hover{color:#126da5;text-decoration:underline;text-underline-offset:3px}
+.boardAuthorCell{font-weight:600;color:#435562;white-space:nowrap}
+.boardEmpty{text-align:center!important;padding:40px 12px!important;color:#77858f}
+.boardDetailWrap{max-width:980px}
+.boardDetail{border-top:3px solid #263b4c;border-bottom:1px solid #dce3e8;background:#fff}
+.boardDetailHeader{padding:28px 26px 22px;border-bottom:1px solid #dce3e8;text-align:center}
+.boardDetailHeader h2{margin:0 0 18px;font-size:28px;line-height:1.45;letter-spacing:-.035em;color:#243746}
+.boardDetailMeta{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;color:#6d7983;font-size:14px}
+.boardDetailMeta strong{margin-right:6px;color:#475763}
+.boardDetailBody{min-height:280px;padding:38px 32px 52px;font-size:16px;line-height:1.9;color:#3e4a53}
+.boardDetailBody p{margin:0 0 18px}
+.boardDetailBody img{display:block;max-width:100%;height:auto;margin:24px auto}
+.boardDetailBody a{color:#126da5;text-decoration:underline;text-underline-offset:3px;word-break:break-all}
+.boardDetailBody font[size="2"]{font-size:13px}
+.boardDetailBody font[size="3"]{font-size:16px}
+.boardDetailBody font[size="4"]{font-size:19px}
+.boardDetailBody font[size="5"]{font-size:24px}
+.boardAttachments{margin:0 32px 34px;padding:18px 20px;border:1px solid #d8e1e7;background:#f8fafb}
+.boardAttachments>strong{display:block;margin-bottom:10px;color:#314657;font-size:15px}
+.boardAttachments ul{list-style:none;margin:0;padding:0}
+.boardAttachments li+li{margin-top:7px}
+.boardAttachments a{color:#126da5;text-decoration:underline;text-underline-offset:3px;word-break:break-all}
+.boardDetailActions{display:flex;justify-content:center;margin-top:24px}
+.boardListButton{display:inline-flex;align-items:center;justify-content:center;min-width:120px;height:46px;border:1px solid #aebdca;background:#fff;color:#344d61;font-size:15px;font-weight:700}
+.boardListButton:hover{background:#f5f9fc;border-color:#7f9bb0}
+@media(max-width:720px){
+  .boardToolbarLarge button{width:100%;height:52px;font-size:17px}
+  .boardTable .boardNumber{width:56px}
+  .boardTable .boardAuthorColumn{width:100px}
+  .boardTable .boardDateColumn{width:88px}
+  .boardTable th,.boardTable td{font-size:14px!important;padding:12px 6px!important}
+  .boardTitleCell a{font-size:14px;line-height:1.5}
+  .boardAuthorCell{font-size:14px!important}
+  .boardDetailHeader{padding:22px 16px 18px}
+  .boardDetailHeader h2{font-size:22px}
+  .boardDetailMeta{gap:10px 18px;font-size:14px}
+  .boardDetailBody{min-height:220px;padding:28px 18px 40px;font-size:16px;line-height:1.85}
+  .boardAttachments{margin:0 18px 26px;padding:15px}
+  .boardListButton{width:100%;height:50px;font-size:16px}
+}

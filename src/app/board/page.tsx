@@ -1,2 +1,70 @@
-const posts=[['24','동호인리그 경기 결과 입력 문의','김○○','09.11'],['23','탁구대회 참가 관련 문의드립니다','이○○','09.10'],['22','클럽 회원등록 관련 질문','박○○','09.08'],['21','홈페이지 개편 축하드립니다','최○○','09.06']];
-export default function BoardPage(){return <><section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME &gt; 게시판</span><h1>게시판</h1><p>군산시 탁구 동호인들이 자유롭게 의견과 정보를 나누는 공간입니다.</p></div></section><div className="siteShell pageContent"><div className="boardToolbar"><button type="button">글쓰기</button></div><table className="dataTable"><thead><tr><th style={{width:70}}>번호</th><th>제목</th><th style={{width:100}}>작성자</th><th style={{width:90}}>등록일</th></tr></thead><tbody>{posts.map(r=><tr key={r[0]}><td>{r[0]}</td><td>{r[1]}</td><td>{r[2]}</td><td>{r[3]}</td></tr>)}</tbody></table></div></>}
+'use client';
+
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { getCurrentUser } from '@/lib/mvpAuth';
+import { BOARD_CHANGE_EVENT, getBoardPosts, type BoardPost } from '@/lib/mvpBoard';
+
+export default function BoardPage() {
+  const router = useRouter();
+  const [posts, setPosts] = useState<BoardPost[]>([]);
+
+  useEffect(() => {
+    const sync = () => setPosts(getBoardPosts());
+    sync();
+    window.addEventListener(BOARD_CHANGE_EVENT, sync);
+    window.addEventListener('storage', sync);
+    return () => {
+      window.removeEventListener(BOARD_CHANGE_EVENT, sync);
+      window.removeEventListener('storage', sync);
+    };
+  }, []);
+
+  function write() {
+    if (!getCurrentUser()) {
+      router.push('/login');
+      return;
+    }
+    router.push('/board/write');
+  }
+
+  return <>
+    <section className="subHero">
+      <div className="siteShell subHeroInner">
+        <span className="crumb">HOME &gt; 게시판</span>
+        <h1>게시판</h1>
+        <p>군산시 탁구 동호인들이 자유롭게 의견과 정보를 나누는 공간입니다.</p>
+      </div>
+    </section>
+
+    <div className="siteShell pageContent">
+      <div className="boardToolbar boardToolbarLarge">
+        <button type="button" onClick={write}>글쓰기</button>
+      </div>
+
+      <table className="dataTable boardTable">
+        <thead>
+          <tr>
+            <th className="boardNumber">번호</th>
+            <th>제목</th>
+            <th className="boardAuthorColumn">작성자</th>
+            <th className="boardDateColumn">등록일</th>
+          </tr>
+        </thead>
+        <tbody>
+          {posts.length === 0 ? (
+            <tr><td colSpan={4} className="boardEmpty">등록된 게시글이 없습니다.</td></tr>
+          ) : posts.map((post, index) => (
+            <tr key={post.id}>
+              <td>{posts.length - index}</td>
+              <td className="boardTitleCell"><Link href={'/board/' + post.id}>{post.title}</Link></td>
+              <td className="boardAuthorCell">{post.authorName}</td>
+              <td>{post.date}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </>;
+}
