@@ -39,6 +39,23 @@ export default function MembersPage() {
     router.push('/members/register');
   }
 
+  function openTransfer(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    const currentUser = getCurrentUser();
+
+    if (!currentUser) {
+      router.push('/login');
+      return;
+    }
+
+    if (!isAdmin(currentUser) && currentUser.position !== '회장') {
+      alert('이적 신청은 구장 회장 또는 관리자만 이용할 수 있습니다.');
+      return;
+    }
+
+    router.push('/members/transfer');
+  }
+
   function openApprovals(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
     const currentUser = getCurrentUser();
@@ -66,8 +83,8 @@ export default function MembersPage() {
             <Link href="/members/register" onClick={openRegistration}>회원등록 시작하기</Link>
           </article>
           <article className="memberServiceCard">
-            <span>02</span><h2>회원 이적신청</h2><p>기존 클럽 회장부터 새 클럽 회장, 협회장까지 이어지는 이적 흐름을 처리합니다.</p>
-            <Link href="/members/transfer" onClick={(event) => requireLogin(event, '/members/transfer')}>이적 신청하기</Link>
+            <span>02</span><h2>회원 이적신청</h2><p>기존 소속 구장 회장이 이적을 확인하고, 협회에서 최종 처리하는 이적 흐름입니다.</p>
+            <Link href="/members/transfer" onClick={openTransfer}>이적 신청하기</Link>
           </article>
           <article className="memberServiceCard">
             <span>03</span><h2>알림 · 승인</h2><p>회원등록 변동과 이적 승인 등 권한에 따라 확인하거나 처리해야 할 업무 알림을 보여줍니다.</p>
