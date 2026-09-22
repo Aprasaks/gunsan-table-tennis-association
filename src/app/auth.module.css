@@ -29,3 +29,11 @@
 .signatureBox{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;margin:0 0 18px;padding:14px;border:1px solid #cbd9e3;background:#f6fafc}
 .signatureBox>div{display:flex;flex-direction:column;gap:4px}.signatureBox strong{font-size:15px;color:#304858}.signatureBox span{font-size:13px;color:#687985;line-height:1.5}.signatureBox img{grid-column:1/-1;max-width:220px;max-height:72px;object-fit:contain;border:1px solid #dde5ea;background:#fff;padding:6px}.signatureBox button{height:40px;border:1px solid #9fb9cb;background:#fff;color:#245f86;font-weight:800;padding:0 12px;cursor:pointer}
 @media(max-width:600px){.signatureBox{grid-template-columns:1fr}.signatureBox button{width:100%;height:48px;font-size:15px}.signatureBox strong{font-size:16px}.signatureBox span{font-size:14px}.signatureBox img{max-width:100%}}
+
+.confirmBackdrop{position:fixed;inset:0;z-index:1100;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(13,28,40,.52)}
+.confirmModal{width:min(380px,100%);padding:28px 24px 22px;border-radius:8px;background:#fff;box-shadow:0 22px 60px rgba(0,0,0,.25);text-align:center}
+.confirmModal strong{display:block;font-size:21px;color:#243746}
+.confirmModal p{margin:10px 0 22px;color:#5d6d78;font-size:15px;line-height:1.6}
+.confirmModal button{width:100%;height:48px;border:0;border-radius:4px;background:#126da5;color:#fff;font-size:16px;font-weight:800;cursor:pointer}
+.confirmModal button:hover{background:#0d5f8f}
+@media(max-width:600px){.confirmBackdrop{padding:14px}.confirmModal{padding:24px 18px 18px}.confirmModal strong{font-size:20px}.confirmModal p{font-size:15px}.confirmModal button{height:50px;font-size:16px}}

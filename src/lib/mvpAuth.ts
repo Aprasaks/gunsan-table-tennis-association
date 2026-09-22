@@ -81,7 +81,7 @@ export function saveUsers(users: MvpUser[]) {
 
 export function updateUserBasicInfo(
   userId: string,
-  changes: Partial<Pick<MvpUser, 'name' | 'gender' | 'phone' | 'passwordHash' | 'signatureDataUrl'>>,
+  changes: Partial<Pick<MvpUser, 'name' | 'gender' | 'phone' | 'position' | 'passwordHash' | 'signatureDataUrl'>>,
 ) {
   const users = getUsers();
   const index = users.findIndex((user) => user.id === userId);
