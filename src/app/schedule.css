@@ -27,3 +27,9 @@
 .scheduleSource{padding:0 30px 30px}.scheduleSource a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border:1px solid #9cb8ca;color:#1a6592;background:#f4f9fc;font-size:14px;font-weight:800}
 .scheduleDetailActions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:24px}.scheduleActionButton{display:inline-flex;align-items:center;justify-content:center;min-width:120px;height:46px;padding:0 18px;border:1px solid #aebdca;background:#fff;color:#344d61;border-radius:4px;font-size:15px;font-weight:800;cursor:pointer}.scheduleEditButton{border-color:#7ba4c0;color:#1f628c;background:#f4f9fc}.scheduleDeleteButton{border-color:#d2a8a8;color:#983838;background:#fff7f7}
 @media(max-width:768px){.scheduleTable{min-width:760px}.scheduleTable th,.scheduleTable td{font-size:14px;padding:13px 9px}.scheduleDate{font-size:15px!important}.scheduleFormGrid{grid-template-columns:1fr}.scheduleDetail>header{padding:22px 18px}.scheduleDetailTitleRow{flex-direction:column}.scheduleDetailTitleRow h2{font-size:22px}.scheduleInfoGrid{grid-template-columns:1fr}.scheduleGuidelines{padding:22px 18px}.scheduleAttachments{margin:0 18px 22px}.scheduleSource{padding:0 18px 24px}.scheduleDetailActions{flex-direction:column}.scheduleActionButton{width:100%;height:50px;font-size:16px}}
+
+.scheduleAdminToolbar{gap:10px;flex-wrap:wrap}
+.scheduleAdminToolbar button.contentAdminButton{font:inherit;cursor:pointer}
+.scheduleAdminToolbar button.contentAdminButton:disabled{opacity:.65;cursor:wait}
+.scheduleSyncMessage{margin:0 0 14px;padding:11px 13px;border:1px solid #b9d5e6;background:#f2f9fd;color:#2b607f;font-size:13px;line-height:1.55}
+@media(max-width:768px){.scheduleAdminToolbar{display:grid;grid-template-columns:1fr}.scheduleAdminToolbar .contentAdminButton{width:100%;text-align:center}.scheduleSyncMessage{font-size:14px}}

@@ -5,25 +5,64 @@ import { useEffect, useState } from 'react';
 import { getCurrentUser, isAdmin } from '@/lib/mvpAuth';
 import { formatShortDateRange, type Tournament } from '@/lib/tournaments';
 
+type SyncResponse = {
+  ok?: boolean;
+  error?: string;
+  result?: {
+    imported: number;
+    skippedExisting: number;
+    skippedMissingDate: number;
+    failed: Array<{ title: string; reason: string }>;
+  };
+};
+
 export default function SchedulePage() {
   const [items, setItems] = useState<Tournament[]>([]);
   const [admin, setAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
+  const [syncMessage, setSyncMessage] = useState('');
   const [error, setError] = useState('');
+
+  async function loadItems(currentAdmin: boolean) {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await fetch('/api/tournaments' + (currentAdmin ? '?include_private=1' : ''), { cache: 'no-store' });
+      const result = await response.json() as { items?: Tournament[]; error?: string };
+      if (!response.ok) throw new Error(result.error ?? '대회정보를 불러오지 못했습니다.');
+      setItems(result.items ?? []);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : '대회정보를 불러오지 못했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     const currentAdmin = isAdmin(getCurrentUser());
     setAdmin(currentAdmin);
-
-    fetch('/api/tournaments' + (currentAdmin ? '?include_private=1' : ''), { cache: 'no-store' })
-      .then(async (response) => {
-        const result = await response.json() as { items?: Tournament[]; error?: string };
-        if (!response.ok) throw new Error(result.error ?? '대회정보를 불러오지 못했습니다.');
-        setItems(result.items ?? []);
-      })
-      .catch((reason: unknown) => setError(reason instanceof Error ? reason.message : '대회정보를 불러오지 못했습니다.'))
-      .finally(() => setLoading(false));
+    void loadItems(currentAdmin);
   }, []);
+
+  async function runSync() {
+    setSyncing(true);
+    setSyncMessage('');
+    try {
+      const response = await fetch('/api/cron/jbtta-tournaments?pages=2&max=10', { cache: 'no-store' });
+      const result = await response.json() as SyncResponse;
+      if (!response.ok || !result.ok) throw new Error(result.error ?? '자동수집에 실패했습니다.');
+      const imported = result.result?.imported ?? 0;
+      const existing = result.result?.skippedExisting ?? 0;
+      const missing = result.result?.skippedMissingDate ?? 0;
+      setSyncMessage('전북 대회 자동수집 완료 · 신규 ' + imported + '건 · 기존 ' + existing + '건' + (missing ? ' · 날짜 확인 실패 ' + missing + '건' : ''));
+      await loadItems(true);
+    } catch (reason) {
+      setSyncMessage(reason instanceof Error ? reason.message : '자동수집에 실패했습니다.');
+    } finally {
+      setSyncing(false);
+    }
+  }
 
   return <>
     <section className="subHero">
@@ -35,7 +74,15 @@ export default function SchedulePage() {
     </section>
 
     <div className="siteShell pageContent">
-      {admin && <div className="contentAdminToolbar"><Link href="/admin/schedule/new" className="contentAdminButton">대회정보 등록</Link></div>}
+      {admin && (
+        <div className="contentAdminToolbar scheduleAdminToolbar">
+          <button type="button" className="contentAdminButton" onClick={runSync} disabled={syncing}>
+            {syncing ? '전북 대회 확인 중...' : '전북 대회 자동수집'}
+          </button>
+          <Link href="/admin/schedule/new" className="contentAdminButton">대회정보 등록</Link>
+        </div>
+      )}
+      {admin && syncMessage && <div className="scheduleSyncMessage">{syncMessage}</div>}
 
       {loading && <div className="scheduleState">대회일정을 불러오고 있습니다.</div>}
       {error && <div className="scheduleState scheduleStateError">{error}</div>}
