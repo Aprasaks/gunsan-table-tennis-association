@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getCurrentUser, isAdmin } from '@/lib/mvpAuth';
 import { formatFullDateRange, type Tournament } from '@/lib/tournaments';
+import { getStaticTournament } from '@/lib/staticTournaments';
 
 export default function ScheduleDetailPage() {
   const params = useParams<{ id: string }>();
@@ -14,6 +15,12 @@ export default function ScheduleDetailPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    const staticItem = getStaticTournament(params.id);
+    if (staticItem) {
+      setItem(staticItem);
+      setAdmin(false);
+      return;
+    }
     const currentAdmin = isAdmin(getCurrentUser());
     setAdmin(currentAdmin);
     fetch('/api/tournaments/' + params.id + (currentAdmin ? '?include_private=1' : ''), { cache: 'no-store' })

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { hasAdminSession } from '@/lib/adminSession';
 import { createAdminServerSupabase, createPublicServerSupabase } from '@/lib/supabase/server';
 import { formatShortDateRange, type Tournament, type TournamentStatus, type TournamentVisibility } from '@/lib/tournaments';
+import { staticTournaments } from '@/lib/staticTournaments';
 
 type TournamentRow = {
   id: string;
@@ -41,7 +42,7 @@ function normalize(row: TournamentRow): Tournament {
 export default async function SchedulePage() {
   const admin = await hasAdminSession();
   const supabase = admin ? createAdminServerSupabase() : createPublicServerSupabase();
-  let items: Tournament[] = [];
+  let items: Tournament[] = [...staticTournaments];
 
   if (supabase) {
     let query = supabase
@@ -53,7 +54,12 @@ export default async function SchedulePage() {
     if (!admin) query = query.eq('visibility', 'public');
 
     const { data, error } = await query;
-    if (!error && data) items = (data as TournamentRow[]).map(normalize);
+    if (!error && data) {
+      const databaseItems = (data as TournamentRow[]).map(normalize);
+      const sourceUrls = new Set(staticTournaments.map((item) => item.sourceUrl).filter(Boolean));
+      items = [...staticTournaments, ...databaseItems.filter((item) => !item.sourceUrl || !sourceUrls.has(item.sourceUrl))]
+        .sort((a, b) => a.eventStartDate.localeCompare(b.eventStartDate));
+    }
   }
 
   return <>

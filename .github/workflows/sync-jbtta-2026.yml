@@ -1,0 +1,41 @@
+name: Sync Jeonbuk 2026 Tournaments
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */3 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/sync-jbtta-2026.mjs'
+      - '.github/workflows/sync-jbtta-2026.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install
+      - run: node scripts/sync-jbtta-2026.mjs
+
+      - name: Commit updated tournament data
+        run: |
+          if git diff --quiet -- src/data/jbtta-2026.json; then
+            echo "No tournament data changes."
+            exit 0
+          fi
+          git config user.name "gunsan-tt-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/data/jbtta-2026.json
+          git commit -m "전북 2026 대회일정 자동 동기화"
+          git push
