@@ -203,7 +203,9 @@ async function enrichFromNewtt(candidate,indexRows) {
   let best=null;
   let bestScore=0;
   for (const row of indexRows) {
-    const score=titleScore(candidate.title,row.title);
+    let score=titleScore(candidate.title,row.title);
+    const aliases=['진포배','의암주논개배','정읍시장배','임실N치즈배','새만금배','전라감영배','백제왕도','고창모양성배','반딧불이배','완주군수배','남원시장기'];
+    if (aliases.some((alias)=>candidate.title.includes(alias)&&row.title.includes(alias))) score=Math.max(score,0.95);
     if (score>bestScore) { best=row; bestScore=score; }
   }
   if (!best || bestScore<0.50) return null;
@@ -391,6 +393,10 @@ for (const c of candidates) {
   try {
     const d=await parseDetail(c);
     const newtt=await enrichFromNewtt(c,newttIndex);
+    if (!/2026/.test(c.title) && !newtt) {
+      console.log('skip unverified year',c.wrId,c.title);
+      continue;
+    }
     const event=newtt?.event || d.event;
     const reg=newtt?.reg || d.reg;
     const venue=newtt?.venue || d.venue;
