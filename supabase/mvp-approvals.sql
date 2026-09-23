@@ -146,9 +146,17 @@ begin
   if new.submitted_at is not null and v_changed then
     for v_member in select value from jsonb_array_elements(new.submitted_snapshot->'members') loop
       if v_member->>'rank' like '%희망부' and trim(coalesce(v_member->>'name', '')) <> '' then
+        if tg_op = 'UPDATE' then
+          if exists (
+            select 1 from jsonb_array_elements(coalesce(old.submitted_snapshot->'members', '[]'::jsonb)) previous
+            where previous->>'id' = v_member->>'id'
+              and previous->>'name' = v_member->>'name'
+              and previous->>'rank' = v_member->>'rank'
+          ) then continue; end if;
+        end if;
         insert into mvp_alerts(kind, title, detail, target_url)
           values ('hope_registration', '희망부 선수등록 제출',
-            (v_member->>'name') || ' · ' || new.club || ' · ' || (v_member->>'rank'), '/admin/notifications');
+            (v_member->>'name') || ' · ' || new.club || ' · ' || (v_member->>'rank'), '/admin/registrations');
       end if;
     end loop;
   end if;

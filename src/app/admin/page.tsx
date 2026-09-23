@@ -80,6 +80,7 @@ export default function AdminPage() {
         <Link href="/admin/members">회원 명부와 직책 관리 →</Link>
         <Link href="/members/approvals">이적 승인 업무 →</Link>
         <Link href="/admin/notifications">협회 임원 알림함 →</Link>
+        <Link href="/admin/registrations">제출된 선수등록 명단 →</Link>
         <Link href="/notice">공지사항 →</Link>
         <Link href="/schedule">대회정보 →</Link>
       </div>
