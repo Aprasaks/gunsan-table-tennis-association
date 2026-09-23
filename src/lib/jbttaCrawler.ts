@@ -4,7 +4,7 @@ import { documentText, open } from 'js-hwp';
 import { createAdminServerSupabase } from '@/lib/supabase/server';
 import type { TournamentStatus, TournamentFileKind } from '@/lib/tournaments';
 
-const SOURCE_ORIGIN = 'https://jbtta.pingpongkorea.com';
+const SOURCE_ORIGIN = 'http://jbtta.pingpongkorea.com';
 const SOURCE_BOARD = SOURCE_ORIGIN + '/bbs/board.php?bo_table=community_09';
 const USER_AGENT = 'Mozilla/5.0 (compatible; GunsanTableTennisAssociation/1.0; +https://gunsan-table-tennis-association.vercel.app/)';
 
