@@ -4,9 +4,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '../auth.module.css';
 import SignatureModal from '../SignatureModal';
-import { getCurrentUser, getUsers, hashPassword, normalizePhone, updateUserBasicInfo, type MvpUser } from '@/lib/mvpAuth';
-
-const positions = ['회장', '총무', '일반'];
+import { normalizePhone, refreshCurrentUser, saveUsers, type MvpUser } from '@/lib/mvpAuth';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -19,27 +17,19 @@ export default function ProfilePage() {
     name: '',
     gender: '' as '' | '남' | '여',
     phone: '',
-    position: '일반',
     password: '',
     passwordConfirm: '',
   });
 
   useEffect(() => {
-    const currentUser = getCurrentUser();
-    if (!currentUser) {
-      router.replace('/login');
-      return;
-    }
-
-    setUser(currentUser);
-    setSignatureDataUrl(currentUser.signatureDataUrl ?? '');
-    setForm({
-      name: currentUser.name,
-      gender: currentUser.gender,
-      phone: currentUser.phone,
-      position: currentUser.position || '일반',
-      password: '',
-      passwordConfirm: '',
+    refreshCurrentUser().then((currentUser) => {
+      if (!currentUser) { router.replace('/login'); return; }
+      setUser(currentUser);
+      setSignatureDataUrl(currentUser.signatureDataUrl ?? '');
+      setForm({
+        name: currentUser.name, gender: currentUser.gender, phone: currentUser.phone,
+        password: '', passwordConfirm: '',
+      });
     });
   }, [router]);
 
@@ -49,25 +39,21 @@ export default function ProfilePage() {
     setMessage('');
 
     const phone = normalizePhone(form.phone);
-    if (!form.name.trim() || !form.gender || !phone || !form.position) {
-      setMessage('이름, 성별, 휴대폰번호, 직책을 확인해주세요.');
+    if (!form.name.trim() || !form.gender || !phone) {
+      setMessage('이름, 성별, 휴대폰번호를 확인해주세요.');
       return;
     }
     if (phone.length < 10 || phone.length > 11) {
       setMessage('휴대폰번호를 확인해주세요.');
       return;
     }
-    if (getUsers().some((item) => item.id !== user.id && item.phone === phone)) {
-      setMessage('이미 다른 회원이 사용 중인 휴대폰번호입니다.');
-      return;
-    }
-    if (form.position === '회장' && !signatureDataUrl) {
+    if (user.position === '회장' && !signatureDataUrl) {
       setMessage('회장 계정은 문서 승인에 사용할 서명을 등록해주세요.');
       setSignatureOpen(true);
       return;
     }
-    if (form.password && form.password.length < 4) {
-      setMessage('새 비밀번호는 4자 이상 입력해주세요.');
+    if (form.password && form.password.length < 8) {
+      setMessage('새 비밀번호는 8자 이상 입력해주세요.');
       return;
     }
     if (form.password !== form.passwordConfirm) {
@@ -75,26 +61,17 @@ export default function ProfilePage() {
       return;
     }
 
-    const changes: Parameters<typeof updateUserBasicInfo>[1] = {
-      name: form.name.trim(),
-      gender: form.gender,
-      phone,
-      position: form.position,
-      signatureDataUrl: signatureDataUrl || user.signatureDataUrl,
-    };
-    if (form.password) changes.passwordHash = await hashPassword(form.password);
-
-    const updated = updateUserBasicInfo(user.id, changes);
-    if (!updated) {
-      setMessage('회원정보를 저장하지 못했습니다.');
-      return;
-    }
+    const response = await fetch('/api/mvp/profile', { method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: form.name, gender: form.gender, phone, password: form.password, signatureDataUrl }) });
+    const result = await response.json() as { user?: MvpUser; message?: string };
+    if (!response.ok || !result.user) { setMessage(result.message ?? '회원정보를 저장하지 못했습니다.'); return; }
+    const updated = result.user;
+    saveUsers([updated]);
 
     setUser(updated);
     setForm((current) => ({
       ...current,
       phone,
-      position: updated.position,
       password: '',
       passwordConfirm: '',
     }));
@@ -109,7 +86,7 @@ export default function ProfilePage() {
         <div className="siteShell subHeroInner">
           <span className="crumb">HOME &gt; 정보수정</span>
           <h1>회원 정보수정</h1>
-          <p>기본정보와 직책을 수정합니다. 소속 클럽은 회원이 직접 변경할 수 없습니다.</p>
+          <p>기본정보와 서명을 수정합니다. 직책과 소속은 관리자 승인으로 변경됩니다.</p>
         </div>
       </section>
 
@@ -141,22 +118,9 @@ export default function ProfilePage() {
             <input value={user.club || '미소속'} readOnly className={styles.readOnly} />
           </div>
 
-          <div className={styles.row}>
-            <label htmlFor="position">직책</label>
-            <select
-              id="position"
-              value={form.position}
-              onChange={(e) => {
-                const position = e.target.value;
-                setForm({ ...form, position });
-                if (position === '회장' && !signatureDataUrl) setSignatureOpen(true);
-              }}
-            >
-              {positions.map((position) => <option key={position} value={position}>{position}</option>)}
-            </select>
-          </div>
+          <div className={styles.row}><label>구장 직책 / 협회 직책</label><input readOnly value={user.position + ' / ' + (user.associationTitle || '없음')} /></div>
 
-          {form.position === '회장' && (
+          {user.position === '회장' && (
             <div className={styles.signatureBox}>
               <div>
                 <strong>회장 서명</strong>
@@ -168,7 +132,7 @@ export default function ProfilePage() {
           )}
 
           <p className={styles.note}>
-            소속 클럽은 이적 승인 등 협회 처리 결과로만 변경됩니다. 직책은 이 화면에서 회장, 총무, 일반 중 변경할 수 있습니다.
+            소속과 직책은 관리자가 처리합니다. 구장 회장은 이적동의서에 사용할 서명을 이 화면에서 등록할 수 있습니다.
           </p>
 
           <div className={styles.row}>

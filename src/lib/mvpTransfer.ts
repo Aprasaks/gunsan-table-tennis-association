@@ -1,4 +1,4 @@
-export type TransferStatus = 'pending_admin' | 'approved' | 'rejected';
+export type TransferStatus = 'pending_destination' | 'pending_admin' | 'approved' | 'rejected';
 
 export type TransferRequest = {
   id: string;
@@ -17,6 +17,7 @@ export type TransferRequest = {
   status: TransferStatus;
   processedAt?: string;
   adminNote?: string;
+  processedBy?: string;
 };
 
 const TRANSFER_KEY = 'gunsan-tt-transfer-requests';

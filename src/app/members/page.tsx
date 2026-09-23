@@ -65,11 +65,6 @@ export default function MembersPage() {
       return;
     }
 
-    if (!isAdmin(currentUser) && currentUser.position !== '회장') {
-      alert('알림 · 승인 업무는 회장 또는 관리자만 이용할 수 있습니다.');
-      return;
-    }
-
     router.push('/members/approvals');
   }
 
