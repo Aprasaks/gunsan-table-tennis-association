@@ -26,6 +26,9 @@ jobs:
           node-version: 22
 
       - run: npm install
+
+      - name: Install Korean OCR
+        run: sudo apt-get update && sudo apt-get install -y tesseract-ocr tesseract-ocr-kor
       - name: Crawl Jeonbuk tournament board
         run: node scripts/sync-jbtta-2026.mjs
         env:
