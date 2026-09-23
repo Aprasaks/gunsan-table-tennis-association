@@ -37,9 +37,9 @@ export function validPostInput(body: any) {
   const contentHtml = sanitizeHtml(rawHtml);
   if (!load(contentHtml).text().trim() && !contentHtml.includes('<img')) return null;
   const files = body?.attachments;
-  if (!Array.isArray(files) || files.length > 8 || JSON.stringify(files).length > 3_500_000 ||
+  if (!Array.isArray(files) || files.length > 8 || JSON.stringify(body).length > 3_800_000 ||
       files.some((file: any) => typeof file?.name !== 'string' || file.name.length > 180 ||
-        typeof file?.dataUrl !== 'string' || !/^data:(image\/(png|jpeg|gif|webp)|application\/(pdf|octet-stream|vnd\.[a-z0-9.+-]+));base64,[a-z0-9+/=]+$/i.test(file.dataUrl))) return null;
+        typeof file?.dataUrl !== 'string' || !/^data:(image\/(png|jpeg|gif|webp)|application\/(pdf|octet-stream|x-hwp|haansofthwp|zip|vnd\.[a-z0-9.+-]+));base64,[a-z0-9+/=]+$/i.test(file.dataUrl))) return null;
   return { title, content_html: contentHtml, attachments: files.map((file: any) => ({
     id: String(file.id ?? '').slice(0, 100), name: file.name, type: String(file.type ?? '').slice(0, 100),
     size: Number(file.size) || 0, dataUrl: file.dataUrl,
