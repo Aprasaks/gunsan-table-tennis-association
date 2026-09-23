@@ -80,6 +80,7 @@ begin
 end $$;
 revoke all on function process_mvp_transfer(uuid,text,text,text) from public, anon, authenticated;
 grant execute on function process_mvp_transfer(uuid,text,text,text) to service_role;
+alter function process_mvp_transfer(uuid,text,text,text) set search_path = public, pg_temp;
 
 -- Posts and registration drafts are accessed only by server routes after cookie checks.
 create table if not exists mvp_posts (
@@ -136,6 +137,7 @@ begin
 end $$;
 drop trigger if exists mvp_hope_signup on mvp_members;
 create trigger mvp_hope_signup after insert on mvp_members for each row execute function alert_hope_signup();
+alter function alert_hope_signup() set search_path = public, pg_temp;
 
 create or replace function alert_hope_registration() returns trigger language plpgsql security invoker as $$
 declare v_member jsonb; v_changed boolean;
@@ -165,3 +167,8 @@ end $$;
 drop trigger if exists mvp_hope_registration on mvp_rosters;
 create trigger mvp_hope_registration after insert or update on mvp_rosters
   for each row execute function alert_hope_registration();
+alter function alert_hope_registration() set search_path = public, pg_temp;
+
+create index if not exists mvp_transfers_member_idx on mvp_transfers(member_id);
+create index if not exists mvp_transfers_source_chair_idx on mvp_transfers(source_chair_user_id);
+create index if not exists mvp_transfers_destination_chair_idx on mvp_transfers(destination_approved_by);

@@ -15,10 +15,9 @@
 
 ## 협회 승인 업무 설정
 
-1. 군산 전용 Supabase 프로젝트에서 `supabase/tournaments.sql`과
-   `supabase/mvp-approvals.sql`을 순서대로 실행합니다. 기존 대회 테이블이 있다면
-   실제 구조를 먼저 확인합니다. 다른 실험용 테이블이 들어 있는 `schema.sql`은
-   이 배포 절차에 사용하지 않습니다.
+1. 군산 전용 Supabase 프로젝트 `eqtqyphnxhyliujfccyh` (서울 리전)에
+   `supabase/tournaments.sql`과 `supabase/mvp-approvals.sql`을 적용했습니다.
+   다른 실험용 테이블이 들어 있는 `schema.sql`은 이 배포 절차에 사용하지 않습니다.
 2. Vercel 프로젝트 환경변수에 `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`,
    `ADMIN_USERNAME=admin`, `ADMIN_PASSWORD`(요청한 암호), 독립적으로 생성한 긴
    `ADMIN_SESSION_SECRET`을 설정합니다. 서비스 역할 키와 관리자 암호는 브라우저 변수에 두지 않습니다.
@@ -36,8 +35,7 @@
 읽음 상태는 `mvp_alert_reads`에 기록됩니다. 알림함은 `/admin/notifications`입니다.
 임원진의 제출 명단 확인 화면은 `/admin/registrations`이며 회원별 희망부를 강조합니다.
 
-군산 사이트 전용 Supabase 프로젝트가 확정되기 전에는 다른 프로젝트(예: DECHIVE)에
-이 SQL을 실행하지 마세요. DB와 서버 환경변수를 연결한 후 관리자 로그인, 공지 작성,
+다른 프로젝트(예: DECHIVE)에 이 SQL을 실행하지 마세요. DB와 서버 환경변수를 연결한 후 관리자 로그인, 공지 작성,
 회원등록 제출, 희망부 알림, 게시판 수정·삭제를 실제 계정으로 확인해야 합니다.
 기존 브라우저의 공지·게시판 글은 자동으로 DB에 옮겨지지 않습니다.
 
