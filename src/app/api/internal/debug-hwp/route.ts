@@ -19,7 +19,8 @@ export async function GET(request: NextRequest){
     let text='';
     let parseError='';
     try{ text=documentText(open(bytes)); }catch(e){ parseError=e instanceof Error?e.message:String(e); }
-    return NextResponse.json({ok:true,status:res.status,contentType:res.headers.get('content-type'),contentDisposition:res.headers.get('content-disposition'),size:bytes.length,magic:Array.from(bytes.slice(0,32)),parseError,text:text.slice(0,5000)});
+    const preview=(res.headers.get('content-type')||'').includes('text/html') ? new TextDecoder('utf-8').decode(bytes).slice(0,5000) : '';
+    return NextResponse.json({ok:true,status:res.status,contentType:res.headers.get('content-type'),contentDisposition:res.headers.get('content-disposition'),size:bytes.length,magic:Array.from(bytes.slice(0,32)),parseError,text:text.slice(0,5000),preview});
   }catch(e){
     return NextResponse.json({ok:false,error:e instanceof Error?e.message:String(e)},{status:500});
   }
