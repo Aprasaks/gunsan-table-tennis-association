@@ -12,7 +12,10 @@ type Candidate = {
   wrId: string;
   title: string;
   url: string;
+  region?: string;
 };
+
+const JEONBUK_AREAS = ['전주시','군산시','익산시','정읍시','남원시','김제시','완주군','진안군','무주군','장수군','임실군','순창군','고창군','부안군'];
 
 type ParsedDateRange = {
   start: string;
@@ -222,7 +225,9 @@ async function listCandidates(pages: number) {
       if (parsed.searchParams.get('bo_table') !== 'community_09') return;
       const wrId = parsed.searchParams.get('wr_id') || '';
       if (!wrId || map.has(wrId)) return;
-      map.set(wrId, { wrId, title, url });
+      const rowText = cleanText($(element).closest('tr').text());
+      const region = JEONBUK_AREAS.find((area) => rowText.includes(area));
+      map.set(wrId, { wrId, title, url, region });
     });
   }
   return Array.from(map.values()).sort((a, b) => Number(b.wrId) - Number(a.wrId));
@@ -242,7 +247,7 @@ async function parseDetail(candidate: Candidate) {
 
   const imageUrls: string[] = [];
   const imageSeen = new Set<string>();
-  $('img[src*="/data/editor/"]').each((_index, element) => {
+  contentRoot.find('img[src]').each((_index, element) => {
     const src = absoluteUrl($(element).attr('src') || '');
     if (src && !imageSeen.has(src)) {
       imageSeen.add(src);
@@ -278,8 +283,79 @@ async function parseDetail(candidate: Candidate) {
     combinedText,
     bodyText,
     imageUrls: imageUrls.slice(0, 8),
+    attachmentUrls,
     attachments: downloadedAttachments,
   };
+}
+
+
+export type JbttaScanItem = {
+  wrId: string;
+  region: string;
+  title: string;
+  sourceUrl: string;
+  eventStartDate: string;
+  eventEndDate: string | null;
+  registrationStartDate: string | null;
+  registrationEndDate: string | null;
+  venue: string;
+  status: TournamentStatus;
+  imageUrls: string[];
+  attachments: Array<{ url: string; label: string }>;
+};
+
+export async function scanJbtta2026Page(page: number): Promise<{ page: number; items: JbttaScanItem[] }> {
+  const html = await fetchText(SOURCE_BOARD + '&page=' + Math.max(1, page));
+  const $ = cheerio.load(html);
+  const map = new Map<string, Candidate>();
+
+  $('a[href*="wr_id="]').each((_index, element) => {
+    const href = $(element).attr('href') || '';
+    const title = cleanText($(element).text());
+    if (!title || !isTournamentGuidelineTitle(title)) return;
+
+    const url = absoluteUrl(href);
+    if (!url) return;
+    const parsed = new URL(url);
+    if (parsed.searchParams.get('bo_table') !== 'community_09') return;
+    const wrId = parsed.searchParams.get('wr_id') || '';
+    if (!wrId || map.has(wrId)) return;
+
+    const rowText = cleanText($(element).closest('tr').text());
+    const region = JEONBUK_AREAS.find((area) => rowText.includes(area));
+    if (!region) return;
+
+    map.set(wrId, { wrId, title, url, region });
+  });
+
+  const items: JbttaScanItem[] = [];
+  for (const candidate of Array.from(map.values()).sort((a, b) => Number(b.wrId) - Number(a.wrId))) {
+    try {
+      const detail = await parseDetail(candidate);
+      const event = extractEventDate(detail.combinedText);
+      if (!event || !event.start.startsWith('2026-')) continue;
+      const registration = extractRegistrationDate(detail.combinedText);
+      const venue = extractVenue(detail.combinedText) || extractVenue(detail.bodyText) || candidate.region || '요강 참조';
+      items.push({
+        wrId: candidate.wrId,
+        region: candidate.region || '',
+        title: candidate.title,
+        sourceUrl: candidate.url,
+        eventStartDate: event.start,
+        eventEndDate: event.end,
+        registrationStartDate: registration.start,
+        registrationEndDate: registration.end,
+        venue,
+        status: statusFromDates(event, registration),
+        imageUrls: detail.imageUrls,
+        attachments: detail.attachmentUrls,
+      });
+    } catch {
+      // 개별 게시물 파싱 실패는 다음 게시물을 계속 확인한다.
+    }
+  }
+
+  return { page: Math.max(1, page), items };
 }
 
 export async function syncJbttaTournaments(options?: { pages?: number; maxImports?: number }): Promise<JbttaSyncResult> {
