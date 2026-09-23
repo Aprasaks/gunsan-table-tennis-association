@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getCurrentUser, isAdmin } from '@/lib/mvpAuth';
 import { formatFullDateRange, type Tournament } from '@/lib/tournaments';
@@ -10,19 +10,18 @@ import { getStaticTournament } from '@/lib/staticTournaments';
 export default function ScheduleDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const [item, setItem] = useState<Tournament | null | undefined>(undefined);
+  const staticItem = useMemo(() => getStaticTournament(params.id), [params.id]);
+  const [item, setItem] = useState<Tournament | null | undefined>(staticItem ?? undefined);
   const [admin, setAdmin] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const staticItem = getStaticTournament(params.id);
-    if (staticItem) {
-      setItem(staticItem);
-      setAdmin(false);
-      return;
-    }
     const currentAdmin = isAdmin(getCurrentUser());
     setAdmin(currentAdmin);
+    if (staticItem) {
+      setItem(staticItem);
+      return;
+    }
     fetch('/api/tournaments/' + params.id + (currentAdmin ? '?include_private=1' : ''), { cache: 'no-store' })
       .then(async (response) => {
         const result = await response.json() as { item?: Tournament; error?: string };
@@ -33,10 +32,10 @@ export default function ScheduleDetailPage() {
         setError(reason instanceof Error ? reason.message : '대회정보를 찾을 수 없습니다.');
         setItem(null);
       });
-  }, [params.id]);
+  }, [params.id, staticItem]);
 
   async function remove() {
-    if (!item || !admin || !confirm('이 대회정보를 삭제하시겠습니까?')) return;
+    if (!item || staticItem || !admin || !confirm('이 대회정보를 삭제하시겠습니까?')) return;
     const response = await fetch('/api/tournaments/' + item.id, { method: 'DELETE' });
     if (!response.ok) {
       const result = await response.json().catch(() => ({ error: '삭제하지 못했습니다.' })) as { error?: string };
@@ -89,13 +88,13 @@ export default function ScheduleDetailPage() {
           </section>
         )}
 
-        {item.sourceUrl && <div className="scheduleSource"><a href={item.sourceUrl} target="_blank" rel="noopener noreferrer">전북특별자치도탁구협회 원문 보기</a></div>}
+        {item.sourceUrl && <div className="scheduleSource"><a href={item.sourceUrl} target="_blank" rel="noopener noreferrer">대회 원문 보기</a></div>}
       </article>
 
       <div className="scheduleDetailActions">
         <Link href="/schedule" className="scheduleActionButton">목록으로</Link>
-        {admin && <Link href={'/admin/schedule/' + item.id + '/edit'} className="scheduleActionButton scheduleEditButton">수정</Link>}
-        {admin && <button type="button" className="scheduleActionButton scheduleDeleteButton" onClick={remove}>삭제</button>}
+        {admin && !staticItem && <Link href={'/admin/schedule/' + item.id + '/edit'} className="scheduleActionButton scheduleEditButton">수정</Link>}
+        {admin && !staticItem && <button type="button" className="scheduleActionButton scheduleDeleteButton" onClick={remove}>삭제</button>}
       </div>
     </div>
   </>;
