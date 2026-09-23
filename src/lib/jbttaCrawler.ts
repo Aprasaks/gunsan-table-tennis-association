@@ -68,14 +68,38 @@ async function fetchText(url: string) {
   return response.text();
 }
 
-async function fetchBytes(url: string) {
+async function fetchPageWithCookie(url: string) {
   const response = await fetch(url, {
     headers: {
+      'user-agent': USER_AGENT,
+      accept: 'text/html,application/xhtml+xml',
+      'accept-language': 'ko-KR,ko;q=0.9,en;q=0.6',
+      referer: SOURCE_BOARD,
+    },
+    cache: 'no-store',
+    redirect: 'follow',
+    signal: AbortSignal.timeout(15000),
+  });
+  if (!response.ok) throw new Error('전북협회 상세 응답 오류 ' + response.status);
+  const setCookie = response.headers.get('set-cookie') || '';
+  const cookie = setCookie
+    .split(',')
+    .map((part) => part.trim().split(';')[0])
+    .filter(Boolean)
+    .join('; ');
+  return { html: await response.text(), cookie };
+}
+
+async function fetchBytes(url: string, cookie = '') {
+  const headers: Record<string, string> = {
       'user-agent': USER_AGENT,
       accept: '*/*',
       'accept-language': 'ko-KR,ko;q=0.9,en;q=0.6',
       referer: SOURCE_BOARD,
-    },
+  };
+  if (cookie) headers.cookie = cookie;
+  const response = await fetch(url, {
+    headers,
     cache: 'no-store',
     redirect: 'follow',
     signal: AbortSignal.timeout(20000),
@@ -234,7 +258,9 @@ async function listCandidates(pages: number) {
 }
 
 async function parseDetail(candidate: Candidate) {
-  const html = await fetchText(candidate.url);
+  const page = await fetchPageWithCookie(candidate.url);
+  const html = page.html;
+  const cookie = page.cookie;
   const $ = cheerio.load(html);
 
   const contentRoot = $('#bo_v_con').length
@@ -269,7 +295,7 @@ async function parseDetail(candidate: Candidate) {
 
   for (let index = 0; index < Math.min(attachmentUrls.length, 8); index += 1) {
     const attachment = attachmentUrls[index];
-    const downloaded = await fetchBytes(attachment.url);
+    const downloaded = await fetchBytes(attachment.url, cookie);
     const headerName = decodeFilenameFromDisposition(downloaded.contentDisposition);
     const labelName = attachment.label.match(/[^\s]+\.(?:hwp|hwpx|pdf|xlsx?|docx?|zip)$/i)?.[0] || '';
     const name = headerName || labelName || fileNameFromUrl(downloaded.finalUrl, '첨부파일-' + (index + 1));
@@ -457,7 +483,7 @@ export async function syncJbttaTournaments(options?: { pages?: number; maxImport
       try {
         for (let index = 0; index < detail.imageUrls.length; index += 1) {
           const url = detail.imageUrls[index];
-          const file = await fetchBytes(url);
+          const file = await fetchBytes(url, '');
           const fallback = '요강-' + (index + 1) + (file.contentType.includes('png') ? '.png' : file.contentType.includes('webp') ? '.webp' : '.jpg');
           const name = fileNameFromUrl(file.finalUrl, fallback);
           await uploadFile(file.bytes, name, file.contentType, 'guideline_image', index);
