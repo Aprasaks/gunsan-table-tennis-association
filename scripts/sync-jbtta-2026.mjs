@@ -120,10 +120,10 @@ function extFromName(name='') {
 
 function titleCandidate(title='', wrId='0') {
   const t=clean(title);
-  if (!t || !/요강/.test(t) || !/(탁구|대회|오픈|리그|대축전)/.test(t)) return false;
-  if (/(결과|취소|연기|사진|영상|수정사항|변경사항)/.test(t)) return false;
+  if (!t || !/(탁구대회|탁구 대회|대회\s*요강|탁구.*요강|오픈.*탁구|탁구.*오픈)/.test(t)) return false;
+  if (/(결과|경기결과|취소|연기|사진|영상|시간표|대진표|추가\s*접수|추가\s*공지|수정사항|변경사항|마감\s*안내)/.test(t)) return false;
   if (/20(?:1\d|2[0-5])/.test(t)) return false;
-  return /2026/.test(t) || Number(wrId)>=1650;
+  return /2026/.test(t) || /제\d+회/.test(t) || Number(wrId)>=1650;
 }
 
 function cleanTitle(title='') {
