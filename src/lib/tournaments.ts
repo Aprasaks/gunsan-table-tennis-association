@@ -30,6 +30,11 @@ export type Tournament = {
 };
 
 export function formatShortDateRange(start: string | null, end: string | null) {
+  if (!start && !end) return '-';
+  if (!start && end) {
+    const endDate = new Date(end + 'T00:00:00');
+    return '~ ' + String(endDate.getMonth() + 1).padStart(2, '0') + '.' + String(endDate.getDate()).padStart(2, '0');
+  }
   if (!start) return '-';
   const startDate = new Date(start + 'T00:00:00');
   const endDate = end ? new Date(end + 'T00:00:00') : null;
@@ -42,6 +47,8 @@ export function formatShortDateRange(start: string | null, end: string | null) {
 }
 
 export function formatFullDateRange(start: string | null, end: string | null) {
+  if (!start && !end) return '-';
+  if (!start && end) return '~ ' + end;
   if (!start) return '-';
   if (!end || start === end) return start;
   return start + ' ~ ' + end;
