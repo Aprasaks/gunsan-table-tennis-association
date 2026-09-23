@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import { documentText, open } from 'js-hwp';
 import * as cheerio from 'cheerio';
 
-const ORIGIN = 'https://jbtta.pingpongkorea.com';
+const ORIGIN = 'http://jbtta.pingpongkorea.com';
 const BOARD = ORIGIN + '/bbs/board.php?bo_table=community_09';
 const UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131 Safari/537.36';
 const OUTPUT = 'src/data/jbtta-2026.json';
