@@ -251,7 +251,7 @@ async function enrichFromNewtt(candidate,indexRows) {
 
 async function collectCandidates() {
   const map=new Map();
-  for (let page=1; page<=8; page++) {
+  for (let page=1; page<=3; page++) {
     const html=await (await fetchResponse(BOARD+'&page='+page)).text();
     const $=cheerio.load(html);
     let found=0;
@@ -289,7 +289,7 @@ async function mirrorGuidelineImage(url, wrId, index) {
   }
 }
 
-async function parseDetail(c) {
+async function parseDetail(c, skipOcr=false) {
   const html=await (await fetchResponse(c.url)).text();
   const $=cheerio.load(html);
   const root=$('#bo_v_con').length?$('#bo_v_con'):$('.bo_v_con').length?$('.bo_v_con'):$('body');
@@ -350,9 +350,11 @@ async function parseDetail(c) {
   }
 
   let ocrText='';
-  for (let i=0;i<Math.min(images.length,8);i++) {
-    const text=await ocrImage(images[i],i);
-    if (text) ocrText+='\n'+text;
+  if (!skipOcr) {
+    for (let i=0;i<Math.min(images.length,8);i++) {
+      const text=await ocrImage(images[i],i);
+      if (text) ocrText+='\n'+text;
+    }
   }
   const combined=[hwpText,bodyText,ocrText].filter(Boolean).join('\n');
   const event=extractEventDate(hwpText+'\n'+ocrText,c.title) || extractEventDate(bodyText,c.title);
@@ -391,8 +393,8 @@ const output=[];
 
 for (const c of candidates) {
   try {
-    const d=await parseDetail(c);
     const newtt=await enrichFromNewtt(c,newttIndex);
+    const d=await parseDetail(c,Boolean(newtt));
     if (!/2026/.test(c.title) && !newtt) {
       console.log('skip unverified year',c.wrId,c.title);
       continue;
