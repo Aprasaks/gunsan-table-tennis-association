@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '../auth.module.css';
-import { getUsers, hashPassword, normalizePhone, setAdminSession, setSession } from '@/lib/mvpAuth';
+import { normalizePhone, setAdminSession, setSession, saveUsers, type MvpUser } from '@/lib/mvpAuth';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -37,19 +37,11 @@ export default function LoginPage() {
     }
 
     const normalizedPhone = normalizePhone(loginValue);
-    const user = getUsers().find((item) => item.phone === normalizedPhone);
-    if (!user) {
-      setMessage('가입된 회원정보를 찾을 수 없습니다.');
-      return;
-    }
-
-    const passwordHash = await hashPassword(password);
-    if (passwordHash !== user.passwordHash) {
-      setMessage('비밀번호가 올바르지 않습니다.');
-      return;
-    }
-
-    setSession(user.id);
+    const response = await fetch('/api/mvp/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone: normalizedPhone, password }) });
+    const result = await response.json() as { user?: MvpUser; message?: string };
+    if (!response.ok || !result.user) { setMessage(result.message ?? '로그인하지 못했습니다.'); return; }
+    saveUsers([result.user]);
+    setSession(result.user.id);
     router.push('/');
   }
 

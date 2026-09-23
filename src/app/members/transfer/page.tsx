@@ -3,37 +3,34 @@
 import Link from 'next/link';
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getCurrentUser, getUsers, isAdmin, type MvpUser } from '@/lib/mvpAuth';
-import { saveTransferRequest } from '@/lib/mvpTransfer';
+import { isAdmin, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
 import styles from './transfer.module.css';
-
-function localDate() {
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = String(now.getMonth() + 1).padStart(2, '0');
-  const d = String(now.getDate()).padStart(2, '0');
-  return [y, m, d].join('-');
-}
 
 export default function TransferPage() {
   const router = useRouter();
   const [user, setUser] = useState<MvpUser | null>(null);
   const [users, setUsers] = useState<MvpUser[]>([]);
+  const [clubs, setClubs] = useState<string[]>([]);
   const [memberId, setMemberId] = useState('');
   const [toClub, setToClub] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const currentUser = getCurrentUser();
-    if (!currentUser) { router.replace('/login'); return; }
-    if (!isAdmin(currentUser) && currentUser.position !== '회장') {
-      alert('이적 신청은 구장 회장 또는 관리자만 이용할 수 있습니다.');
-      router.replace('/members');
-      return;
-    }
-    setUser(currentUser);
-    setUsers(getUsers().filter((item) => item.memberStatus !== 'withdrawn'));
+    refreshCurrentUser().then(async (currentUser) => {
+      if (!currentUser) { router.replace('/login'); return; }
+      if (!isAdmin(currentUser) && currentUser.position !== '회장') {
+        alert('이적 신청은 구장 회장 또는 관리자만 이용할 수 있습니다.');
+        router.replace('/members'); return;
+      }
+      setUser(currentUser);
+      const response = await fetch('/api/mvp/members');
+      const result = await response.json();
+      if (!response.ok) { setError(result.message); return; }
+      setUsers((result.users as MvpUser[]).filter((item) => item.memberStatus !== 'withdrawn'));
+      const clubResponse = await fetch('/api/mvp/clubs');
+      if (clubResponse.ok) setClubs((await clubResponse.json()).clubs);
+    }).catch(() => setError('회원 목록을 불러오지 못했습니다.'));
   }, [router]);
 
   const eligibleMembers = useMemo(() => {
@@ -43,7 +40,6 @@ export default function TransferPage() {
   }, [user, users]);
 
   const member = eligibleMembers.find((item) => item.id === memberId) ?? null;
-  const clubs = useMemo(() => Array.from(new Set(users.map((item) => item.club.trim()).filter(Boolean))).sort(), [users]);
 
   function sourceChairFor(target: MvpUser) {
     if (!user) return null;
@@ -51,7 +47,7 @@ export default function TransferPage() {
     return users.find((item) => item.club === target.club && item.position === '회장') ?? null;
   }
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage('');
     setError('');
@@ -65,23 +61,14 @@ export default function TransferPage() {
     if (!chair) { setError('기존 소속 구장의 회장 계정을 찾을 수 없습니다.'); return; }
     if (!chair.signatureDataUrl) { setError('기존 소속 구장 회장의 서명이 등록되어 있지 않습니다. 회장 계정의 정보수정에서 서명을 먼저 등록해주세요.'); return; }
 
-    saveTransferRequest({
-      memberId: member.id,
-      memberName: member.name,
-      gender: member.gender === '여' ? '여' : '남',
-      rank: member.rank ?? '',
-      phone: member.phone,
-      fromClub: member.club,
-      toClub: destination,
-      sourceChairUserId: chair.id,
-      sourceChairName: chair.name,
-      sourceChairSignatureDataUrl: chair.signatureDataUrl,
-      requestDate: localDate(),
-    });
+    const response = await fetch('/api/mvp/transfers', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ memberId: member.id, toClub: destination }) });
+    const result = await response.json();
+    if (!response.ok) { setError(result.message ?? '이적 신청을 저장하지 못했습니다.'); return; }
 
     setMemberId('');
     setToClub('');
-    setMessage('이적 신청이 등록되었습니다. 기존 소속 회장 서명이 함께 저장되어 관리자 알림 · 승인 업무로 전달됩니다.');
+    setMessage('이적 신청이 등록되었습니다. 새 소속 회장 승인 후 협회 승인 업무로 전달됩니다.');
   }
 
   if (!user) return <div className="siteShell pageContent">회원정보를 확인하고 있습니다.</div>;
@@ -94,7 +81,7 @@ export default function TransferPage() {
       <section className="siteShell pageContent">
         <form className={styles.panel} onSubmit={submit}>
           <div className={styles.head}><div><h2>이적 신청서 작성</h2><p>회원정보는 가입정보에서 불러오고, 기존 소속 구장 회장의 저장된 서명을 사용합니다.</p></div></div>
-          <p className={styles.notice}>새로 이적하는 구장의 회장 서명은 필요하지 않습니다. 기존 소속 구장 회장 서명이 확인되면 관리자에게 전달되며, 협회에서는 이적동의서와 이적·소속변경 신청서 두 문서를 관리합니다.</p>
+          <p className={styles.notice}>기존 소속 회장의 서명으로 신청합니다. 새 소속 회장은 서명 없이 승인하고, 그때 협회 담당자 전원에게 승인 업무가 표시됩니다.</p>
 
           <div className={styles.grid}>
             <div className={styles.field + ' ' + styles.fieldWide}>

@@ -15,6 +15,8 @@ export type MvpUser = {
   memberStatus?: MemberStatus;
   role?: UserRole;
   loginId?: string;
+  associationTitle?: '' | '협회장' | '이사' | '총무' | '고문' | '사무국장';
+  createdAt?: string;
 };
 
 export type MvpSession = {
@@ -58,6 +60,10 @@ export async function hashPassword(password: string) {
 
 export function isAdmin(user: MvpUser | null | undefined) {
   return user?.role === 'admin' || user?.id === ADMIN_USER_ID;
+}
+
+export function canReviewAssociation(user: MvpUser | null | undefined) {
+  return isAdmin(user) || Boolean(user?.associationTitle && user.memberStatus !== 'withdrawn');
 }
 
 export function getUsers(): MvpUser[] {
@@ -130,6 +136,18 @@ export function getCurrentUser(): MvpUser | null {
   if (!session) return null;
   if (session.userId === ADMIN_USER_ID) return ADMIN_USER;
   return getUsers().find((user) => user.id === session.userId) ?? null;
+}
+
+export async function refreshCurrentUser(): Promise<MvpUser | null> {
+  const response = await fetch('/api/mvp/me', { cache: 'no-store' });
+  if (!response.ok) return null;
+  const result = await response.json() as { admin: boolean; user: MvpUser | null };
+  if (result.admin) return ADMIN_USER;
+  if (result.user) {
+    saveUsers([result.user]);
+    setSession(result.user.id);
+  }
+  return result.user;
 }
 
 export function clearSession() {

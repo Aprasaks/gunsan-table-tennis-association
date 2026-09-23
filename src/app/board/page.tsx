@@ -4,21 +4,19 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCurrentUser } from '@/lib/mvpAuth';
-import { BOARD_CHANGE_EVENT, getBoardPosts, type BoardPost } from '@/lib/mvpBoard';
+import type { BoardPost } from '@/lib/mvpBoard';
 
 export default function BoardPage() {
   const router = useRouter();
   const [posts, setPosts] = useState<BoardPost[]>([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const sync = () => setPosts(getBoardPosts());
-    sync();
-    window.addEventListener(BOARD_CHANGE_EVENT, sync);
-    window.addEventListener('storage', sync);
-    return () => {
-      window.removeEventListener(BOARD_CHANGE_EVENT, sync);
-      window.removeEventListener('storage', sync);
-    };
+    fetch('/api/mvp/posts?kind=board', { cache: 'no-store' }).then(async (response) => {
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message);
+      setPosts(result.posts);
+    }).catch((cause) => setError(cause.message));
   }, []);
 
   function write() {
@@ -43,6 +41,7 @@ export default function BoardPage() {
         <button type="button" onClick={write}>글쓰기</button>
       </div>
 
+      {error && <p role="alert">{error}</p>}
       <table className="dataTable boardTable">
         <thead>
           <tr>

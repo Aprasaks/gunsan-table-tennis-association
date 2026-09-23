@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { ADMIN_COOKIE_NAME, createAdminSessionToken } from '@/lib/adminSession';
+import { MEMBER_COOKIE, sameOrigin } from '@/lib/mvpServer';
 
 export async function POST(request: Request) {
+  if (!sameOrigin(request)) return NextResponse.json({ ok: false, message: '잘못된 요청입니다.' }, { status: 403 });
   const body = await request.json().catch(() => null) as { username?: string; password?: string } | null;
   const username = body?.username?.trim() ?? '';
   const password = body?.password ?? '';
@@ -29,5 +31,6 @@ export async function POST(request: Request) {
     path: '/',
     maxAge: 60 * 60 * 12,
   });
+  response.cookies.set(MEMBER_COOKIE, '', { httpOnly: true, path: '/', maxAge: 0 });
   return response;
 }
