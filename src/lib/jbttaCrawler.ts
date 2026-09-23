@@ -287,6 +287,7 @@ export async function syncJbttaTournaments(options?: { pages?: number; maxImport
   const maxImports = Math.max(1, Math.min(options?.maxImports ?? 6, 12));
   const supabase = createAdminServerSupabase();
   if (!supabase) throw new Error('Supabase 관리자 연결이 설정되지 않았습니다.');
+  const adminSupabase = supabase;
 
   const candidates = await listCandidates(pages);
   const result: JbttaSyncResult = {
@@ -301,7 +302,7 @@ export async function syncJbttaTournaments(options?: { pages?: number; maxImport
 
   const sourceUrls = candidates.map((item) => item.url);
   const { data: existingRows, error: existingError } = sourceUrls.length
-    ? await supabase.from('tournaments').select('source_url').in('source_url', sourceUrls)
+    ? await adminSupabase.from('tournaments').select('source_url').in('source_url', sourceUrls)
     : { data: [], error: null };
 
   if (existingError) throw new Error(existingError.message);
@@ -360,7 +361,7 @@ export async function syncJbttaTournaments(options?: { pages?: number; maxImport
 
       async function uploadFile(bytes: Buffer, fileName: string, mimeType: string, kind: TournamentFileKind, order: number) {
         const storagePath = tournamentId + '/' + kind + '/' + randomUUID() + '-' + safeFileName(fileName);
-        const { error } = await supabase.storage.from('tournament-files').upload(storagePath, bytes, {
+        const { error } = await adminSupabase.storage.from('tournament-files').upload(storagePath, bytes, {
           contentType: mimeType || 'application/octet-stream',
           upsert: false,
         });
@@ -392,12 +393,12 @@ export async function syncJbttaTournaments(options?: { pages?: number; maxImport
         }
 
         if (fileRows.length > 0) {
-          const { error } = await supabase.from('tournament_files').insert(fileRows);
+          const { error } = await adminSupabase.from('tournament_files').insert(fileRows);
           if (error) throw new Error(error.message);
         }
       } catch (fileError) {
-        if (uploadedPaths.length > 0) await supabase.storage.from('tournament-files').remove(uploadedPaths);
-        await supabase.from('tournaments').delete().eq('id', tournamentId);
+        if (uploadedPaths.length > 0) await adminSupabase.storage.from('tournament-files').remove(uploadedPaths);
+        await adminSupabase.from('tournaments').delete().eq('id', tournamentId);
         throw fileError;
       }
 

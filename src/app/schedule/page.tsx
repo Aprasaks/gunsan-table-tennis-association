@@ -1,67 +1,59 @@
-'use client';
-
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { getCurrentUser, isAdmin } from '@/lib/mvpAuth';
-import { formatShortDateRange, type Tournament } from '@/lib/tournaments';
+import { hasAdminSession } from '@/lib/adminSession';
+import { createAdminServerSupabase, createPublicServerSupabase } from '@/lib/supabase/server';
+import { formatShortDateRange, type Tournament, type TournamentStatus, type TournamentVisibility } from '@/lib/tournaments';
 
-type SyncResponse = {
-  ok?: boolean;
-  error?: string;
-  result?: {
-    imported: number;
-    skippedExisting: number;
-    skippedMissingDate: number;
-    failed: Array<{ title: string; reason: string }>;
-  };
+type TournamentRow = {
+  id: string;
+  title: string;
+  event_start_date: string;
+  event_end_date: string | null;
+  registration_start_date: string | null;
+  registration_end_date: string | null;
+  venue: string;
+  status: TournamentStatus;
+  source_url: string | null;
+  visibility: TournamentVisibility;
+  created_at: string;
+  updated_at: string;
 };
 
-export default function SchedulePage() {
-  const [items, setItems] = useState<Tournament[]>([]);
-  const [admin, setAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [syncing, setSyncing] = useState(false);
-  const [syncMessage, setSyncMessage] = useState('');
-  const [error, setError] = useState('');
+export const dynamic = 'force-dynamic';
 
-  async function loadItems(currentAdmin: boolean) {
-    setLoading(true);
-    setError('');
-    try {
-      const response = await fetch('/api/tournaments' + (currentAdmin ? '?include_private=1' : ''), { cache: 'no-store' });
-      const result = await response.json() as { items?: Tournament[]; error?: string };
-      if (!response.ok) throw new Error(result.error ?? '대회정보를 불러오지 못했습니다.');
-      setItems(result.items ?? []);
-    } catch (reason) {
-      setError(reason instanceof Error ? reason.message : '대회정보를 불러오지 못했습니다.');
-    } finally {
-      setLoading(false);
-    }
-  }
+function normalize(row: TournamentRow): Tournament {
+  return {
+    id: row.id,
+    title: row.title,
+    eventStartDate: row.event_start_date,
+    eventEndDate: row.event_end_date,
+    registrationStartDate: row.registration_start_date,
+    registrationEndDate: row.registration_end_date,
+    venue: row.venue,
+    status: row.status,
+    sourceUrl: row.source_url,
+    visibility: row.visibility,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    files: [],
+  };
+}
 
-  useEffect(() => {
-    const currentAdmin = isAdmin(getCurrentUser());
-    setAdmin(currentAdmin);
-    void loadItems(currentAdmin);
-  }, []);
+export default async function SchedulePage() {
+  const admin = await hasAdminSession();
+  const supabase = admin ? createAdminServerSupabase() : createPublicServerSupabase();
+  let items: Tournament[] = [];
 
-  async function runSync() {
-    setSyncing(true);
-    setSyncMessage('');
-    try {
-      const response = await fetch('/api/cron/jbtta-tournaments?pages=2&max=10', { cache: 'no-store' });
-      const result = await response.json() as SyncResponse;
-      if (!response.ok || !result.ok) throw new Error(result.error ?? '자동수집에 실패했습니다.');
-      const imported = result.result?.imported ?? 0;
-      const existing = result.result?.skippedExisting ?? 0;
-      const missing = result.result?.skippedMissingDate ?? 0;
-      setSyncMessage('전북 대회 자동수집 완료 · 신규 ' + imported + '건 · 기존 ' + existing + '건' + (missing ? ' · 날짜 확인 실패 ' + missing + '건' : ''));
-      await loadItems(true);
-    } catch (reason) {
-      setSyncMessage(reason instanceof Error ? reason.message : '자동수집에 실패했습니다.');
-    } finally {
-      setSyncing(false);
-    }
+  if (supabase) {
+    let query = supabase
+      .from('tournaments')
+      .select('id,title,event_start_date,event_end_date,registration_start_date,registration_end_date,venue,status,source_url,visibility,created_at,updated_at')
+      .order('event_start_date', { ascending: true })
+      .order('created_at', { ascending: false });
+
+    if (!admin) query = query.eq('visibility', 'public');
+
+    const { data, error } = await query;
+    if (!error && data) items = (data as TournamentRow[]).map(normalize);
   }
 
   return <>
@@ -75,49 +67,40 @@ export default function SchedulePage() {
 
     <div className="siteShell pageContent">
       {admin && (
-        <div className="contentAdminToolbar scheduleAdminToolbar">
-          <button type="button" className="contentAdminButton" onClick={runSync} disabled={syncing}>
-            {syncing ? '전북 대회 확인 중...' : '전북 대회 자동수집'}
-          </button>
-          <Link href="/admin/schedule/new" className="contentAdminButton">대회정보 등록</Link>
+        <div className="contentAdminToolbar">
+          <Link href="/admin/schedule/new" className="contentAdminButton">대회정보 직접 등록</Link>
         </div>
       )}
-      {admin && syncMessage && <div className="scheduleSyncMessage">{syncMessage}</div>}
 
-      {loading && <div className="scheduleState">대회일정을 불러오고 있습니다.</div>}
-      {error && <div className="scheduleState scheduleStateError">{error}</div>}
-
-      {!loading && !error && (
-        <div className="scheduleTableWrap">
-          <table className="scheduleTable">
-            <thead>
-              <tr>
-                <th>대회날짜</th>
-                <th>대회명</th>
-                <th>접수날짜</th>
-                <th>대회장소</th>
-                <th>상태</th>
+      <div className="scheduleTableWrap">
+        <table className="scheduleTable">
+          <thead>
+            <tr>
+              <th>대회날짜</th>
+              <th>대회명</th>
+              <th>접수날짜</th>
+              <th>대회장소</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.length === 0 ? (
+              <tr><td colSpan={5} className="scheduleEmpty">등록된 대회일정이 없습니다.</td></tr>
+            ) : items.map((item) => (
+              <tr key={item.id}>
+                <td className="scheduleDate">{formatShortDateRange(item.eventStartDate, item.eventEndDate)}</td>
+                <td className="scheduleTitle">
+                  <Link href={'/schedule/' + item.id}>{item.title}</Link>
+                  {admin && item.visibility === 'private' && <span className="schedulePrivate">비공개</span>}
+                </td>
+                <td>{formatShortDateRange(item.registrationStartDate, item.registrationEndDate)}</td>
+                <td>{item.venue}</td>
+                <td><span className={'scheduleStatus scheduleStatus-' + item.status}>{item.status}</span></td>
               </tr>
-            </thead>
-            <tbody>
-              {items.length === 0 ? (
-                <tr><td colSpan={5} className="scheduleEmpty">등록된 대회정보가 없습니다.</td></tr>
-              ) : items.map((item) => (
-                <tr key={item.id}>
-                  <td className="scheduleDate">{formatShortDateRange(item.eventStartDate, item.eventEndDate)}</td>
-                  <td className="scheduleTitle">
-                    <Link href={'/schedule/' + item.id}>{item.title}</Link>
-                    {admin && item.visibility === 'private' && <span className="schedulePrivate">비공개</span>}
-                  </td>
-                  <td>{formatShortDateRange(item.registrationStartDate, item.registrationEndDate)}</td>
-                  <td>{item.venue}</td>
-                  <td><span className={'scheduleStatus scheduleStatus-' + item.status}>{item.status}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   </>;
 }
