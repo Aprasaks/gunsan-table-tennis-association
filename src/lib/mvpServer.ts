@@ -52,6 +52,7 @@ export function publicMember(row: Record<string, any>): MvpUser {
     id: row.id, name: row.name, birthDate: row.birth_date, gender: row.gender,
     phone: row.phone, club: row.club, rank: row.rank, position: row.position,
     associationTitle: row.association_title, memberStatus: row.member_status,
+    createdAt: row.created_at,
     signatureDataUrl: row.signature_data_url ?? undefined, passwordHash: '',
     role: 'member',
   };

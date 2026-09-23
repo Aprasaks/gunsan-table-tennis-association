@@ -16,6 +16,7 @@ export type MvpUser = {
   role?: UserRole;
   loginId?: string;
   associationTitle?: '' | '협회장' | '이사' | '총무' | '고문';
+  createdAt?: string;
 };
 
 export type MvpSession = {

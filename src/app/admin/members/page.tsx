@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getCurrentUser, getUsers, isAdmin, type MvpUser } from '@/lib/mvpAuth';
+import { getUsers, isAdmin, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
 import { getTransferRequests } from '@/lib/mvpTransfer';
 import styles from '@/app/members/transfer/transfer.module.css';
+import roster from './roster.module.css';
 
 const titles = ['', '협회장', '이사', '총무', '고문'];
 const clubPositions = ['일반', '회장', '부회장', '총무'];
@@ -15,16 +16,32 @@ export default function AdminMembersPage() {
   const [error, setError] = useState('');
   const [saving, setSaving] = useState('');
   const [legacyCount, setLegacyCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState('');
+  const [club, setClub] = useState('');
 
   useEffect(() => {
-    if (!isAdmin(getCurrentUser())) { router.replace('/login'); return; }
-    setLegacyCount(getUsers().length);
-    fetch('/api/mvp/members').then(async (response) => {
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message);
-      setUsers(result.users);
-    }).catch((cause) => setError(cause.message));
+    let cancelled = false;
+    async function load() {
+      try {
+        if (!isAdmin(await refreshCurrentUser())) { router.replace('/login'); return; }
+        setLegacyCount(getUsers().filter((user) => user.id !== 'admin-root').length);
+        const response = await fetch('/api/mvp/members', { cache: 'no-store' });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message);
+        if (!cancelled) setUsers(result.users);
+      } catch (cause) {
+        if (!cancelled) setError(cause instanceof Error ? cause.message : '회원 목록을 불러오지 못했습니다.');
+      } finally { if (!cancelled) setLoading(false); }
+    }
+    load();
+    return () => { cancelled = true; };
   }, [router]);
+
+  const clubs = [...new Set(users.map((user) => user.club).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ko'));
+  const normalizedQuery = query.trim().toLocaleLowerCase();
+  const visibleUsers = users.filter((user) => (!club || user.club === club) &&
+    (!normalizedQuery || [user.name, user.phone, user.club].some((value) => value.toLocaleLowerCase().includes(normalizedQuery))));
 
   async function importLocal() {
     if (!confirm('이 브라우저에 저장된 기존 회원을 협회 공통 회원 목록으로 가져오시겠습니까?')) return;
@@ -55,13 +72,21 @@ export default function AdminMembersPage() {
   }
 
   return <>
-    <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME / 관리자 / 회원 직책</span><h1>회원 직책 관리</h1><p>협회 직책은 기본적으로 없으며, 부여된 회원만 협회 승인 업무를 처리할 수 있습니다.</p></div></section>
+    <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME / 관리자 / 회원 명부</span><h1>회원 명부와 직책</h1><p>전체 가입 회원을 확인하고 협회 직책을 부여하거나 해제합니다.</p></div></section>
     <section className="siteShell pageContent"><div className={styles.panel}>
       {error && <p role="alert" className={styles.error}>{error}</p>}
       {legacyCount > 0 && <p className={styles.notice}>이 브라우저에 저장된 기존 회원 {legacyCount}명을 가져올 수 있습니다. <button type="button" onClick={importLocal}>기존 회원 가져오기</button></p>}
-      {users.length === 0 && !error && <p>등록된 회원이 없습니다.</p>}
-      <div className={styles.list}>{users.map((user) => <article className={styles.item} key={user.id}>
-        <h2>{user.name} <small>{user.club} · {user.phone}</small></h2>
+      {loading ? <p role="status">회원 명부를 불러오는 중입니다.</p> : !error && <>
+      <div className={roster.toolbar}>
+        <div><strong>전체 {users.length}명</strong><span>활동 {users.filter((user) => user.memberStatus !== 'withdrawn').length}명 · 검색 결과 {visibleUsers.length}명</span></div>
+        <label>회원 검색<input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="이름, 연락처, 소속" /></label>
+        <label>소속<select value={club} onChange={(event) => setClub(event.target.value)}><option value="">전체 소속</option>{clubs.map((name) => <option key={name} value={name}>{name}</option>)}</select></label>
+      </div>
+      {users.length === 0 && <p className={styles.empty}>등록된 회원이 없습니다.</p>}
+      {users.length > 0 && visibleUsers.length === 0 && <p className={styles.empty}>검색 조건에 맞는 회원이 없습니다.</p>}
+      <div className={styles.list}>{visibleUsers.map((user) => <article className={styles.item} key={user.id}>
+        <h2 className={roster.name}>{user.name} <span className={roster.status}>{user.memberStatus === 'withdrawn' ? '탈퇴' : '활동'}</span></h2>
+        <p className={roster.details}>소속 {user.club || '없음'} · 연락처 {user.phone || '없음'} · 부수 {user.rank || '없음'} · 가입일 {user.createdAt ? new Date(user.createdAt).toLocaleDateString('ko-KR') : '기록 없음'}</p>
         <div className={styles.grid}>
           <div className={styles.field}><label htmlFor={'association-' + user.id}>협회 직책</label>
             <select id={'association-' + user.id} value={user.associationTitle ?? ''} disabled={saving === user.id}
@@ -74,7 +99,7 @@ export default function AdminMembersPage() {
               {clubPositions.map((title) => <option key={title}>{title}</option>)}
             </select></div>
         </div>
-      </article>)}</div>
+      </article>)}</div></>}
     </div></section>
   </>;
 }
