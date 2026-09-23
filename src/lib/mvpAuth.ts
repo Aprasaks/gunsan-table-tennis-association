@@ -15,7 +15,7 @@ export type MvpUser = {
   memberStatus?: MemberStatus;
   role?: UserRole;
   loginId?: string;
-  associationTitle?: '' | '협회장' | '이사' | '총무' | '고문';
+  associationTitle?: '' | '협회장' | '이사' | '총무' | '고문' | '사무국장';
   createdAt?: string;
 };
 

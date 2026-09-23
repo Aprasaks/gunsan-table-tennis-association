@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './registration.module.css';
-import { clearSession, getCurrentUser, type MvpUser } from '@/lib/mvpAuth';
+import { clearSession, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
 
 type RegistrationMember = {
   id: string;
@@ -123,55 +123,54 @@ export default function MemberRegistrationPage() {
   const [lastSavedAt, setLastSavedAt] = useState('');
 
   useEffect(() => {
-    const currentUser = getCurrentUser();
-    if (!currentUser) {
-      router.replace('/login');
-      return;
-    }
-
-    if (!registrationManagers.has(currentUser.position)) {
-      alert('회원등록 권한이 없습니다. 회장, 부회장, 총무만 회원등록 업무를 이용할 수 있습니다.');
-      router.replace('/members');
-      return;
-    }
-
-    setUser(currentUser);
-    const draftKey = `gunsan-tt-registration-draft-${currentUser.id}`;
-    const rawDraft = localStorage.getItem(draftKey);
-    if (rawDraft) {
+    let cancelled = false;
+    async function load() {
+      const currentUser = await refreshCurrentUser();
+      if (!currentUser) { router.replace('/login'); return; }
+      if (!registrationManagers.has(currentUser.position)) { router.replace('/members'); return; }
       try {
-        const draft = JSON.parse(rawDraft) as Draft;
-        setClubName(draft.clubName || currentUser.club);
-        setClubAddress(draft.clubAddress || '');
-        setOfficers(draft.officers || blankOfficers(currentUser));
-        setMembers(draft.members?.length ? draft.members : [blankMember('member-1')]);
-        setLastSavedAt(draft.savedAt || '');
-        setMessage('저장된 입력내용을 불러왔습니다.');
+        const response = await fetch('/api/mvp/roster', { cache: 'no-store' });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message);
+        if (cancelled) return;
+        setUser(currentUser);
+        let draft = result.draft as Draft | null;
+        if (!draft) {
+          const legacy = localStorage.getItem(`gunsan-tt-registration-draft-${currentUser.id}`);
+          if (legacy) { try { draft = JSON.parse(legacy) as Draft; } catch { /* ignore old draft */ } }
+        }
+        setClubName(currentUser.club);
+        setClubAddress(draft?.clubAddress ?? '');
+        setOfficers(draft?.officers ?? blankOfficers(currentUser));
+        setMembers(draft?.members?.length ? draft.members : [blankMember('member-1')]);
+        setLastSavedAt(result.savedAt ?? '');
         setLoaded(true);
-        return;
-      } catch {
-        localStorage.removeItem(draftKey);
-      }
+      } catch (cause) { if (!cancelled) setError(cause instanceof Error ? cause.message : '회원등록 내역을 불러오지 못했습니다.'); }
     }
-
-    setClubName(currentUser.club);
-    setOfficers(blankOfficers(currentUser));
-    setMembers([blankMember('member-1')]);
-    setLoaded(true);
+    load();
+    return () => { cancelled = true; };
   }, [router]);
+
+  async function persist(action: 'save' | 'submit') {
+    if (!user) return;
+    const response = await fetch('/api/mvp/roster', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, draft: { clubName: user.club, clubAddress, officers, members } }) });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message);
+    setLastSavedAt(result.savedAt);
+    localStorage.removeItem(`gunsan-tt-registration-draft-${user.id}`);
+    return result;
+  }
 
   useEffect(() => {
     if (!loaded || !user) return;
-
     const timer = window.setTimeout(() => {
-      const savedAt = new Date().toISOString();
-      const draft: Draft = { clubName, clubAddress, officers, members, savedAt };
-      localStorage.setItem(`gunsan-tt-registration-draft-${user.id}`, JSON.stringify(draft));
-      setLastSavedAt(savedAt);
-    }, 400);
-
+      persist('save').catch((cause) => setError(cause instanceof Error ? cause.message : '자동 저장에 실패했습니다.'));
+    }, 900);
     return () => window.clearTimeout(timer);
-  }, [clubName, clubAddress, loaded, members, officers, user]);
+  // The form fields are the save dependencies; persist is scoped to the current render.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clubAddress, loaded, members, officers, user]);
 
   function updateOfficer(role: keyof Officers, field: keyof OfficerInfo, value: string) {
     setOfficers((current) => ({
@@ -207,14 +206,20 @@ export default function MemberRegistrationPage() {
     return '';
   }
 
-  function saveDraft() {
-    if (!user) return;
-    const savedAt = new Date().toISOString();
-    const draft: Draft = { clubName, clubAddress, officers, members, savedAt };
-    localStorage.setItem(`gunsan-tt-registration-draft-${user.id}`, JSON.stringify(draft));
-    setLastSavedAt(savedAt);
+  async function saveDraft() {
     setError('');
-    setMessage(`입력내용을 저장했습니다. (${new Date(savedAt).toLocaleTimeString('ko-KR')})`);
+    try { await persist('save'); setMessage('입력내용을 협회 서버에 저장했습니다.'); }
+    catch (cause) { setError(cause instanceof Error ? cause.message : '저장하지 못했습니다.'); }
+  }
+
+  async function submitRoster() {
+    const issue = validate();
+    if (issue) { setError(issue); return; }
+    setError('');
+    try {
+      const result = await persist('submit');
+      setMessage(result.alreadySubmitted ? '이미 제출된 명단입니다.' : '협회에 회원등록 명단을 제출했습니다. 희망부 등록은 임원진 알림함에 표시됩니다.');
+    } catch (cause) { setError(cause instanceof Error ? cause.message : '제출하지 못했습니다.'); }
   }
 
   async function downloadExcel() {
@@ -275,7 +280,7 @@ export default function MemberRegistrationPage() {
   }
 
   if (!loaded || !user) {
-    return <div className="siteShell pageContent">회원정보를 확인하고 있습니다.</div>;
+    return <div className="siteShell pageContent">{error || '회원정보를 확인하고 있습니다.'}</div>;
   }
 
   const activeMemberCount = members.filter((member) => member.name.trim()).length;
@@ -285,8 +290,8 @@ export default function MemberRegistrationPage() {
       <section className="subHero">
         <div className="siteShell subHeroInner">
           <span className="crumb">HOME &gt; 회원등록/이적 &gt; 회원등록</span>
-          <h1>2026 회원등록 검증</h1>
-          <p>동호회 담당자와 등록 회원 명단을 입력한 뒤 제출용 Excel 파일로 내려받습니다.</p>
+          <h1>회원등록</h1>
+          <p>희망부는 상시 등록할 수 있습니다. 명단을 협회에 제출하면 임원진에게 알림이 표시됩니다.</p>
         </div>
       </section>
 
@@ -305,7 +310,7 @@ export default function MemberRegistrationPage() {
           <div className={styles.clubGrid}>
             <div className={styles.field}>
               <label htmlFor="club-name">동호회(직장명)</label>
-              <input id="club-name" value={clubName} onChange={(e) => setClubName(e.target.value)} placeholder="예: 웰빙탁구클럽" />
+              <input id="club-name" value={clubName} readOnly />
             </div>
             <div className={styles.field}>
               <label htmlFor="club-address">동호회 주소</label>
@@ -338,7 +343,7 @@ export default function MemberRegistrationPage() {
           <div className={styles.memberHeader}>
             <div>
               <h3>등록 회원 명단</h3>
-              <span className={styles.unlimited}>인원 제한 없음 · 현재 {activeMemberCount}명 입력</span>
+              <span className={styles.unlimited}>한 번에 최대 200명 · 현재 {activeMemberCount}명 입력</span>
             </div>
             <button className={styles.addButton} type="button" onClick={addMember}>+ 회원 추가</button>
           </div>
@@ -386,6 +391,7 @@ export default function MemberRegistrationPage() {
             </div>
             <div className={styles.actions}>
               <button className={styles.secondary} type="button" onClick={saveDraft}>입력내용 저장</button>
+              <button className={styles.secondary} type="button" onClick={submitRoster}>협회에 등록 제출</button>
               <button className={styles.primary} type="button" disabled={downloading} onClick={downloadExcel}>{downloading ? '엑셀 만드는 중...' : '2026 제출용 Excel 다운로드'}</button>
             </div>
           </div>

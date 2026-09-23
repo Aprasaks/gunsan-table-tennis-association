@@ -7,7 +7,7 @@ import { getTransferRequests } from '@/lib/mvpTransfer';
 import styles from '@/app/members/transfer/transfer.module.css';
 import roster from './roster.module.css';
 
-const titles = ['', '협회장', '이사', '총무', '고문'];
+const titles = ['', '협회장', '이사', '총무', '고문', '사무국장'];
 const clubPositions = ['일반', '회장', '부회장', '총무'];
 
 export default function AdminMembersPage() {

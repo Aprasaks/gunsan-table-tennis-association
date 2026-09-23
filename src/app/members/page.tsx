@@ -31,8 +31,8 @@ export default function MembersPage() {
       return;
     }
 
-    if (!isAdmin(currentUser) && !registrationManagers.has(currentUser.position)) {
-      alert('회원등록 권한이 없습니다. 회장, 부회장, 총무 또는 관리자만 회원등록 업무를 이용할 수 있습니다.');
+    if (isAdmin(currentUser) || !registrationManagers.has(currentUser.position)) {
+      alert('회원등록 권한이 없습니다. 소속 회장, 부회장, 총무만 회원등록 업무를 이용할 수 있습니다.');
       return;
     }
 
@@ -74,7 +74,7 @@ export default function MembersPage() {
       <section className="siteShell pageContent">
         <div className="memberServiceGrid">
           <article className="memberServiceCard">
-            <span>01</span><h2>상·하반기 회원등록</h2><p>등록 회원 명단을 입력하고 전라북도탁구협회 제출용 Excel 파일을 바로 생성합니다.</p>
+            <span>01</span><h2>회원등록</h2><p>희망부는 상시 등록할 수 있습니다. 명단을 협회에 제출하고 전북협회 제출용 Excel 파일도 생성합니다.</p>
             <Link href="/members/register" onClick={openRegistration}>회원등록 시작하기</Link>
           </article>
           <article className="memberServiceCard">

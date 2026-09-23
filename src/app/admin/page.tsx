@@ -55,7 +55,7 @@ export default function AdminPage() {
       {overview && <>
         <div className={styles.stats}>
           <Link href="/admin/members" className={styles.stat}><span>활동 회원</span><strong>{activeMembers.length}명</strong><small>전체 등록 {overview.members.length}명</small></Link>
-          <Link href="/admin/members" className={styles.stat}><span>협회 직책 회원</span><strong>{officers.length}명</strong><small>협회장 · 이사 · 총무 · 고문</small></Link>
+          <Link href="/admin/members" className={styles.stat}><span>협회 직책 회원</span><strong>{officers.length}명</strong><small>협회장 · 이사 · 총무 · 고문 · 사무국장</small></Link>
           <Link href="/members/approvals" className={styles.stat}><span>협회 승인 대기</span><strong>{pendingAdmin.length}건</strong><small>목적지 구장 승인 완료</small></Link>
           <Link href="/members/approvals" className={styles.stat}><span>목적지 승인 대기</span><strong>{pendingDestination.length}건</strong><small>구장 회장 확인 단계</small></Link>
         </div>
@@ -79,6 +79,7 @@ export default function AdminPage() {
       <div className={styles.quickLinks}>
         <Link href="/admin/members">회원 명부와 직책 관리 →</Link>
         <Link href="/members/approvals">이적 승인 업무 →</Link>
+        <Link href="/admin/notifications">협회 임원 알림함 →</Link>
         <Link href="/notice">공지사항 →</Link>
         <Link href="/schedule">대회정보 →</Link>
       </div>

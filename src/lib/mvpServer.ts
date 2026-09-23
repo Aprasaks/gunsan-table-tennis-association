@@ -5,7 +5,7 @@ import { hasAdminSession } from '@/lib/adminSession';
 import type { MvpUser } from '@/lib/mvpAuth';
 
 export const MEMBER_COOKIE = 'gunsan-tt-member-session';
-export const TITLES = ['', '협회장', '이사', '총무', '고문'] as const;
+export const TITLES = ['', '협회장', '이사', '총무', '고문', '사무국장'] as const;
 
 export function db() {
   const client = createAdminServerSupabase();
