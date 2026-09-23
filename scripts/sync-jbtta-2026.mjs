@@ -8,6 +8,8 @@ import * as cheerio from 'cheerio';
 
 const ORIGIN = 'http://jbtta.pingpongkorea.com';
 const BOARD = ORIGIN + '/bbs/board.php?bo_table=community_09';
+const NEWTT_ORIGIN = 'https://www.newttplay.co.kr';
+const NEWTT_BOARD = NEWTT_ORIGIN + '/bbs/board.php?bo_table=gamecup';
 const UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131 Safari/537.36';
 const OUTPUT = 'src/data/jbtta-2026.json';
 const JEONBUK = ['전주','군산','익산','정읍','남원','김제','완주','진안','무주','장수','임실','순창','고창','부안','전북','전라북도','전북특별자치도'];
@@ -145,6 +147,106 @@ async function ocrImage(url, index) {
   }
 }
 
+
+function matchKey(value='') {
+  return clean(value)
+    .replace(/댓글\+?\d+개/g,'')
+    .replace(/2026년?/g,'')
+    .replace(/전국|오픈|동호인|탁구|대회|요강|전북특별자치도|전라북도/g,'')
+    .replace(/[^가-힣A-Za-z0-9]/g,'')
+    .toLowerCase();
+}
+
+function bigrams(value='') {
+  const s=matchKey(value);
+  const set=new Set();
+  if (s.length<2) { if (s) set.add(s); return set; }
+  for (let i=0;i<s.length-1;i++) set.add(s.slice(i,i+2));
+  return set;
+}
+
+function titleScore(a,b) {
+  const aa=bigrams(a), bb=bigrams(b);
+  if (!aa.size || !bb.size) return 0;
+  let intersect=0;
+  for (const x of aa) if (bb.has(x)) intersect++;
+  return (2*intersect)/(aa.size+bb.size);
+}
+
+async function collectNewttIndex() {
+  const rows=[];
+  const seen=new Set();
+  for (let page=1;page<=8;page++) {
+    try {
+      const html=await (await fetchResponse(NEWTT_BOARD+'&page='+page)).text();
+      const $=cheerio.load(html);
+      $('a[href*="bo_table=gamecup"][href*="wr_id="]').each((_i,el)=>{
+        const href=$(el).attr('href')||'';
+        const title=clean($(el).text());
+        if (!title || !/(탁구|대회)/.test(title)) return;
+        const url=new URL(href,NEWTT_ORIGIN).toString();
+        const u=new URL(url);
+        const wrId=u.searchParams.get('wr_id');
+        if (!wrId || seen.has(wrId)) return;
+        seen.add(wrId);
+        rows.push({title,url});
+      });
+    } catch(e) {
+      console.log('newtt index page failed',page,String(e).slice(0,160));
+    }
+  }
+  console.log('newtt indexed events:',rows.length);
+  return rows;
+}
+
+async function enrichFromNewtt(candidate,indexRows) {
+  let best=null;
+  let bestScore=0;
+  for (const row of indexRows) {
+    const score=titleScore(candidate.title,row.title);
+    if (score>bestScore) { best=row; bestScore=score; }
+  }
+  if (!best || bestScore<0.50) return null;
+  try {
+    const html=await (await fetchResponse(best.url)).text();
+    const $=cheerio.load(html);
+    const text=$('body').text().replace(/\r/g,'\n').replace(/[ \t]+/g,' ');
+    const eventMatch=text.match(/대회일자\s*[:：]?\s*(20\d{2})[-./](\d{1,2})[-./](\d{1,2})\s*~\s*(20\d{2})[-./](\d{1,2})[-./](\d{1,2})/);
+    if (!eventMatch) return null;
+    const event={
+      start:parseYmd(eventMatch[1],eventMatch[2],eventMatch[3]),
+      end:parseYmd(eventMatch[4],eventMatch[5],eventMatch[6])
+    };
+    if (!event.start || !event.start.startsWith('2026-')) return null;
+
+    let reg={start:null,end:null};
+    const regMatch=text.match(/접수\s*일시\s*[:：]?\s*(20\d{2})[-./](\d{1,2})[-./](\d{1,2})[\s\S]{0,80}?~\s*(20\d{2})[-./](\d{1,2})[-./](\d{1,2})/);
+    if (regMatch) {
+      reg={
+        start:parseYmd(regMatch[1],regMatch[2],regMatch[3]),
+        end:parseYmd(regMatch[4],regMatch[5],regMatch[6])
+      };
+    } else {
+      const closeMatch=text.match(/접수마감(?:일시)?\s*[:：]?\s*(20\d{2})[-./](\d{1,2})[-./](\d{1,2})/);
+      if (closeMatch) reg.end=parseYmd(closeMatch[1],closeMatch[2],closeMatch[3]);
+    }
+
+    let venue='';
+    const venueMatch=text.match(/위치\s*[:：]?\s*전북\s+([\s\S]{1,120}?)(?:주소|대회일자|접수)/);
+    if (venueMatch) venue=clean(venueMatch[1].replace(/\[Input\]/g,'')).slice(0,160);
+    if (!venue) {
+      const placeMatch=text.match(/장\s*소\s*[:：]\s*([^\n]{2,120})/);
+      if (placeMatch) venue=clean(placeMatch[1]).slice(0,160);
+    }
+
+    console.log('NEWTT MATCH',candidate.wrId,'score',bestScore.toFixed(2),best.title,event.start,event.end,venue);
+    return {event:{start:event.start,end:event.end===event.start?null:event.end},reg,venue};
+  } catch(e) {
+    console.log('newtt detail failed',candidate.wrId,String(e).slice(0,160));
+    return null;
+  }
+}
+
 async function collectCandidates() {
   const map=new Map();
   for (let page=1; page<=8; page++) {
@@ -257,28 +359,33 @@ async function parseDetail(c) {
 
 const candidates=await collectCandidates();
 console.log('total candidate posts:',candidates.length);
+const newttIndex=await collectNewttIndex();
 const output=[];
 
 for (const c of candidates) {
   try {
     const d=await parseDetail(c);
-    if (!d.event || !d.event.start.startsWith('2026-')) {
-      console.log('skip year/date',c.wrId,c.title,d.event);
+    const newtt=await enrichFromNewtt(c,newttIndex);
+    const event=newtt?.event || d.event;
+    const reg=newtt?.reg || d.reg;
+    const venue=newtt?.venue || d.venue;
+    if (!event || !event.start.startsWith('2026-')) {
+      console.log('skip year/date',c.wrId,c.title,event);
       continue;
     }
-    if (!isJeonbuk(c.title,d.venue,d.combined)) {
+    if (!isJeonbuk(c.title,venue,d.combined)) {
       console.log('skip outside Jeonbuk',c.wrId,c.title,'venue=',d.venue);
       continue;
     }
     const item={
       id:'jbtta-'+c.wrId,
       title:cleanTitle(c.title.replace(/\s*요강(?:\s*\([^)]*\))?\s*$/,'').trim()),
-      eventStartDate:d.event.start,
-      eventEndDate:d.event.end,
-      registrationStartDate:d.reg.start,
-      registrationEndDate:d.reg.end,
-      venue:d.venue||'요강 참조',
-      status:status(d.event,d.reg),
+      eventStartDate:event.start,
+      eventEndDate:event.end,
+      registrationStartDate:reg.start,
+      registrationEndDate:reg.end,
+      venue:venue||'요강 참조',
+      status:status(event,reg),
       sourceUrl:c.url,
       visibility:'public',
       createdAt:'2026-01-01T00:00:00.000Z',
