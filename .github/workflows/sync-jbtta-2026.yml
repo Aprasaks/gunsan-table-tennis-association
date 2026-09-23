@@ -26,7 +26,10 @@ jobs:
           node-version: 22
 
       - run: npm install
-      - run: node scripts/sync-jbtta-2026.mjs
+      - name: Crawl Jeonbuk tournament board
+        run: node scripts/sync-jbtta-2026.mjs
+        env:
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'
 
       - name: Commit updated tournament data
         run: |
