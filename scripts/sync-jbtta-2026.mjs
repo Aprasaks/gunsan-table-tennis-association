@@ -269,6 +269,24 @@ async function collectCandidates() {
   return [...map.values()].sort((a,b)=>Number(b.wrId)-Number(a.wrId));
 }
 
+
+async function mirrorGuidelineImage(url, wrId, index) {
+  try {
+    const res=await fetchResponse(url,'image/*,*/*');
+    const bytes=Buffer.from(await res.arrayBuffer());
+    const contentType=res.headers.get('content-type')||'image/jpeg';
+    const ext=contentType.includes('png')?'.png':contentType.includes('webp')?'.webp':contentType.includes('gif')?'.gif':'.jpg';
+    const dir=path.join('public','jbtta','2026',String(wrId));
+    await fs.mkdir(dir,{recursive:true});
+    const fileName='guideline-'+String(index+1).padStart(2,'0')+ext;
+    await fs.writeFile(path.join(dir,fileName),bytes);
+    return '/jbtta/2026/'+wrId+'/'+fileName;
+  } catch(e) {
+    console.log('mirror image failed',wrId,url,String(e).slice(0,160));
+    return url;
+  }
+}
+
 async function parseDetail(c) {
   const html=await (await fetchResponse(c.url)).text();
   const $=cheerio.load(html);
@@ -339,24 +357,31 @@ async function parseDetail(c) {
   const reg=extractRegistration(hwpText+'\n'+ocrText) || extractRegistration(bodyText);
   const venue=extractVenue(hwpText+'\n'+ocrText) || extractVenue(bodyText);
 
+  const mirroredImages=[];
+  for (let i=0;i<images.length;i++) {
+    const localUrl=await mirrorGuidelineImage(images[i],c.wrId,i);
+    mirroredImages.push({
+      id:'jbtta-'+c.wrId+'-img-'+i,
+      fileName:'요강 이미지 '+(i+1),
+      fileType:'image',
+      mimeType:'image/*',
+      fileKind:'guideline_image',
+      storagePath:'',
+      publicUrl:localUrl,
+      sortOrder:i,
+    });
+  }
+
   return {
     event,reg,venue,combined,
     files:[
-      ...images.map((url,i)=>({
-        id:'jbtta-'+c.wrId+'-img-'+i,
-        fileName:'요강 이미지 '+(i+1),
-        fileType:'image',
-        mimeType:'image/*',
-        fileKind:'guideline_image',
-        storagePath:'',
-        publicUrl:url,
-        sortOrder:i,
-      })),
+      ...mirroredImages,
       ...files,
     ]
   };
 }
 
+await fs.rm(path.join('public','jbtta','2026'),{recursive:true,force:true});
 const candidates=await collectCandidates();
 console.log('total candidate posts:',candidates.length);
 const newttIndex=await collectNewttIndex();
