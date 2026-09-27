@@ -42,7 +42,7 @@ export default function NewNoticePage() {
 
   useEffect(() => {
     refreshCurrentUser().then((currentUser) => {
-      if (!currentUser?.associationTitle || currentUser.role === 'admin') { router.replace('/login'); return; }
+      if (!currentUser || (currentUser.role !== 'admin' && !currentUser.associationTitle)) { router.replace('/login'); return; }
       setReady(true);
     });
   }, [router]);
