@@ -13,6 +13,10 @@ export function db() {
   return client;
 }
 
+export function logServerError(context: string, error: unknown) {
+  console.error(context, error instanceof Error ? { message: error.message, stack: error.stack } : error);
+}
+
 function secret() {
   const value = process.env.ADMIN_SESSION_SECRET ?? process.env.ADMIN_PASSWORD;
   if (!value) throw new Error('ADMIN_SESSION_SECRET 또는 ADMIN_PASSWORD를 설정해주세요.');
