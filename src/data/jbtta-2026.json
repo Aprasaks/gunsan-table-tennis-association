@@ -1,5 +1,57 @@
 [
   {
+    "id": "jbtta-1573",
+    "title": "제32회 전주시장기 어르신탁구대회 세부",
+    "eventStartDate": "2026-03-14",
+    "eventEndDate": "2026-03-15",
+    "registrationStartDate": "2026-02-23",
+    "registrationEndDate": "2026-02-26",
+    "venue": "전주화산체육관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1573&page=2",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:54.314Z",
+    "files": [
+      {
+        "id": "jbtta-1573-file-0",
+        "fileName": "탁구대회.pdf",
+        "fileType": "pdf",
+        "mimeType": "text/html",
+        "fileKind": "attachment",
+        "storagePath": "public/jbtta/2026/1573/attachment-01-탁구대회.pdf",
+        "publicUrl": "/jbtta/2026/1573/attachment-01-%ED%83%81%EA%B5%AC%EB%8C%80%ED%9A%8C.pdf",
+        "sortOrder": 100
+      }
+    ]
+  },
+  {
+    "id": "jbtta-1572",
+    "title": "제32회 전주시장배 전국오픈 동호인 및 어르신탁구대회",
+    "eventStartDate": "2026-03-14",
+    "eventEndDate": "2026-03-15",
+    "registrationStartDate": "2026-02-23",
+    "registrationEndDate": "2026-02-26",
+    "venue": "전주화산체육관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1572&page=2",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:56.093Z",
+    "files": [
+      {
+        "id": "jbtta-1572-file-0",
+        "fileName": "요강.pdf",
+        "fileType": "pdf",
+        "mimeType": "text/html",
+        "fileKind": "attachment",
+        "storagePath": "public/jbtta/2026/1572/attachment-01-요강.pdf",
+        "publicUrl": "/jbtta/2026/1572/attachment-01-%EC%9A%94%EA%B0%95.pdf",
+        "sortOrder": 100
+      }
+    ]
+  },
+  {
     "id": "jbtta-1683",
     "title": "제33회 전주시장배 어르신 탁구대회",
     "eventStartDate": "2026-03-14",
@@ -11,36 +63,42 @@
     "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1683&page=1",
     "visibility": "public",
     "createdAt": "2026-01-01T00:00:00.000Z",
-    "updatedAt": "2026-09-23T03:47:10.943Z",
+    "updatedAt": "2026-09-27T13:28:33.266Z",
     "files": [
-      {
-        "id": "jbtta-1683-img-0",
-        "fileName": "요강 이미지 1",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1683/guideline-01.png",
-        "sortOrder": 0
-      },
-      {
-        "id": "jbtta-1683-img-1",
-        "fileName": "요강 이미지 2",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1683/guideline-02.png",
-        "sortOrder": 1
-      },
       {
         "id": "jbtta-1683-file-0",
         "fileName": "탁구대회.pdf",
         "fileType": "pdf",
         "mimeType": "text/html",
         "fileKind": "attachment",
-        "storagePath": "",
-        "publicUrl": "http://jbtta.pingpongkorea.com/bbs/download.php?bo_table=community_09&wr_id=1683&no=0&page=1",
+        "storagePath": "public/jbtta/2026/1683/attachment-01-탁구대회.pdf",
+        "publicUrl": "/jbtta/2026/1683/attachment-01-%ED%83%81%EA%B5%AC%EB%8C%80%ED%9A%8C.pdf",
+        "sortOrder": 100
+      }
+    ]
+  },
+  {
+    "id": "jbtta-1682",
+    "title": "제33회 전주시장배 전국오픈동호인 및 어르신탁구대회",
+    "eventStartDate": "2026-03-14",
+    "eventEndDate": "2026-03-15",
+    "registrationStartDate": "2026-02-23",
+    "registrationEndDate": "2026-02-26",
+    "venue": "전주화산체육관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1682&page=1",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:34.994Z",
+    "files": [
+      {
+        "id": "jbtta-1682-file-0",
+        "fileName": "요강완료.pdf",
+        "fileType": "pdf",
+        "mimeType": "text/html",
+        "fileKind": "attachment",
+        "storagePath": "public/jbtta/2026/1682/attachment-01-요강완료.pdf",
+        "publicUrl": "/jbtta/2026/1682/attachment-01-%EC%9A%94%EA%B0%95%EC%99%84%EB%A3%8C.pdf",
         "sortOrder": 100
       }
     ]
@@ -57,49 +115,157 @@
     "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1695&page=1",
     "visibility": "public",
     "createdAt": "2026-01-01T00:00:00.000Z",
-    "updatedAt": "2026-09-23T03:47:05.396Z",
+    "updatedAt": "2026-09-27T13:28:30.310Z",
+    "files": []
+  },
+  {
+    "id": "jbtta-1689",
+    "title": "2026 군산시 진포배 전북동호인 탁구대회 #웹툰",
+    "eventStartDate": "2026-03-20",
+    "eventEndDate": "2026-03-22",
+    "registrationStartDate": "2026-03-09",
+    "registrationEndDate": "2026-03-11",
+    "venue": "군산 월명체육관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1689&page=1",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:31.517Z",
+    "files": []
+  },
+  {
+    "id": "jbtta-1564",
+    "title": "제29회 마이산컵전국탁구대회 요강 공지",
+    "eventStartDate": "2026-04-18",
+    "eventEndDate": "2026-04-19",
+    "registrationStartDate": "2026-04-01",
+    "registrationEndDate": "2026-04-06",
+    "venue": "진안군 문예체육회관, 반다비체육센터",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1564&page=2",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:59.952Z",
     "files": [
       {
-        "id": "jbtta-1695-img-0",
-        "fileName": "요강 이미지 1",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1695/guideline-01.png",
-        "sortOrder": 0
-      },
-      {
-        "id": "jbtta-1695-img-1",
-        "fileName": "요강 이미지 2",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1695/guideline-02.png",
-        "sortOrder": 1
-      },
-      {
-        "id": "jbtta-1695-img-2",
-        "fileName": "요강 이미지 3",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1695/guideline-03.png",
-        "sortOrder": 2
-      },
-      {
-        "id": "jbtta-1695-img-3",
-        "fileName": "요강 이미지 4",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1695/guideline-04.png",
-        "sortOrder": 3
+        "id": "jbtta-1564-file-0",
+        "fileName": "초안V4.pdf",
+        "fileType": "pdf",
+        "mimeType": "text/html",
+        "fileKind": "attachment",
+        "storagePath": "public/jbtta/2026/1564/attachment-01-초안V4.pdf",
+        "publicUrl": "/jbtta/2026/1564/attachment-01-%EC%B4%88%EC%95%88V4.pdf",
+        "sortOrder": 100
       }
     ]
+  },
+  {
+    "id": "jbtta-1704",
+    "title": "제30회 마이산컵전국탁구대회 공지",
+    "eventStartDate": "2026-04-18",
+    "eventEndDate": "2026-04-19",
+    "registrationStartDate": "2026-04-01",
+    "registrationEndDate": "2026-04-06",
+    "venue": "진안군 문예체육회관, 반다비체육센터",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1704&page=1",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:27.198Z",
+    "files": [
+      {
+        "id": "jbtta-1704-file-0",
+        "fileName": "요강최종.pdf",
+        "fileType": "pdf",
+        "mimeType": "text/html",
+        "fileKind": "attachment",
+        "storagePath": "public/jbtta/2026/1704/attachment-01-요강최종.pdf",
+        "publicUrl": "/jbtta/2026/1704/attachment-01-%EC%9A%94%EA%B0%95%EC%B5%9C%EC%A2%85.pdf",
+        "sortOrder": 100
+      }
+    ]
+  },
+  {
+    "id": "jbtta-1719",
+    "title": "2026 군산 아리울 동호인배 탁구대회 추가인원 모집",
+    "eventStartDate": "2026-04-25",
+    "eventEndDate": "2026-04-26",
+    "registrationStartDate": "2026-04-06",
+    "registrationEndDate": "2026-04-17",
+    "venue": "군산 월명체육관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1719&page=1",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:20.184Z",
+    "files": []
+  },
+  {
+    "id": "jbtta-1708",
+    "title": "2026 군산 아리울배 동호인 탁구대회",
+    "eventStartDate": "2026-04-25",
+    "eventEndDate": "2026-04-26",
+    "registrationStartDate": "2026-04-06",
+    "registrationEndDate": "2026-04-17",
+    "venue": "군산 월명체육관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1708&page=1",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:25.072Z",
+    "files": [
+      {
+        "id": "jbtta-1708-file-0",
+        "fileName": "요강.pdf",
+        "fileType": "pdf",
+        "mimeType": "text/html",
+        "fileKind": "attachment",
+        "storagePath": "public/jbtta/2026/1708/attachment-01-요강.pdf",
+        "publicUrl": "/jbtta/2026/1708/attachment-01-%EC%9A%94%EA%B0%95.pdf",
+        "sortOrder": 100
+      }
+    ]
+  },
+  {
+    "id": "jbtta-1548",
+    "title": "제13회 고창모양성배 전국동호인 탁구대회",
+    "eventStartDate": "2026-05-02",
+    "eventEndDate": "2026-05-03",
+    "registrationStartDate": "2026-04-20",
+    "registrationEndDate": "2026-04-23",
+    "venue": "고창군립체육관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1548&page=3",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:29:04.586Z",
+    "files": [
+      {
+        "id": "jbtta-1548-file-0",
+        "fileName": "-최종-2.hwp",
+        "fileType": "hwp",
+        "mimeType": "text/html",
+        "fileKind": "attachment",
+        "storagePath": "public/jbtta/2026/1548/attachment-01--최종-2.hwp",
+        "publicUrl": "/jbtta/2026/1548/attachment-01--%EC%B5%9C%EC%A2%85-2.hwp",
+        "sortOrder": 100
+      }
+    ]
+  },
+  {
+    "id": "jbtta-1558",
+    "title": "제13회 고창모양성배 전국동호인 탁구대회-행정안내공지사항",
+    "eventStartDate": "2026-05-02",
+    "eventEndDate": "2026-05-03",
+    "registrationStartDate": "2026-04-20",
+    "registrationEndDate": "2026-04-23",
+    "venue": "고창군립체육관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1558&page=2",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:29:01.286Z",
+    "files": []
   },
   {
     "id": "jbtta-1709",
@@ -113,69 +279,94 @@
     "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1709&page=1",
     "visibility": "public",
     "createdAt": "2026-01-01T00:00:00.000Z",
-    "updatedAt": "2026-09-23T03:46:53.967Z",
+    "updatedAt": "2026-09-27T13:28:22.925Z",
     "files": [
-      {
-        "id": "jbtta-1709-img-0",
-        "fileName": "요강 이미지 1",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1709/guideline-01.jpg",
-        "sortOrder": 0
-      },
-      {
-        "id": "jbtta-1709-img-1",
-        "fileName": "요강 이미지 2",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1709/guideline-02.jpg",
-        "sortOrder": 1
-      },
-      {
-        "id": "jbtta-1709-img-2",
-        "fileName": "요강 이미지 3",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1709/guideline-03.jpg",
-        "sortOrder": 2
-      },
-      {
-        "id": "jbtta-1709-img-3",
-        "fileName": "요강 이미지 4",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1709/guideline-04.jpg",
-        "sortOrder": 3
-      },
-      {
-        "id": "jbtta-1709-img-4",
-        "fileName": "요강 이미지 5",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1709/guideline-05.jpg",
-        "sortOrder": 4
-      },
       {
         "id": "jbtta-1709-file-0",
         "fileName": "대회요강-수정본.hwp",
         "fileType": "hwp",
         "mimeType": "text/html",
         "fileKind": "attachment",
-        "storagePath": "",
-        "publicUrl": "http://jbtta.pingpongkorea.com/bbs/download.php?bo_table=community_09&wr_id=1709&no=0&page=1",
+        "storagePath": "public/jbtta/2026/1709/attachment-01-대회요강-수정본.hwp",
+        "publicUrl": "/jbtta/2026/1709/attachment-01-%EB%8C%80%ED%9A%8C%EC%9A%94%EA%B0%95-%EC%88%98%EC%A0%95%EB%B3%B8.hwp",
         "sortOrder": 100
       }
     ]
+  },
+  {
+    "id": "jbtta-1728",
+    "title": "제14회 고창모양성배 탁구대회 공지사항 - 시상금 및 경기시간 안내",
+    "eventStartDate": "2026-05-02",
+    "eventEndDate": "2026-05-03",
+    "registrationStartDate": "2026-04-20",
+    "registrationEndDate": "2026-04-23",
+    "venue": "고창군립체육관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1728&page=1",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:17.536Z",
+    "files": []
+  },
+  {
+    "id": "jbtta-1454",
+    "title": "제1회 백제왕도 익산 전국 오픈 탁구대회 경기일정표",
+    "eventStartDate": "2026-05-23",
+    "eventEndDate": "2026-05-24",
+    "registrationStartDate": "2026-05-06",
+    "registrationEndDate": "2026-05-08",
+    "venue": "익산시 실내체육관, 익산국민생활관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1454&page=3",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:29:26.172Z",
+    "files": []
+  },
+  {
+    "id": "jbtta-1577",
+    "title": "제2회 백제왕도 익산 전국 오픈 탁구대회",
+    "eventStartDate": "2026-05-23",
+    "eventEndDate": "2026-05-24",
+    "registrationStartDate": "2026-05-06",
+    "registrationEndDate": "2026-05-08",
+    "venue": "익산시 실내체육관, 익산국민생활관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1577&page=2",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:52.304Z",
+    "files": []
+  },
+  {
+    "id": "jbtta-1583",
+    "title": "제2회 백제왕도 익산 전국 오픈 탁구대회 경기일정표",
+    "eventStartDate": "2026-05-23",
+    "eventEndDate": "2026-05-24",
+    "registrationStartDate": "2026-05-06",
+    "registrationEndDate": "2026-05-08",
+    "venue": "익산시 실내체육관, 익산국민생활관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1583&page=2",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:49.912Z",
+    "files": []
+  },
+  {
+    "id": "jbtta-1582",
+    "title": "제2회 백제왕도 익산 탁구대회 초과접수 관련 안내.",
+    "eventStartDate": "2026-05-23",
+    "eventEndDate": "2026-05-24",
+    "registrationStartDate": "2026-05-06",
+    "registrationEndDate": "2026-05-08",
+    "venue": "익산시 실내체육관, 익산국민생활관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1582&page=2",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:51.103Z",
+    "files": []
   },
   {
     "id": "jbtta-1723",
@@ -189,59 +380,68 @@
     "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1723&page=1",
     "visibility": "public",
     "createdAt": "2026-01-01T00:00:00.000Z",
-    "updatedAt": "2026-09-23T03:46:41.684Z",
-    "files": [
-      {
-        "id": "jbtta-1723-img-0",
-        "fileName": "요강 이미지 1",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1723/guideline-01.jpg",
-        "sortOrder": 0
-      },
-      {
-        "id": "jbtta-1723-img-1",
-        "fileName": "요강 이미지 2",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1723/guideline-02.jpg",
-        "sortOrder": 1
-      },
-      {
-        "id": "jbtta-1723-img-2",
-        "fileName": "요강 이미지 3",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1723/guideline-03.jpg",
-        "sortOrder": 2
-      },
-      {
-        "id": "jbtta-1723-img-3",
-        "fileName": "요강 이미지 4",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1723/guideline-04.jpg",
-        "sortOrder": 3
-      },
-      {
-        "id": "jbtta-1723-img-4",
-        "fileName": "요강 이미지 5",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1723/guideline-05.jpg",
-        "sortOrder": 4
-      }
-    ]
+    "updatedAt": "2026-09-27T13:28:18.987Z",
+    "files": []
+  },
+  {
+    "id": "jbtta-1729",
+    "title": "제3회 백제왕도 익산 전국 오픈 탁구대회 경기일정표",
+    "eventStartDate": "2026-05-23",
+    "eventEndDate": "2026-05-24",
+    "registrationStartDate": "2026-05-06",
+    "registrationEndDate": "2026-05-08",
+    "venue": "익산시 실내체육관, 익산국민생활관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1729&page=1",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:16.343Z",
+    "files": []
+  },
+  {
+    "id": "jbtta-1453",
+    "title": "제5회 전라감영배 탁구대회",
+    "eventStartDate": "2026-06-20",
+    "eventEndDate": "2026-06-21",
+    "registrationStartDate": "2026-06-08",
+    "registrationEndDate": "2026-06-10",
+    "venue": "전주화산체육관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1453&page=3",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:29:27.371Z",
+    "files": []
+  },
+  {
+    "id": "jbtta-1585",
+    "title": "제6회 전라감영배 전국오픈 동호인 탁구대회",
+    "eventStartDate": "2026-06-20",
+    "eventEndDate": "2026-06-21",
+    "registrationStartDate": "2026-06-08",
+    "registrationEndDate": "2026-06-10",
+    "venue": "전주화산체육관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1585&page=2",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:48.714Z",
+    "files": []
+  },
+  {
+    "id": "jbtta-1589",
+    "title": "제6회 전라감영배 전국오픈 탁구대회 공지(링크)",
+    "eventStartDate": "2026-06-20",
+    "eventEndDate": "2026-06-21",
+    "registrationStartDate": "2026-06-08",
+    "registrationEndDate": "2026-06-10",
+    "venue": "전주화산체육관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1589&page=2",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:47.504Z",
+    "files": []
   },
   {
     "id": "jbtta-1731",
@@ -255,59 +455,49 @@
     "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1731&page=1",
     "visibility": "public",
     "createdAt": "2026-01-01T00:00:00.000Z",
-    "updatedAt": "2026-09-23T03:46:30.972Z",
+    "updatedAt": "2026-09-27T13:28:15.163Z",
+    "files": []
+  },
+  {
+    "id": "jbtta-1549",
+    "title": "제16회 남원시장기 전국 탁구대회",
+    "eventStartDate": "2026-07-04",
+    "eventEndDate": "2026-07-05",
+    "registrationStartDate": "2026-06-22",
+    "registrationEndDate": "2026-06-24",
+    "venue": "남원 춘향골 체육관 외 1개소",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1549&page=3",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:29:02.864Z",
     "files": [
       {
-        "id": "jbtta-1731-img-0",
-        "fileName": "요강 이미지 1",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1731/guideline-01.png",
-        "sortOrder": 0
-      },
-      {
-        "id": "jbtta-1731-img-1",
-        "fileName": "요강 이미지 2",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1731/guideline-02.png",
-        "sortOrder": 1
-      },
-      {
-        "id": "jbtta-1731-img-2",
-        "fileName": "요강 이미지 3",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1731/guideline-03.png",
-        "sortOrder": 2
-      },
-      {
-        "id": "jbtta-1731-img-3",
-        "fileName": "요강 이미지 4",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1731/guideline-04.png",
-        "sortOrder": 3
-      },
-      {
-        "id": "jbtta-1731-img-4",
-        "fileName": "요강 이미지 5",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1731/guideline-05.png",
-        "sortOrder": 4
+        "id": "jbtta-1549-file-0",
+        "fileName": "요강안.hwp",
+        "fileType": "hwp",
+        "mimeType": "text/html",
+        "fileKind": "attachment",
+        "storagePath": "public/jbtta/2026/1549/attachment-01-요강안.hwp",
+        "publicUrl": "/jbtta/2026/1549/attachment-01-%EC%9A%94%EA%B0%95%EC%95%88.hwp",
+        "sortOrder": 100
       }
     ]
+  },
+  {
+    "id": "jbtta-1567",
+    "title": "제16회 남원시장기 탁구대회 경기 일정 안내",
+    "eventStartDate": "2026-07-04",
+    "eventEndDate": "2026-07-05",
+    "registrationStartDate": "2026-06-22",
+    "registrationEndDate": "2026-06-24",
+    "venue": "남원 춘향골 체육관 외 1개소",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1567&page=2",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:57.433Z",
+    "files": []
   },
   {
     "id": "jbtta-1732",
@@ -321,56 +511,42 @@
     "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1732&page=1",
     "visibility": "public",
     "createdAt": "2026-01-01T00:00:00.000Z",
-    "updatedAt": "2026-09-23T03:46:20.156Z",
+    "updatedAt": "2026-09-27T13:28:13.806Z",
     "files": [
-      {
-        "id": "jbtta-1732-img-0",
-        "fileName": "요강 이미지 1",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1732/guideline-01.jpg",
-        "sortOrder": 0
-      },
-      {
-        "id": "jbtta-1732-img-1",
-        "fileName": "요강 이미지 2",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1732/guideline-02.jpg",
-        "sortOrder": 1
-      },
-      {
-        "id": "jbtta-1732-img-2",
-        "fileName": "요강 이미지 3",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1732/guideline-03.jpg",
-        "sortOrder": 2
-      },
-      {
-        "id": "jbtta-1732-img-3",
-        "fileName": "요강 이미지 4",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1732/guideline-04.jpg",
-        "sortOrder": 3
-      },
       {
         "id": "jbtta-1732-file-0",
         "fileName": "요강.hwp",
         "fileType": "hwp",
         "mimeType": "text/html",
         "fileKind": "attachment",
-        "storagePath": "",
-        "publicUrl": "http://jbtta.pingpongkorea.com/bbs/download.php?bo_table=community_09&wr_id=1732&no=0&page=1",
+        "storagePath": "public/jbtta/2026/1732/attachment-01-요강.hwp",
+        "publicUrl": "/jbtta/2026/1732/attachment-01-%EC%9A%94%EA%B0%95.hwp",
+        "sortOrder": 100
+      }
+    ]
+  },
+  {
+    "id": "jbtta-1739",
+    "title": "제17회 남원시장기 탁구대회 경기 시간 등 안내",
+    "eventStartDate": "2026-07-04",
+    "eventEndDate": "2026-07-05",
+    "registrationStartDate": "2026-06-22",
+    "registrationEndDate": "2026-06-24",
+    "venue": "남원 춘향골 체육관 외 1개소",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1739&page=1",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:08.603Z",
+    "files": [
+      {
+        "id": "jbtta-1739-file-0",
+        "fileName": "안내안.hwp",
+        "fileType": "hwp",
+        "mimeType": "text/html",
+        "fileKind": "attachment",
+        "storagePath": "public/jbtta/2026/1739/attachment-01-안내안.hwp",
+        "publicUrl": "/jbtta/2026/1739/attachment-01-%EC%95%88%EB%82%B4%EC%95%88.hwp",
         "sortOrder": 100
       }
     ]
@@ -387,86 +563,83 @@
     "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1736&page=1",
     "visibility": "public",
     "createdAt": "2026-01-01T00:00:00.000Z",
-    "updatedAt": "2026-09-23T03:45:52.295Z",
+    "updatedAt": "2026-09-27T13:28:10.350Z",
     "files": [
-      {
-        "id": "jbtta-1736-img-0",
-        "fileName": "요강 이미지 1",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1736/guideline-01.jpg",
-        "sortOrder": 0
-      },
-      {
-        "id": "jbtta-1736-img-1",
-        "fileName": "요강 이미지 2",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1736/guideline-02.jpg",
-        "sortOrder": 1
-      },
-      {
-        "id": "jbtta-1736-img-2",
-        "fileName": "요강 이미지 3",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1736/guideline-03.jpg",
-        "sortOrder": 2
-      },
-      {
-        "id": "jbtta-1736-img-3",
-        "fileName": "요강 이미지 4",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1736/guideline-04.jpg",
-        "sortOrder": 3
-      },
-      {
-        "id": "jbtta-1736-img-4",
-        "fileName": "요강 이미지 5",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1736/guideline-05.jpg",
-        "sortOrder": 4
-      },
-      {
-        "id": "jbtta-1736-img-5",
-        "fileName": "요강 이미지 6",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1736/guideline-06.jpg",
-        "sortOrder": 5
-      },
-      {
-        "id": "jbtta-1736-img-6",
-        "fileName": "요강 이미지 7",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1736/guideline-07.jpg",
-        "sortOrder": 6
-      },
       {
         "id": "jbtta-1736-file-0",
         "fileName": "final.pdf",
         "fileType": "pdf",
         "mimeType": "text/html",
         "fileKind": "attachment",
-        "storagePath": "",
-        "publicUrl": "http://jbtta.pingpongkorea.com/bbs/download.php?bo_table=community_09&wr_id=1736&no=0&page=1",
+        "storagePath": "public/jbtta/2026/1736/attachment-01-final.pdf",
+        "publicUrl": "/jbtta/2026/1736/attachment-01-final.pdf",
+        "sortOrder": 100
+      }
+    ]
+  },
+  {
+    "id": "jbtta-1741",
+    "title": "2026 군산시 새만금배 전국 동호인 탁구대회 경기시간 및 주차안내 (수정0709)",
+    "eventStartDate": "2026-07-10",
+    "eventEndDate": "2026-07-12",
+    "registrationStartDate": "2026-06-29",
+    "registrationEndDate": "2026-07-05",
+    "venue": "군산시 실내배드민턴장",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1741&page=1",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:07.010Z",
+    "files": []
+  },
+  {
+    "id": "jbtta-1459",
+    "title": "제10회 무주 반딧불이배 전국 오픈 탁구대회",
+    "eventStartDate": "2026-07-18",
+    "eventEndDate": "2026-07-19",
+    "registrationStartDate": "2026-07-06",
+    "registrationEndDate": "2026-07-10",
+    "venue": "무주국민체육센터, 군민탁구장",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1459&page=3",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:29:24.806Z",
+    "files": [
+      {
+        "id": "jbtta-1459-file-0",
+        "fileName": "요강.hwp",
+        "fileType": "hwp",
+        "mimeType": "text/html",
+        "fileKind": "attachment",
+        "storagePath": "public/jbtta/2026/1459/attachment-01-요강.hwp",
+        "publicUrl": "/jbtta/2026/1459/attachment-01-%EC%9A%94%EA%B0%95.hwp",
+        "sortOrder": 100
+      }
+    ]
+  },
+  {
+    "id": "jbtta-1592",
+    "title": "제11회 무주 반딧불이배 전국 오픈 탁구대회",
+    "eventStartDate": "2026-07-18",
+    "eventEndDate": "2026-07-19",
+    "registrationStartDate": "2026-07-06",
+    "registrationEndDate": "2026-07-10",
+    "venue": "무주국민체육센터, 군민탁구장",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1592&page=2",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:44.422Z",
+    "files": [
+      {
+        "id": "jbtta-1592-file-0",
+        "fileName": "요강.pdf",
+        "fileType": "pdf",
+        "mimeType": "text/html",
+        "fileKind": "attachment",
+        "storagePath": "public/jbtta/2026/1592/attachment-01-요강.pdf",
+        "publicUrl": "/jbtta/2026/1592/attachment-01-%EC%9A%94%EA%B0%95.pdf",
         "sortOrder": 100
       }
     ]
@@ -483,89 +656,101 @@
     "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1734&page=1",
     "visibility": "public",
     "createdAt": "2026-01-01T00:00:00.000Z",
-    "updatedAt": "2026-09-23T03:46:08.229Z",
+    "updatedAt": "2026-09-27T13:28:12.089Z",
     "files": [
-      {
-        "id": "jbtta-1734-img-0",
-        "fileName": "요강 이미지 1",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1734/guideline-01.jpg",
-        "sortOrder": 0
-      },
-      {
-        "id": "jbtta-1734-img-1",
-        "fileName": "요강 이미지 2",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1734/guideline-02.jpg",
-        "sortOrder": 1
-      },
-      {
-        "id": "jbtta-1734-img-2",
-        "fileName": "요강 이미지 3",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1734/guideline-03.jpg",
-        "sortOrder": 2
-      },
-      {
-        "id": "jbtta-1734-img-3",
-        "fileName": "요강 이미지 4",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1734/guideline-04.jpg",
-        "sortOrder": 3
-      },
-      {
-        "id": "jbtta-1734-img-4",
-        "fileName": "요강 이미지 5",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1734/guideline-05.jpg",
-        "sortOrder": 4
-      },
-      {
-        "id": "jbtta-1734-img-5",
-        "fileName": "요강 이미지 6",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1734/guideline-06.jpg",
-        "sortOrder": 5
-      },
-      {
-        "id": "jbtta-1734-img-6",
-        "fileName": "요강 이미지 7",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1734/guideline-07.jpg",
-        "sortOrder": 6
-      },
       {
         "id": "jbtta-1734-file-0",
         "fileName": "요강.hwp",
         "fileType": "hwp",
         "mimeType": "text/html",
         "fileKind": "attachment",
-        "storagePath": "",
-        "publicUrl": "http://jbtta.pingpongkorea.com/bbs/download.php?bo_table=community_09&wr_id=1734&no=0&page=1",
+        "storagePath": "public/jbtta/2026/1734/attachment-01-요강.hwp",
+        "publicUrl": "/jbtta/2026/1734/attachment-01-%EC%9A%94%EA%B0%95.hwp",
         "sortOrder": 100
       }
     ]
+  },
+  {
+    "id": "jbtta-1465",
+    "title": "제11회 완주군수배 탁구대회 대회",
+    "eventStartDate": "2026-08-29",
+    "eventEndDate": "2026-08-30",
+    "registrationStartDate": "2026-08-18",
+    "registrationEndDate": "2026-08-20",
+    "venue": "우석대학교 체육관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1465&page=3",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:29:21.912Z",
+    "files": [
+      {
+        "id": "jbtta-1465-file-0",
+        "fileName": "탁구대회요강.pdf",
+        "fileType": "pdf",
+        "mimeType": "text/html",
+        "fileKind": "attachment",
+        "storagePath": "public/jbtta/2026/1465/attachment-01-탁구대회요강.pdf",
+        "publicUrl": "/jbtta/2026/1465/attachment-01-%ED%83%81%EA%B5%AC%EB%8C%80%ED%9A%8C%EC%9A%94%EA%B0%95.pdf",
+        "sortOrder": 100
+      }
+    ]
+  },
+  {
+    "id": "jbtta-1486",
+    "title": "제11회 완주군수배 탁구대회 분실물(라켓) 습득안내",
+    "eventStartDate": "2026-08-29",
+    "eventEndDate": "2026-08-30",
+    "registrationStartDate": "2026-08-18",
+    "registrationEndDate": "2026-08-20",
+    "venue": "우석대학교 체육관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1486&page=3",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:29:14.362Z",
+    "files": []
+  },
+  {
+    "id": "jbtta-1604",
+    "title": "제12회 완주군수배 탁구대회 대회",
+    "eventStartDate": "2026-08-29",
+    "eventEndDate": "2026-08-30",
+    "registrationStartDate": "2026-08-18",
+    "registrationEndDate": "2026-08-20",
+    "venue": "우석대학교 체육관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1604&page=2",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:42.693Z",
+    "files": [
+      {
+        "id": "jbtta-1604-file-0",
+        "fileName": "탁구대회요강.pdf",
+        "fileType": "pdf",
+        "mimeType": "text/html",
+        "fileKind": "attachment",
+        "storagePath": "public/jbtta/2026/1604/attachment-01-탁구대회요강.pdf",
+        "publicUrl": "/jbtta/2026/1604/attachment-01-%ED%83%81%EA%B5%AC%EB%8C%80%ED%9A%8C%EC%9A%94%EA%B0%95.pdf",
+        "sortOrder": 100
+      }
+    ]
+  },
+  {
+    "id": "jbtta-1640",
+    "title": "제12회 완주군수배 탁구대회 분실물(신발) 습득 안내",
+    "eventStartDate": "2026-08-29",
+    "eventEndDate": "2026-08-30",
+    "registrationStartDate": "2026-08-18",
+    "registrationEndDate": "2026-08-20",
+    "venue": "우석대학교 체육관",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1640&page=2",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:39.389Z",
+    "files": []
   },
   {
     "id": "jbtta-1744",
@@ -579,56 +764,94 @@
     "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1744&page=1",
     "visibility": "public",
     "createdAt": "2026-01-01T00:00:00.000Z",
-    "updatedAt": "2026-09-23T03:45:36.288Z",
+    "updatedAt": "2026-09-27T13:28:05.668Z",
     "files": [
-      {
-        "id": "jbtta-1744-img-0",
-        "fileName": "요강 이미지 1",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1744/guideline-01.jpg",
-        "sortOrder": 0
-      },
-      {
-        "id": "jbtta-1744-img-1",
-        "fileName": "요강 이미지 2",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1744/guideline-02.jpg",
-        "sortOrder": 1
-      },
-      {
-        "id": "jbtta-1744-img-2",
-        "fileName": "요강 이미지 3",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1744/guideline-03.jpg",
-        "sortOrder": 2
-      },
-      {
-        "id": "jbtta-1744-img-3",
-        "fileName": "요강 이미지 4",
-        "fileType": "image",
-        "mimeType": "image/*",
-        "fileKind": "guideline_image",
-        "storagePath": "",
-        "publicUrl": "/jbtta/2026/1744/guideline-04.jpg",
-        "sortOrder": 3
-      },
       {
         "id": "jbtta-1744-file-0",
         "fileName": "탁구대회요강제출.pdf",
         "fileType": "pdf",
         "mimeType": "text/html",
         "fileKind": "attachment",
-        "storagePath": "",
-        "publicUrl": "http://jbtta.pingpongkorea.com/bbs/download.php?bo_table=community_09&wr_id=1744&no=0&page=1",
+        "storagePath": "public/jbtta/2026/1744/attachment-01-탁구대회요강제출.pdf",
+        "publicUrl": "/jbtta/2026/1744/attachment-01-%ED%83%81%EA%B5%AC%EB%8C%80%ED%9A%8C%EC%9A%94%EA%B0%95%EC%A0%9C%EC%B6%9C.pdf",
+        "sortOrder": 100
+      }
+    ]
+  },
+  {
+    "id": "jbtta-1590",
+    "title": "제23회 정읍시장배 전국 오픈 탁구대회",
+    "eventStartDate": "2026-09-19",
+    "eventEndDate": null,
+    "registrationStartDate": "2026-09-01",
+    "registrationEndDate": "2026-09-10",
+    "venue": "전북특별자치도내 탁구장안내",
+    "status": "종료",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1590&page=2",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:46.174Z",
+    "files": [
+      {
+        "id": "jbtta-1590-file-0",
+        "fileName": "전국오픈탁구대회요강.pdf",
+        "fileType": "pdf",
+        "mimeType": "text/html",
+        "fileKind": "attachment",
+        "storagePath": "public/jbtta/2026/1590/attachment-01-전국오픈탁구대회요강.pdf",
+        "publicUrl": "/jbtta/2026/1590/attachment-01-%EC%A0%84%EA%B5%AD%EC%98%A4%ED%94%88%ED%83%81%EA%B5%AC%EB%8C%80%ED%9A%8C%EC%9A%94%EA%B0%95.pdf",
+        "sortOrder": 100
+      }
+    ]
+  },
+  {
+    "id": "jbtta-1760",
+    "title": "2026년 제2회 유남규배 전국오픈 동호인 탁구대회",
+    "eventStartDate": "2026-10-10",
+    "eventEndDate": "2026-10-11",
+    "registrationStartDate": "2026-09-28",
+    "registrationEndDate": "2026-09-30",
+    "venue": "전주화산체육관",
+    "status": "예정",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1760&page=3",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:00.467Z",
+    "files": [
+      {
+        "id": "jbtta-1760-file-0",
+        "fileName": "요강.pdf",
+        "fileType": "pdf",
+        "mimeType": "text/html",
+        "fileKind": "attachment",
+        "storagePath": "public/jbtta/2026/1760/attachment-01-요강.pdf",
+        "publicUrl": "/jbtta/2026/1760/attachment-01-%EC%9A%94%EA%B0%95.pdf",
+        "sortOrder": 100
+      }
+    ]
+  },
+  {
+    "id": "jbtta-1605",
+    "title": "제1회 유남규배 전국오픈 동호인 탁구대회",
+    "eventStartDate": "2026-10-10",
+    "eventEndDate": "2026-10-11",
+    "registrationStartDate": "2026-09-28",
+    "registrationEndDate": "2026-09-30",
+    "venue": "전주화산체육관",
+    "status": "예정",
+    "sourceUrl": "http://jbtta.pingpongkorea.com/bbs/board.php?bo_table=community_09&wr_id=1605&page=2",
+    "visibility": "public",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-09-27T13:28:41.109Z",
+    "files": [
+      {
+        "id": "jbtta-1605-file-0",
+        "fileName": "요강.pdf",
+        "fileType": "pdf",
+        "mimeType": "text/html",
+        "fileKind": "attachment",
+        "storagePath": "public/jbtta/2026/1605/attachment-01-요강.pdf",
+        "publicUrl": "/jbtta/2026/1605/attachment-01-%EC%9A%94%EA%B0%95.pdf",
         "sortOrder": 100
       }
     ]

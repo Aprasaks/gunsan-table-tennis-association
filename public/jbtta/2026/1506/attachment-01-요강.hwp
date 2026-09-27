@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="">
+<head>
+<meta charset="utf-8">
+<meta property="og:image" content="http://jbtta.pingpongkorea.com/thema/Basic/assets/img/logo.png">
+<meta http-equiv="imagetoolbar" content="no">
+<meta http-equiv="X-UA-Compatible" content="IE=10,chrome=1">
+<meta name="title" content="전라북도탁구협회 > 전라북도탁구협회" />
+<meta name="publisher" content="전라북도탁구협회" />
+<meta name="author" content="전라북도탁구협회" />
+<meta name="robots" content="index,follow" />
+<meta property="og:title" content="전라북도탁구협회 > 전라북도탁구협회" />
+<meta property="og:site_name" content="전라북도탁구협회" />
+<meta property="og:author" content="전라북도탁구협회" />
+<meta property="og:type" content="" />
+<meta property="og:url" content="http://jbtta.pingpongkorea.com/bbs/download.php?bo_table=community_09&wr_id=1506&no=0&page=3" />
+<link rel="canonical" href="http://jbtta.pingpongkorea.com/bbs/download.php?bo_table=community_09&wr_id=1506&no=0&page=3" />
+<meta name="description" content="전라북도탁구협회 홈페이지">
+<meta property="og:type" content="website">
+<meta property="og:title" content="전라북도탁구협회">
+<meta property="og:description" content="전라북도탁구협회 홈페이지">
+<meta property="og:image" content="http://jbtta.pingpongkorea.com/thema/Basic/assets/img/logo.png">
+<meta property="og:url" content="http://jbtta.pingpongkorea.com">
+<title>전라북도탁구협회 > 전라북도탁구협회</title>
+<link rel="stylesheet" href="http://jbtta.pingpongkorea.com/css/default.css">
+<link rel="stylesheet" href="http://jbtta.pingpongkorea.com/css/apms.css">
+<link rel="stylesheet" href="http://jbtta.pingpongkorea.com/css/font-awesome/css/font-awesome.min.css">
+<!--[if lte IE 8]>
+<script src="http://jbtta.pingpongkorea.com/js/html5.js"></script>
+<![endif]-->
+<script>
+// 자바스크립트에서 사용하는 전역변수 선언
+var g5_url       = "http://jbtta.pingpongkorea.com";
+var g5_bbs_url   = "http://jbtta.pingpongkorea.com/bbs";
+var g5_is_member = "";
+var g5_is_admin  = "";
+var g5_is_mobile = "";
+var g5_bo_table  = "";
+var g5_sca       = "";
+var g5_pim       = "";
+var g5_editor    = "";
+var g5_responsive    = "1";
+var g5_cookie_domain = "";
+var g5_purl = "http://jbtta.pingpongkorea.com/bbs/download.php?bo_table=community_09&wr_id=1506&no=0&page=3";
+</script>
+<script src="http://jbtta.pingpongkorea.com/js/jquery-1.11.3.min.js"></script>
+<script src="http://jbtta.pingpongkorea.com/js/jquery-migrate-1.2.1.min.js"></script>
+<script src="http://jbtta.pingpongkorea.com/lang/korean/lang.js"></script>
+<script src="http://jbtta.pingpongkorea.com/js/common.js"></script>
+<script src="http://jbtta.pingpongkorea.com/js/wrest.js"></script>
+<script src="http://jbtta.pingpongkorea.com/js/apms.js"></script>
+</head>
+<body  class="responsive is-pc">
+
+<script>
+alert("다운로드 권한이 없습니다.\n회원이시라면 로그인 후 이용해 보십시오.");
+//document.location.href = "http://jbtta.pingpongkorea.com/bbs/login.php?wr_id=1506&amp;&amp;page=3&amp;url=http%3A%2F%2Fjbtta.pingpongkorea.com%2Fbbs%2Fboard.php%3Fbo_table%3Dcommunity_09%26amp%3Bwr_id%3D1506";
+document.location.replace("http://jbtta.pingpongkorea.com/bbs/login.php?wr_id=1506&&page=3&url=http%3A%2F%2Fjbtta.pingpongkorea.com%2Fbbs%2Fboard.php%3Fbo_table%3Dcommunity_09%26amp%3Bwr_id%3D1506");
+</script>
+
+<noscript>
+<div id="validation_check">
+    <h1>다음 항목에 오류가 있습니다.</h1>
+    <p class="cbg">
+        다운로드 권한이 없습니다.<br>회원이시라면 로그인 후 이용해 보십시오.    </p>
+        <div class="btn_confirm">
+        <a href="http://jbtta.pingpongkorea.com/bbs/login.php?wr_id=1506&amp;&amp;page=3&amp;url=http%3A%2F%2Fjbtta.pingpongkorea.com%2Fbbs%2Fboard.php%3Fbo_table%3Dcommunity_09%26amp%3Bwr_id%3D1506">돌아가기</a>
+    </div>
+    
+</div>
+</noscript>
+
+
+<!-- 아미나빌더 1.7.1 / 그누보드 5.2.2 -->
+<!-- ie6,7에서 사이드뷰가 게시판 목록에서 아래 사이드뷰에 가려지는 현상 수정 -->
+<!--[if lte IE 7]>
+<script>
+$(function() {
+    var $sv_use = $(".sv_use");
+    var count = $sv_use.length;
+
+    $sv_use.each(function() {
+        $(this).css("z-index", count);
+        $(this).css("position", "relative");
+        count = count - 1;
+    });
+});
+</script>
+<![endif]-->
+
+</body>
+</html>
