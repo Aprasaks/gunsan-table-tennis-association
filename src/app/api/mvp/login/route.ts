@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db, MEMBER_COOKIE, memberToken, passwordDigest, passwordMatches, publicMember, sameOrigin } from '@/lib/mvpServer';
+import { db, logServerError, MEMBER_COOKIE, memberToken, passwordDigest, passwordMatches, publicMember, sameOrigin } from '@/lib/mvpServer';
 import { ADMIN_COOKIE_NAME } from '@/lib/adminSession';
 
 export async function POST(request: Request) {
@@ -21,7 +21,8 @@ export async function POST(request: Request) {
     });
     response.cookies.set(ADMIN_COOKIE_NAME, '', { httpOnly: true, path: '/', maxAge: 0 });
     return response;
-  } catch {
+  } catch (cause) {
+    logServerError('[api/mvp/login] failed to log in member', cause);
     return NextResponse.json({ message: '로그인 서비스를 사용할 수 없습니다.' }, { status: 503 });
   }
 }
