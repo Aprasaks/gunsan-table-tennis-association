@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { actor, db } from '@/lib/mvpServer';
+import { actor, db, logServerError } from '@/lib/mvpServer';
 import { postView } from '@/lib/mvpPostsServer';
 export const dynamic = 'force-dynamic';
 
@@ -9,14 +9,17 @@ export default async function NoticePage() {
   let canWrite = false;
   try {
     const current = await actor();
-    canWrite = Boolean(current && !current.admin && current.user.associationTitle);
+    canWrite = Boolean(current?.admin || current?.user?.associationTitle);
     const canSeePrivate = Boolean(current?.admin || current?.user?.associationTitle);
     let query = db().from('mvp_posts').select('*').eq('kind', 'notice').order('created_at', { ascending: false });
     if (!canSeePrivate) query = query.eq('visibility', 'public');
     const result = await query;
     if (result.error) throw result.error;
     rows = (result.data ?? []).map(postView);
-  } catch { error = '공지사항을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.'; }
+  } catch (cause) {
+    logServerError('[notice/page] failed to load notices', cause);
+    error = '공지사항을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
+  }
   return <>
     <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME &gt; 공지사항</span><h1>공지사항</h1><p>군산시탁구협회의 주요 공지와 안내를 확인합니다.</p></div></section>
     <div className="siteShell pageContent">
