@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { DocumentBuilder, save } from 'js-hwp';
+import { actor, db, sameOrigin } from '@/lib/mvpServer';
+import { transferView } from '@/app/api/mvp/transfers/route';
 
 type TransferPayload = {
   id: string;
@@ -14,7 +16,7 @@ type TransferPayload = {
   requestDate: string;
 };
 
-type HwpRequest = { kind: 'consent' | 'application'; request: TransferPayload };
+type HwpRequest = { kind: 'consent' | 'application'; requestId: string };
 
 function rankText(rank: string) { return rank.replace(/^(남|여)\s*/, '').replace(/부$/, '') || '-'; }
 
@@ -89,11 +91,19 @@ function buildApplication(request: TransferPayload) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!sameOrigin(request)) return NextResponse.json({ error: '잘못된 요청입니다.' }, { status: 403 });
+    const current = await actor();
+    if (!current || !(current.admin || current.user.associationTitle)) {
+      return NextResponse.json({ error: '협회 담당자 권한이 필요합니다.' }, { status: 403 });
+    }
     const body = await request.json() as HwpRequest;
-    if (!body?.request || (body.kind !== 'consent' && body.kind !== 'application')) return NextResponse.json({ error: '잘못된 요청입니다.' }, { status: 400 });
+    if (!body?.requestId || (body.kind !== 'consent' && body.kind !== 'application')) return NextResponse.json({ error: '잘못된 요청입니다.' }, { status: 400 });
+    const { data, error } = await db().from('mvp_transfers').select('*').eq('id', body.requestId).single();
+    if (error || !data) return NextResponse.json({ error: '신청을 찾을 수 없습니다.' }, { status: 404 });
+    const transfer = transferView(data) as TransferPayload;
 
-    const bytes = body.kind === 'consent' ? buildConsent(body.request) : buildApplication(body.request);
-    const filename = body.kind === 'consent' ? body.request.memberName + '_이적동의서.hwp' : body.request.memberName + '_이적_소속변경신청서.hwp';
+    const bytes = body.kind === 'consent' ? buildConsent(transfer) : buildApplication(transfer);
+    const filename = body.kind === 'consent' ? transfer.memberName + '_이적동의서.hwp' : transfer.memberName + '_이적_소속변경신청서.hwp';
 
     return new NextResponse(Buffer.from(bytes), {
       headers: {

@@ -3,17 +3,9 @@
 import Link from 'next/link';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getCurrentUser, isAdmin } from '@/lib/mvpAuth';
-import { saveAdminNotice, type NoticeAttachment, type NoticeVisibility } from '@/lib/mvpContent';
+import { refreshCurrentUser } from '@/lib/mvpAuth';
+import type { NoticeAttachment, NoticeVisibility } from '@/lib/mvpContent';
 import styles from '../../editor.module.css';
-
-function today() {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}.${month}.${day}`;
-}
 
 function readFile(file: File) {
   return new Promise<string>((resolve, reject) => {
@@ -49,12 +41,10 @@ export default function NewNoticePage() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    const currentUser = getCurrentUser();
-    if (!currentUser || !isAdmin(currentUser)) {
-      router.replace('/login');
-      return;
-    }
-    setReady(true);
+    refreshCurrentUser().then((currentUser) => {
+      if (!currentUser?.associationTitle || currentUser.role === 'admin') { router.replace('/login'); return; }
+      setReady(true);
+    });
   }, [router]);
 
   function rememberSelection() {
@@ -125,7 +115,7 @@ export default function NewNoticePage() {
     setAttachments((current) => current.filter((file) => file.id !== id));
   }
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage('');
 
@@ -139,17 +129,13 @@ export default function NewNoticePage() {
     }
 
     try {
-      const item = saveAdminNotice({
-        title: title.trim(),
-        date: today(),
-        content: [],
-        contentHtml: html,
-        visibility,
-        attachments,
-      });
-      router.push(`/notice/${item.id}`);
-    } catch {
-      setMessage('저장하지 못했습니다. 이미지나 첨부파일 용량이 너무 큰 경우 파일 크기를 줄여주세요.');
+      const response = await fetch('/api/mvp/posts?kind=notice', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: title.trim(), contentHtml: html, visibility, attachments }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message);
+      router.push(`/notice/${result.post.id}`);
+    } catch (cause) {
+      setMessage(cause instanceof Error ? cause.message : '공지사항을 저장하지 못했습니다.');
     }
   }
 

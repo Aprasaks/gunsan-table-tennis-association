@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getCurrentUser, type MvpUser } from '@/lib/mvpAuth';
-import { getBoardPosts, updateBoardPost, type BoardAttachment, type BoardPost } from '@/lib/mvpBoard';
+import type { BoardAttachment, BoardPost } from '@/lib/mvpBoard';
 import styles from '../../../admin/editor.module.css';
 
 function readFile(file: File) {
@@ -53,7 +53,9 @@ export default function BoardEditPage() {
       return;
     }
 
-    const currentPost = getBoardPosts().find((item) => item.id === params.id);
+    fetch('/api/mvp/posts/' + params.id, { cache: 'no-store' }).then(async (response) => {
+      const result = await response.json();
+      const currentPost = response.ok ? result.post as BoardPost : null;
     if (!currentPost) {
       setPost(null);
       return;
@@ -73,6 +75,7 @@ export default function BoardEditPage() {
     requestAnimationFrame(() => {
       if (editorRef.current) editorRef.current.innerHTML = currentPost.contentHtml;
     });
+    }).catch(() => setPost(null));
   }, [params.id, router]);
 
   function rememberSelection() {
@@ -157,7 +160,7 @@ export default function BoardEditPage() {
     setAttachments((current) => current.filter((file) => file.id !== id));
   }
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage('');
     if (!user || !post) return;
@@ -171,19 +174,15 @@ export default function BoardEditPage() {
       return;
     }
 
-    const updated = updateBoardPost(post.id, user.id, {
-      title: title.trim(),
-      contentHtml: html,
-      attachments,
-    });
-
-    if (!updated) {
-      setMessage('게시글을 수정할 권한이 없습니다.');
-      return;
+    try {
+      const response = await fetch('/api/mvp/posts/' + post.id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: title.trim(), contentHtml: html, attachments }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message);
+      router.push('/board/' + post.id);
+    } catch (cause) {
+      setMessage(cause instanceof Error ? cause.message : '게시글을 수정하지 못했습니다.');
     }
-
-    alert('게시글이 수정되었습니다.');
-    router.push('/board/' + post.id);
   }
 
   if (post === undefined) return <div className="siteShell pageContent">게시글을 불러오고 있습니다.</div>;

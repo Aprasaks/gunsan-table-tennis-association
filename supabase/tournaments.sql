@@ -25,6 +25,7 @@ create table if not exists tournament_files (
   sort_order int not null default 0,
   created_at timestamptz not null default now()
 );
+create index if not exists tournament_files_tournament_idx on tournament_files(tournament_id);
 
 alter table tournaments enable row level security;
 alter table tournament_files enable row level security;

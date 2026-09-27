@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCurrentUser, type MvpUser } from '@/lib/mvpAuth';
-import { saveBoardPost, type BoardAttachment } from '@/lib/mvpBoard';
+import type { BoardAttachment } from '@/lib/mvpBoard';
 import styles from '../../admin/editor.module.css';
 
 function today() {
@@ -143,7 +143,7 @@ export default function BoardWritePage() {
     setAttachments((current) => current.filter((file) => file.id !== id));
   }
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage('');
     if (!user) return;
@@ -158,17 +158,13 @@ export default function BoardWritePage() {
     }
 
     try {
-      const post = saveBoardPost({
-        title: title.trim(),
-        contentHtml: html,
-        authorId: user.id,
-        authorName: user.name,
-        date: today(),
-        attachments,
-      });
-      router.push('/board/' + post.id);
-    } catch {
-      setMessage('게시글을 저장하지 못했습니다. 이미지나 첨부파일 용량을 확인해주세요.');
+      const response = await fetch('/api/mvp/posts?kind=board', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: title.trim(), contentHtml: html, attachments }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message);
+      router.push('/board/' + result.post.id);
+    } catch (cause) {
+      setMessage(cause instanceof Error ? cause.message : '게시글을 저장하지 못했습니다.');
     }
   }
 

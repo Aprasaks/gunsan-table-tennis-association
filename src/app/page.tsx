@@ -1,28 +1,22 @@
 import Link from 'next/link';
 
-const notices = [
-  ['중요', '2026년 군산시탁구협회장배 생활체육 탁구대회 개최 안내', '09.11'],
-  ['', '군산시 동호인리그 3차전 경기결과 및 전적 안내', '09.10'],
-  ['', '2026년 하반기 클럽 회원등록 안내 (신규·갱신)', '09.06'],
-  ['', '제13회 군산새만금배 전국오픈탁구대회 참가요강 공지', '09.02'],
-  ['', '2026년 군산시탁구협회 임시총회 개최 안내', '08.28'],
-];
+import { createAdminServerSupabase } from '@/lib/supabase/server';
+export const dynamic = 'force-dynamic';
 
-const schedules = [
-  ['09.19 (토)', '2026년 군산시탁구협회장배 생활체육 탁구대회', '군산월명체육관', '접수중'],
-  ['10.17 (토)', '제13회 군산새만금배 전국오픈탁구대회', '군산월명체육관', '예정'],
-  ['11.07 (토)', '군산시 동호인리그 결선', '군산월명체육관', '예정'],
-];
+type HomePost = { id: string; title: string; created_at: string; author_name: string };
+type HomeTournament = { id: string; title: string; event_start_date: string; status: string };
 
-const boardPosts = [
-  ['자유', '탁구장 정보 공유드립니다.', '홍길동', '09.11'],
-  ['문의', '동호인리그 참가 관련 문의', '김철수', '09.10'],
-  ['클럽', '신규 회원 모집 안내', '월명클럽', '09.09'],
-  ['후기', '협회장배 대회 참가 후기', '이영수', '09.08'],
-  ['장비', '라켓 및 러버 정보 공유', '박민수', '09.07'],
-];
-
-export default function Home() {
+export default async function Home() {
+  const client = createAdminServerSupabase();
+  const [noticeResult, boardResult, tournamentResult] = client ? await Promise.all([
+    client.from('mvp_posts').select('id,title,created_at,author_name').eq('kind','notice').eq('visibility','public').order('created_at',{ascending:false}).limit(5),
+    client.from('mvp_posts').select('id,title,created_at,author_name').eq('kind','board').order('created_at',{ascending:false}).limit(5),
+    client.from('tournaments').select('id,title,event_start_date,status').eq('visibility','public').gte('event_start_date',new Date().toISOString().slice(0,10)).order('event_start_date').limit(3),
+  ]) : [{data:null,error:true},{data:null,error:true},{data:null,error:true}];
+  const notices = (noticeResult.data ?? []) as HomePost[];
+  const boardPosts = (boardResult.data ?? []) as HomePost[];
+  const schedules = (tournamentResult.data ?? []) as HomeTournament[];
+  const date = (value: string) => new Date(value).toLocaleDateString('ko-KR', { month:'2-digit', day:'2-digit' });
   return (
     <>
       <section
@@ -66,11 +60,11 @@ export default function Home() {
             <Link href="/notice">+ 더보기</Link>
           </div>
           <div className="noticeRows">
-            {notices.map(([type, title, date], index) => (
-              <Link href="/notice" className="noticeRow" key={title}>
-                <span className={index === 0 ? 'noticeBadge important' : 'noticeBullet'}>{type || '›'}</span>
-                <strong>{title}</strong>
-                <time>{date}</time>
+            {notices.length === 0 && <p>{noticeResult.error ? '공지사항을 불러오지 못했습니다.' : '등록된 공지사항이 없습니다.'}</p>}
+            {notices.map((post, index) => (
+              <Link href={'/notice/' + post.id} className="noticeRow" key={post.id}>
+                <span className={index === 0 ? 'noticeBadge important' : 'noticeBullet'}>{index === 0 ? '최신' : '›'}</span>
+                <strong>{post.title}</strong><time>{date(post.created_at)}</time>
               </Link>
             ))}
           </div>
@@ -83,9 +77,10 @@ export default function Home() {
           </div>
           <div className="homeScheduleTable homeScheduleCompact">
             <div className="homeScheduleHead"><span>날짜</span><span>대회명</span><span>비고</span></div>
-            {schedules.map(([date,title,,status]) => (
-              <Link href="/schedule" className="homeScheduleRow" key={title}>
-                <span>{date}</span><strong>{title}</strong><b>{status}</b>
+            {schedules.length === 0 && <p>{tournamentResult.error ? '대회일정을 불러오지 못했습니다.' : '예정된 대회가 없습니다.'}</p>}
+            {schedules.map((event) => (
+              <Link href={'/schedule/' + event.id} className="homeScheduleRow" key={event.id}>
+                <span>{date(event.event_start_date)}</span><strong>{event.title}</strong><b>{event.status}</b>
               </Link>
             ))}
           </div>
@@ -97,12 +92,11 @@ export default function Home() {
             <Link href="/board">+ 더보기</Link>
           </div>
           <div className="boardRows">
-            {boardPosts.map(([category, title, author, date]) => (
-              <Link href="/board" className="boardRow" key={`${category}-${title}`}>
-                <span className="boardCategory">{category}</span>
-                <strong>{title}</strong>
-                <span className="boardAuthor">{author}</span>
-                <time>{date}</time>
+            {boardPosts.length === 0 && <p>{boardResult.error ? '게시글을 불러오지 못했습니다.' : '등록된 게시글이 없습니다.'}</p>}
+            {boardPosts.map((post) => (
+              <Link href={'/board/' + post.id} className="boardRow" key={post.id}>
+                <span className="boardCategory">자유</span><strong>{post.title}</strong>
+                <span className="boardAuthor">{post.author_name}</span><time>{date(post.created_at)}</time>
               </Link>
             ))}
           </div>

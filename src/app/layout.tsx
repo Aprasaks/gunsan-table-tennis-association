@@ -12,12 +12,12 @@ import './admin-controls.css';
 
 export const metadata: Metadata = {
   title: '군산시탁구협회',
-  description: '군산시탁구협회 공식 홈페이지 - 공지사항, 조직도, 동호인리그, 디비전리그, 대회일정, 회원등록 및 이적',
+  description: '군산시탁구협회 공식 홈페이지 - 공지사항, 협회, 동호인리그, 디비전리그, 대회일정, 회원등록 및 이적',
 };
 
 const nav = [
   ['/notice', '공지사항'],
-  ['/organization', '조직도'],
+  ['/organization', '협회'],
   ['/league', '동호인리그'],
   ['/division', '디비전리그'],
   ['/schedule', '대회일정'],

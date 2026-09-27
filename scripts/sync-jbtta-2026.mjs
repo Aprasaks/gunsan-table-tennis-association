@@ -12,19 +12,38 @@ const NEWTT_ORIGIN = 'https://www.newttplay.co.kr';
 const NEWTT_BOARD = NEWTT_ORIGIN + '/bbs/board.php?bo_table=gamecup';
 const UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131 Safari/537.36';
 const OUTPUT = 'src/data/jbtta-2026.json';
+const PUBLIC_JBTTA_DIR = path.join('public', 'jbtta', '2026');
+const STAGING_JBTTA_DIR = path.join('public', 'jbtta', '2026-next');
 const JEONBUK = ['전주','군산','익산','정읍','남원','김제','완주','진안','무주','장수','임실','순창','고창','부안','전북','전라북도','전북특별자치도'];
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const execFileAsync = promisify(execFile);
 const clean = (s='') => s.replace(/\u00a0/g,' ').replace(/\s+/g,' ').trim();
+let outputDir = PUBLIC_JBTTA_DIR;
 
 function absolute(href='') {
   try { return new URL(href, ORIGIN).toString(); } catch { return ''; }
 }
 
-async function fetchResponse(url, accept='text/html,*/*') {
+function cookieFromResponse(response) {
+  const setCookie = response.headers.get('set-cookie') || '';
+  return setCookie
+    .split(',')
+    .map((part) => part.trim().split(';')[0])
+    .filter(Boolean)
+    .join('; ');
+}
+
+async function fetchResponse(url, accept='text/html,*/*', cookie='') {
+  const headers = {
+    'user-agent': UA,
+    accept,
+    'accept-language': 'ko-KR,ko;q=0.9,en;q=0.5',
+    referer: BOARD,
+  };
+  if (cookie) headers.cookie = cookie;
   const response = await fetch(url, {
-    headers: { 'user-agent': UA, accept, 'accept-language': 'ko-KR,ko;q=0.9,en;q=0.5', referer: BOARD },
+    headers,
     redirect: 'follow',
   });
   if (!response.ok) throw new Error(url + ' -> HTTP ' + response.status);
@@ -118,6 +137,90 @@ function extFromName(name='') {
   return name.includes('.') ? name.split('.').pop().toLowerCase() : 'file';
 }
 
+function safeFileName(name='file') {
+  const safe = clean(name)
+    .replace(/[\\/:*?"<>|]/g, '-')
+    .replace(/\.+$/g, '')
+    .slice(0, 120);
+  return safe || 'file';
+}
+
+function extFromContentType(contentType='') {
+  if (contentType.includes('pdf')) return 'pdf';
+  if (contentType.includes('png')) return 'png';
+  if (contentType.includes('jpeg') || contentType.includes('jpg')) return 'jpg';
+  if (contentType.includes('webp')) return 'webp';
+  if (contentType.includes('gif')) return 'gif';
+  if (contentType.includes('hwp')) return 'hwp';
+  if (contentType.includes('wordprocessingml')) return 'docx';
+  if (contentType.includes('spreadsheetml')) return 'xlsx';
+  return '';
+}
+
+function ensureExtension(name, contentType='') {
+  if (/\.[A-Za-z0-9]{2,8}$/.test(name)) return name;
+  const ext = extFromContentType(contentType);
+  return ext ? name + '.' + ext : name;
+}
+
+function publicFileUrl(wrId, fileName) {
+  return '/jbtta/2026/' + encodeURIComponent(String(wrId)) + '/' + encodeURIComponent(fileName);
+}
+
+async function writeTournamentFile(wrId, fileName, bytes) {
+  const dir = path.join(outputDir, String(wrId));
+  await fs.mkdir(dir, { recursive: true });
+  const safeName = safeFileName(fileName);
+  await fs.writeFile(path.join(dir, safeName), bytes);
+  return {
+    fileName: safeName,
+    storagePath: path.join(PUBLIC_JBTTA_DIR, String(wrId), safeName),
+    publicUrl: publicFileUrl(wrId, safeName),
+  };
+}
+
+function isImageFile(name='', contentType='') {
+  return contentType.startsWith('image/') || /\.(png|jpe?g|webp|gif)$/i.test(name);
+}
+
+async function createPdfPreview(pdfPath, wrId, previewName, id, sortOrder) {
+  const dir = path.join(outputDir, String(wrId));
+  const base = safeFileName(previewName.replace(/\.[^.]+$/, '')) || 'preview';
+  const outPrefix = path.join(dir, base);
+  const outName = base + '.png';
+  try {
+    await execFileAsync('pdftoppm', ['-png', '-f', '1', '-singlefile', '-r', '160', pdfPath, outPrefix], { maxBuffer: 8 * 1024 * 1024 });
+    return {
+      id,
+      fileName: outName,
+      fileType: 'image',
+      mimeType: 'image/png',
+      fileKind: 'guideline_image',
+      storagePath: path.join(PUBLIC_JBTTA_DIR, String(wrId), outName),
+      publicUrl: publicFileUrl(wrId, outName),
+      sortOrder,
+    };
+  } catch (e) {
+    console.log('PDF preview failed', wrId, path.basename(pdfPath), String(e).slice(0, 160));
+    return null;
+  }
+}
+
+async function createOfficePreview(sourcePath, wrId, previewName, id, sortOrder) {
+  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'jbtta-preview-'));
+  try {
+    await execFileAsync('soffice', ['--headless', '--convert-to', 'pdf', '--outdir', tmpDir, sourcePath], { maxBuffer: 8 * 1024 * 1024 });
+    const converted = (await fs.readdir(tmpDir)).find((name) => /\.pdf$/i.test(name));
+    if (!converted) return null;
+    return await createPdfPreview(path.join(tmpDir, converted), wrId, previewName, id, sortOrder);
+  } catch (e) {
+    console.log('document preview failed', wrId, path.basename(sourcePath), String(e).slice(0, 160));
+    return null;
+  } finally {
+    await fs.rm(tmpDir, { recursive: true, force: true }).catch(() => {});
+  }
+}
+
 function titleCandidate(title='', wrId='0') {
   const t=clean(title);
   if (!t || !/(탁구대회|탁구 대회|대회\s*요강|탁구.*요강|오픈.*탁구|탁구.*오픈)/.test(t)) return false;
@@ -129,24 +232,6 @@ function titleCandidate(title='', wrId='0') {
 function cleanTitle(title='') {
   return clean(title).replace(/\s*댓글\+?\d+개\s*/g,' ').replace(/\s+/g,' ').trim();
 }
-
-async function ocrImage(url, index) {
-  try {
-    const res=await fetchResponse(url,'image/*,*/*');
-    const bytes=Buffer.from(await res.arrayBuffer());
-    const contentType=res.headers.get('content-type')||'';
-    const ext=contentType.includes('png')?'.png':contentType.includes('webp')?'.webp':'.jpg';
-    const file=path.join(os.tmpdir(),'jbtta-'+Date.now()+'-'+index+ext);
-    await fs.writeFile(file,bytes);
-    const { stdout }=await execFileAsync('tesseract',[file,'stdout','-l','kor+eng','--psm','6'],{maxBuffer:8*1024*1024});
-    await fs.unlink(file).catch(()=>{});
-    return stdout||'';
-  } catch(e) {
-    console.log('OCR failed',url,String(e).slice(0,160));
-    return '';
-  }
-}
-
 
 function matchKey(value='') {
   return clean(value)
@@ -272,38 +357,13 @@ async function collectCandidates() {
 }
 
 
-async function mirrorGuidelineImage(url, wrId, index) {
-  try {
-    const res=await fetchResponse(url,'image/*,*/*');
-    const bytes=Buffer.from(await res.arrayBuffer());
-    const contentType=res.headers.get('content-type')||'image/jpeg';
-    const ext=contentType.includes('png')?'.png':contentType.includes('webp')?'.webp':contentType.includes('gif')?'.gif':'.jpg';
-    const dir=path.join('public','jbtta','2026',String(wrId));
-    await fs.mkdir(dir,{recursive:true});
-    const fileName='guideline-'+String(index+1).padStart(2,'0')+ext;
-    await fs.writeFile(path.join(dir,fileName),bytes);
-    return '/jbtta/2026/'+wrId+'/'+fileName;
-  } catch(e) {
-    console.log('mirror image failed',wrId,url,String(e).slice(0,160));
-    return url;
-  }
-}
-
-async function parseDetail(c, skipOcr=false) {
-  const html=await (await fetchResponse(c.url)).text();
+async function parseDetail(c) {
+  const pageResponse = await fetchResponse(c.url);
+  const cookie = cookieFromResponse(pageResponse);
+  const html=await pageResponse.text();
   const $=cheerio.load(html);
   const root=$('#bo_v_con').length?$('#bo_v_con'):$('.bo_v_con').length?$('.bo_v_con'):$('body');
   const bodyText=root.text().replace(/\r/g,'\n');
-
-  const images=[];
-  const seenImg=new Set();
-  root.find('img').each((_i,el)=>{
-    const url=absolute($(el).attr('src')||'');
-    if (!url || seenImg.has(url)) return;
-    if (!/\/data\/editor\/|view_image\.php/i.test(url)) return;
-    seenImg.add(url);
-    images.push(url);
-  });
 
   const links=[];
   const seenLink=new Set();
@@ -316,32 +376,54 @@ async function parseDetail(c, skipOcr=false) {
 
   let hwpText='';
   const files=[];
+  const previews=[];
   for (let i=0;i<Math.min(links.length,10);i++) {
     const link=links[i];
     try {
-      const res=await fetchResponse(link.url,'*/*');
-      const bytes=new Uint8Array(await res.arrayBuffer());
+      const res=await fetchResponse(link.url,'*/*',cookie);
+      const bytes=Buffer.from(await res.arrayBuffer());
       const disposition=res.headers.get('content-disposition')||'';
-      let name=decodeFilename(disposition) || link.label.match(/[^\s]+\.(?:hwp|hwpx|pdf|xlsx?|docx?|zip)/i)?.[0] || '첨부파일-'+(i+1);
-      name=clean(name);
+      const contentType=res.headers.get('content-type')?.split(';')[0]||'application/octet-stream';
+      let name=decodeFilename(disposition) || link.label.match(/[^\s]+\.(?:hwp|hwpx|pdf|xlsx?|docx?|zip|png|jpe?g)/i)?.[0] || '첨부파일-'+(i+1);
+      name=ensureExtension(clean(name), contentType);
+      const local=await writeTournamentFile(c.wrId, 'attachment-'+String(i+1).padStart(2,'0')+'-'+name, bytes);
       files.push({
         id:'jbtta-'+c.wrId+'-file-'+i,
         fileName:name,
         fileType:extFromName(name),
-        mimeType:res.headers.get('content-type')?.split(';')[0]||null,
+        mimeType:contentType,
         fileKind:'attachment',
-        storagePath:'',
-        publicUrl:link.url,
+        storagePath:local.storagePath,
+        publicUrl:local.publicUrl,
         sortOrder:100+i,
       });
       if (/\.hwp(x)?$/i.test(name)) {
         try {
-          const doc=open(bytes);
+          const doc=open(new Uint8Array(bytes));
           const txt=documentText(doc);
           if (txt) hwpText+='\n'+txt;
         } catch (e) {
           console.log('HWP parse failed',c.wrId,name,String(e).slice(0,150));
         }
+      }
+
+      if (isImageFile(name, contentType)) {
+        previews.push({
+          id:'jbtta-'+c.wrId+'-preview-'+i,
+          fileName:local.fileName,
+          fileType:'image',
+          mimeType:contentType,
+          fileKind:'guideline_image',
+          storagePath:local.storagePath,
+          publicUrl:local.publicUrl,
+          sortOrder:i,
+        });
+      } else if (/\.pdf$/i.test(name)) {
+        const preview=await createPdfPreview(local.storagePath, c.wrId, 'preview-'+String(i+1).padStart(2,'0')+'.png', 'jbtta-'+c.wrId+'-preview-'+i, i);
+        if (preview) previews.push(preview);
+      } else if (/\.(hwp|hwpx|docx?|xlsx?)$/i.test(name)) {
+        const preview=await createOfficePreview(local.storagePath, c.wrId, 'preview-'+String(i+1).padStart(2,'0')+'.png', 'jbtta-'+c.wrId+'-preview-'+i, i);
+        if (preview) previews.push(preview);
       }
     } catch(e) {
       console.log('attachment failed',c.wrId,link.url,String(e).slice(0,150));
@@ -349,43 +431,23 @@ async function parseDetail(c, skipOcr=false) {
     await sleep(200);
   }
 
-  let ocrText='';
-  if (!skipOcr) {
-    for (let i=0;i<Math.min(images.length,8);i++) {
-      const text=await ocrImage(images[i],i);
-      if (text) ocrText+='\n'+text;
-    }
-  }
-  const combined=[hwpText,bodyText,ocrText].filter(Boolean).join('\n');
-  const event=extractEventDate(hwpText+'\n'+ocrText,c.title) || extractEventDate(bodyText,c.title);
-  const reg=extractRegistration(hwpText+'\n'+ocrText) || extractRegistration(bodyText);
-  const venue=extractVenue(hwpText+'\n'+ocrText) || extractVenue(bodyText);
-
-  const mirroredImages=[];
-  for (let i=0;i<images.length;i++) {
-    const localUrl=await mirrorGuidelineImage(images[i],c.wrId,i);
-    mirroredImages.push({
-      id:'jbtta-'+c.wrId+'-img-'+i,
-      fileName:'요강 이미지 '+(i+1),
-      fileType:'image',
-      mimeType:'image/*',
-      fileKind:'guideline_image',
-      storagePath:'',
-      publicUrl:localUrl,
-      sortOrder:i,
-    });
-  }
+  const combined=[hwpText,bodyText].filter(Boolean).join('\n');
+  const event=extractEventDate(hwpText,c.title) || extractEventDate(bodyText,c.title);
+  const reg=extractRegistration(hwpText) || extractRegistration(bodyText);
+  const venue=extractVenue(hwpText) || extractVenue(bodyText);
 
   return {
     event,reg,venue,combined,
     files:[
-      ...mirroredImages,
+      ...previews,
       ...files,
     ]
   };
 }
 
-await fs.rm(path.join('public','jbtta','2026'),{recursive:true,force:true});
+await fs.rm(STAGING_JBTTA_DIR,{recursive:true,force:true});
+await fs.mkdir(STAGING_JBTTA_DIR,{recursive:true});
+outputDir = STAGING_JBTTA_DIR;
 const candidates=await collectCandidates();
 console.log('total candidate posts:',candidates.length);
 const newttIndex=await collectNewttIndex();
@@ -394,7 +456,7 @@ const output=[];
 for (const c of candidates) {
   try {
     const newtt=await enrichFromNewtt(c,newttIndex);
-    const d=await parseDetail(c,Boolean(newtt));
+    const d=await parseDetail(c);
     if (!/2026/.test(c.title) && !newtt) {
       console.log('skip unverified year',c.wrId,c.title);
       continue;
@@ -435,5 +497,8 @@ for (const c of candidates) {
 
 output.sort((a,b)=>a.eventStartDate.localeCompare(b.eventStartDate)||a.title.localeCompare(b.title));
 await fs.mkdir('src/data',{recursive:true});
-await fs.writeFile(OUTPUT,JSON.stringify(output,null,2)+'\n','utf8');
+await fs.writeFile(OUTPUT+'.tmp',JSON.stringify(output,null,2)+'\n','utf8');
+await fs.rm(PUBLIC_JBTTA_DIR,{recursive:true,force:true});
+await fs.rename(STAGING_JBTTA_DIR,PUBLIC_JBTTA_DIR);
+await fs.rename(OUTPUT+'.tmp',OUTPUT);
 console.log('WROTE',OUTPUT,output.length,'events');

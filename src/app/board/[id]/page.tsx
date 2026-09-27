@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getCurrentUser, isAdmin, type MvpUser } from '@/lib/mvpAuth';
-import { deleteBoardPost, getBoardPosts, type BoardPost } from '@/lib/mvpBoard';
+import type { BoardPost } from '@/lib/mvpBoard';
 
 export default function BoardDetailPage() {
   const params = useParams<{ id: string }>();
@@ -13,18 +13,21 @@ export default function BoardDetailPage() {
   const [user, setUser] = useState<MvpUser | null>(null);
 
   useEffect(() => {
-    setPost(getBoardPosts().find((item) => item.id === params.id) ?? null);
+    fetch('/api/mvp/posts/' + params.id, { cache: 'no-store' }).then(async (response) => {
+      const result = await response.json();
+      setPost(response.ok ? result.post : null);
+    }).catch(() => setPost(null));
     setUser(getCurrentUser());
   }, [params.id]);
 
-  function removePost() {
+  async function removePost() {
     if (!post || !user) return;
     const canDelete = post.authorId === user.id || isAdmin(user);
     if (!canDelete) return;
     if (!confirm('이 게시글을 삭제하시겠습니까?')) return;
 
-    const removed = deleteBoardPost(post.id, user.id, isAdmin(user));
-    if (!removed) {
+    const response = await fetch('/api/mvp/posts/' + post.id, { method: 'DELETE' });
+    if (!response.ok) {
       alert('게시글을 삭제할 권한이 없습니다.');
       return;
     }
