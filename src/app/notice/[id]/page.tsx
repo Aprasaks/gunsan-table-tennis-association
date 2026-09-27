@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { actor, db } from '@/lib/mvpServer';
+import { actor, db, logServerError } from '@/lib/mvpServer';
 import { postView } from '@/lib/mvpPostsServer';
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +16,10 @@ export default async function NoticeDetailPage({ params }: { params: Promise<{ i
       const current = await actor();
       if (!(current?.admin || current?.user?.associationTitle)) notFound();
     }
-  } catch { notFound(); }
+  } catch (cause) {
+    logServerError('[notice/detail] failed to load notice', cause);
+    notFound();
+  }
   const notice = postView(row);
   return <>
     <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME &gt; 공지사항 &gt; 상세</span><h1>공지사항</h1><p>군산시탁구협회의 주요 공지와 안내를 확인합니다.</p></div></section>
