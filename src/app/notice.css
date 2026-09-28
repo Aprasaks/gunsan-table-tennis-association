@@ -145,20 +145,29 @@
 .noticeDetailActions{
   display:flex;
   justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
   margin-top:24px;
 }
 
-.noticeListButton{
+.noticeListButton,.noticeEditButton,.noticeDeleteButton{
   display:inline-flex;
   align-items:center;
   justify-content:center;
   min-width:120px;
   height:46px;
+  padding:0 18px;
+  border-radius:4px;
+  font-family:inherit;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.noticeListButton{
   border:1px solid #aebdca;
   background:#fff;
   color:#344d61;
-  font-size:15px;
-  font-weight:700;
 }
 
 .noticeListButton:hover{
@@ -166,7 +175,15 @@
   border-color:#7f9bb0;
 }
 
+.noticeEditButton{border:1px solid #7ba4c0;background:#f4f9fc;color:#1f628c}
+.noticeEditButton:hover{background:#eaf4fa}
+.noticeDeleteButton{border:1px solid #d2a8a8;background:#fff7f7;color:#9a3838}
+.noticeDeleteButton:hover{background:#fff0f0}
+.noticeDeleteButton:disabled{cursor:wait;opacity:.65}
+
 @media(max-width:768px){
+  .noticeDetailActions{flex-direction:column}
+  .noticeListButton,.noticeEditButton,.noticeDeleteButton{width:100%;height:50px;font-size:16px}
   .noticeTable .num{
     width:58px;
     font-size:13px !important;

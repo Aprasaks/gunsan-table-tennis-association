@@ -41,7 +41,11 @@ export async function PATCH(request: Request, context: Context) {
     if (!current) return NextResponse.json({ message: '로그인이 필요합니다.' }, { status: 401 });
     const { id } = await context.params;
     const { data: existing } = await db().from('mvp_posts').select('*').eq('id', id).single();
-    if (!existing || existing.author_key !== authorKey(current) || (existing.kind === 'notice' && !current.admin && !current.user?.associationTitle))
+    const ownsPost = existing?.author_key === authorKey(current);
+    const canEdit = existing?.kind === 'notice'
+      ? Boolean(current.admin || (ownsPost && current.user?.associationTitle))
+      : ownsPost;
+    if (!existing || !canEdit)
       return NextResponse.json({ message: '수정 권한이 없습니다.' }, { status: 403 });
     const body = await request.json().catch(() => null);
     const existingFiles = await postFiles(id);
@@ -65,7 +69,8 @@ export async function PATCH(request: Request, context: Context) {
       if (insertError) throw insertError;
       insertedFileIds = finalized.rows.map((file) => file.id);
     }
-    const { data, error } = await db().from('mvp_posts').update({ ...input, updated_at: new Date().toISOString() }).eq('id', id).select('*').single();
+    const visibility = existing.kind === 'notice' && body?.visibility === 'private' ? 'private' : 'public';
+    const { data, error } = await db().from('mvp_posts').update({ ...input, visibility, updated_at: new Date().toISOString() }).eq('id', id).select('*').single();
     if (error) throw error;
     const referencedInline = referencedInlineFileIds(input.content_html, id);
     const keepIds = new Set([...requestedAttachments, ...referencedInline, ...finalized.rows.map((file) => file.id)]);
