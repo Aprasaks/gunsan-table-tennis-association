@@ -7,8 +7,6 @@
   .welcomeUser,
   .utilityLogout { font-size: 13px; }
 
-  .associationWordmark strong { font-size: 30px; }
-  .associationWordmark span { font-size: 10.5px; }
   .headerCityVisual strong { font-size: 16px; }
   .headerCityVisual span { font-size: 12px; }
 
@@ -103,9 +101,6 @@
   .utilityLinks a,
   .utilityLinks span,
   .utilityLinks button { font-size: 13px !important; }
-
-  .associationWordmark strong { font-size: 24px; }
-  .associationWordmark span { font-size: 8px; letter-spacing: .08em; }
 
   .mobileMenu summary { font-size: 15px; }
   .mobileMenu nav > a { font-size: 16px; padding: 14px 16px; }

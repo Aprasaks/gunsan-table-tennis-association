@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import AuthStatus from './AuthStatus';
 import './globals.css';
@@ -27,21 +28,14 @@ const nav = [
 
 function AssociationLogo() {
   return (
-    <div className="associationLogo">
-      <svg className="associationMark" viewBox="0 0 96 96" aria-hidden="true">
-        <circle cx="42" cy="42" r="27" fill="#1369ac" />
-        <path d="M23 57c18-10 31-23 44-41" fill="none" stroke="#fff" strokeWidth="5" strokeLinecap="round" />
-        <path d="M27 63c11 2 23 2 34-1 8-2 15-5 22-9" fill="none" stroke="#27a4d8" strokeWidth="5" strokeLinecap="round" />
-        <path d="M21 72c15-5 30-4 45 2 7 3 14 3 21 0" fill="none" stroke="#148bd0" strokeWidth="4" strokeLinecap="round" />
-        <path d="M30 58h38M37 58V47M60 58V45M37 47l11 11M60 45L48 58" fill="none" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" />
-        <circle cx="73" cy="18" r="7" fill="#e9eef2" stroke="#cfd8df" strokeWidth="1.5" />
-        <path d="M15 69 31 53" stroke="#0b4f8a" strokeWidth="8" strokeLinecap="round" />
-      </svg>
-      <div className="associationWordmark">
-        <strong>군산시탁구협회</strong>
-        <span>GUNSAN TABLE TENNIS ASSOCIATION</span>
-      </div>
-    </div>
+    <Image
+      className="associationLogoImage"
+      src="/images/association-logo.png"
+      alt="군산시탁구협회"
+      width={1336}
+      height={324}
+      priority
+    />
   );
 }
 
