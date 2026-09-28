@@ -15,10 +15,6 @@
   .heroCopy h1 { font-size: 36px; }
   .heroCopy p { font-size: 17px; }
 
-  .featureTile strong { font-size: 20px; }
-  .featureTile p { font-size: 14px; }
-  .featureTile > b { font-size: 13px; }
-
   .portalHeading { height: 42px; }
   .portalHeading h2 { font-size: 19px; }
   .portalHeading > a { font-size: 13px; }

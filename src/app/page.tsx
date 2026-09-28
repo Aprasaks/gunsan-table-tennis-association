@@ -6,6 +6,8 @@ export const dynamic = 'force-dynamic';
 type HomePost = { id: string; title: string; created_at: string; author_name: string };
 type HomeTournament = { id: string; title: string; event_start_date: string; status: string };
 
+const sponsorPlaceholders = ['01', '02', '03', '04', '05', '06'];
+
 export default async function Home() {
   const client = createAdminServerSupabase();
   const [noticeResult, boardResult, tournamentResult] = client ? await Promise.all([
@@ -32,25 +34,27 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="siteShell featureTiles" aria-label="주요 서비스">
-        <Link
-          href="/league"
-          className="featureTile featureImageTile"
-          style={{ backgroundImage: "url('/images/feature-league.webp')" }}
-          aria-label="동호인리그 최근 결과 바로가기"
-        />
-        <Link
-          href="/schedule"
-          className="featureTile featureImageTile"
-          style={{ backgroundImage: "url('/images/feature-schedule.webp')" }}
-          aria-label="다가오는 대회 일정 바로가기"
-        />
-        <Link
-          href="/notice"
-          className="featureTile featureImageTile"
-          style={{ backgroundImage: "url('/images/feature-notice.webp')" }}
-          aria-label="협회 공지 바로가기"
-        />
+      <section className="sponsorBand" aria-labelledby="sponsor-heading">
+        <div className="siteShell sponsorRow">
+          <div className="sponsorHeading">
+            <span>함께하는 곳</span>
+            <h2 id="sponsor-heading">협회 후원업체</h2>
+          </div>
+          <p className="srOnly">현재 후원업체 목록을 준비하고 있습니다.</p>
+          <div className="sponsorViewport" aria-hidden="true">
+            <div className="sponsorTrack">
+              {[...sponsorPlaceholders, ...sponsorPlaceholders].map((number, index) => (
+                <div className="sponsorItem" key={`${number}-${index}`}>
+                  <span className="sponsorMockLogo">LOGO</span>
+                  <span className="sponsorMockName">
+                    <strong>{`후원업체 ${number}`}</strong>
+                    <small>준비중</small>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className="siteShell portalGrid">
