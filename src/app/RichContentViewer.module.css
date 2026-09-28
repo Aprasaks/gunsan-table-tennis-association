@@ -1,0 +1,126 @@
+.content img{
+  cursor:zoom-in;
+  transition:opacity .16s ease, box-shadow .16s ease;
+}
+
+.content img:hover{
+  opacity:.92;
+  box-shadow:0 7px 22px rgba(26, 51, 68, .16);
+}
+
+.hint{
+  margin:26px 32px -14px;
+  color:#607785;
+  font-size:13px;
+  text-align:center;
+}
+
+.hint span{
+  display:inline-block;
+  margin-right:5px;
+  color:#126da5;
+  font-size:18px;
+  font-weight:800;
+  vertical-align:-1px;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  z-index:5000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:54px 84px 64px;
+  background:rgba(5, 12, 18, .94);
+  backdrop-filter:blur(3px);
+}
+
+.imageStage{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  max-width:100%;
+  max-height:100%;
+}
+
+.fullImage{
+  display:block;
+  width:auto;
+  height:auto;
+  max-width:min(92vw, 1600px);
+  max-height:calc(100vh - 118px);
+  object-fit:contain;
+  background:#fff;
+  box-shadow:0 20px 60px rgba(0, 0, 0, .5);
+}
+
+.closeButton,
+.arrowButton{
+  position:fixed;
+  z-index:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(255, 255, 255, .38);
+  border-radius:50%;
+  background:rgba(0, 0, 0, .28);
+  color:#fff;
+  cursor:pointer;
+  transition:background .15s ease, border-color .15s ease;
+}
+
+.closeButton:hover,
+.arrowButton:hover{
+  border-color:#fff;
+  background:rgba(255, 255, 255, .16);
+}
+
+.closeButton{
+  top:18px;
+  right:22px;
+  width:44px;
+  height:44px;
+  font:300 34px/1 Arial, sans-serif;
+}
+
+.arrowButton{
+  top:50%;
+  width:50px;
+  height:50px;
+  font:300 42px/1 Arial, sans-serif;
+  transform:translateY(-50%);
+}
+
+.previousButton{left:20px}
+.nextButton{right:20px}
+
+.counter{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  padding:6px 13px;
+  border-radius:16px;
+  background:rgba(0, 0, 0, .38);
+  color:#fff;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.04em;
+  transform:translateX(-50%);
+}
+
+@media(max-width:720px){
+  .hint{margin:20px 18px -10px;font-size:12px}
+  .overlay{padding:54px 12px 60px}
+  .fullImage{max-width:calc(100vw - 24px);max-height:calc(100vh - 114px)}
+  .closeButton{top:10px;right:10px;width:40px;height:40px;font-size:30px}
+  .arrowButton{top:auto;bottom:12px;width:40px;height:40px;font-size:34px;transform:none}
+  .previousButton{left:12px}
+  .nextButton{right:12px}
+  .counter{bottom:17px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .content img,.closeButton,.arrowButton{transition:none}
+}

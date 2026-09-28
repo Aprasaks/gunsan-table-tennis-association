@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getCurrentUser, isAdmin, type MvpUser } from '@/lib/mvpAuth';
 import type { BoardPost } from '@/lib/mvpBoard';
+import RichContentViewer from '@/app/RichContentViewer';
 
 export default function BoardDetailPage() {
   const params = useParams<{ id: string }>();
@@ -68,7 +69,7 @@ export default function BoardDetailPage() {
           </div>
         </header>
 
-        <div className="boardDetailBody" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
+        <RichContentViewer html={post.contentHtml} className="boardDetailBody" />
 
         {post.attachments.length > 0 && (
           <div className="boardAttachments">
