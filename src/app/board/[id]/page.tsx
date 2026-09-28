@@ -75,7 +75,7 @@ export default function BoardDetailPage() {
             <strong>첨부파일</strong>
             <ul>
               {post.attachments.map((file) => (
-                <li key={file.id}><a href={file.dataUrl} download={file.name}>{file.name}</a></li>
+                <li key={file.id}><a href={file.url || file.dataUrl} download={file.name}>{file.name}</a></li>
               ))}
             </ul>
           </div>

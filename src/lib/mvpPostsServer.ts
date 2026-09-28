@@ -1,11 +1,21 @@
 import { load } from 'cheerio';
 import { actor } from '@/lib/mvpServer';
+import { postAttachment, type StoredPostFile } from '@/lib/postUploads';
 
 export type PostKind = 'notice' | 'board';
-export function postView(row: Record<string, any>) {
+export function postView(row: Record<string, any>, files: StoredPostFile[] = []) {
+  const storedAttachments = files.filter((file) => file.file_kind === 'attachment').map(postAttachment);
+  const legacyAttachments = Array.isArray(row.attachments) ? row.attachments.map((file: Record<string, unknown>) => ({
+    id: String(file.id ?? ''),
+    name: String(file.name ?? '첨부파일'),
+    type: String(file.type ?? 'application/octet-stream'),
+    size: Number(file.size) || 0,
+    url: String(file.dataUrl ?? ''),
+    dataUrl: String(file.dataUrl ?? ''),
+  })).filter((file: { url: string }) => file.url.startsWith('data:')) : [];
   return { id: row.id, title: row.title, contentHtml: row.content_html,
     visibility: row.visibility, authorId: row.author_key, authorName: row.author_name,
-    attachments: row.attachments ?? [], date: new Date(row.created_at).toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' }).replace(/\s/g, ''),
+    attachments: [...storedAttachments, ...legacyAttachments], date: new Date(row.created_at).toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' }).replace(/\s/g, ''),
     createdAt: row.created_at, updatedAt: row.updated_at };
 }
 
@@ -20,9 +30,10 @@ export function sanitizeHtml(html: string) {
     const attrs = { ...(element as unknown as { attribs: Record<string, string> }).attribs };
     for (const key of Object.keys(attrs)) node.removeAttr(key);
     if (tag === 'a' && /^(https?:\/\/|mailto:)/i.test(attrs.href ?? '')) {
-      node.attr('href', attrs.href); node.attr('rel', 'noopener noreferrer');
+      node.attr('href', attrs.href); node.attr('target', '_blank'); node.attr('rel', 'noopener noreferrer');
     }
-    if (tag === 'img' && /^data:image\/(png|jpeg|gif|webp);base64,[a-z0-9+/=]+$/i.test(attrs.src ?? '') && attrs.src.length < 2_800_000) {
+    const storedImage = /^\/api\/mvp\/files\/[0-9a-f-]{36}\/[0-9a-f-]{36}$/i.test(attrs.src ?? '');
+    if (tag === 'img' && storedImage) {
       node.attr('src', attrs.src); node.attr('alt', (attrs.alt ?? '').slice(0, 100));
     } else if (tag === 'img') node.remove();
     if (tag === 'font' && /^#[0-9a-f]{6}$/i.test(attrs.color ?? '')) node.attr('color', attrs.color);
@@ -33,17 +44,10 @@ export function sanitizeHtml(html: string) {
 export function validPostInput(body: any) {
   const title = String(body?.title ?? '').trim().slice(0, 180);
   const rawHtml = String(body?.contentHtml ?? '');
-  if (!title || !rawHtml || rawHtml.length > 3_000_000) return null;
+  if (!title || !rawHtml || rawHtml.length > 500_000) return null;
   const contentHtml = sanitizeHtml(rawHtml);
   if (!load(contentHtml).text().trim() && !contentHtml.includes('<img')) return null;
-  const files = body?.attachments;
-  if (!Array.isArray(files) || files.length > 8 || JSON.stringify(body).length > 3_800_000 ||
-      files.some((file: any) => typeof file?.name !== 'string' || file.name.length > 180 ||
-        typeof file?.dataUrl !== 'string' || !/^data:(image\/(png|jpeg|gif|webp)|application\/(pdf|octet-stream|x-hwp|haansofthwp|zip|vnd\.[a-z0-9.+-]+));base64,[a-z0-9+/=]+$/i.test(file.dataUrl))) return null;
-  return { title, content_html: contentHtml, attachments: files.map((file: any) => ({
-    id: String(file.id ?? '').slice(0, 100), name: file.name, type: String(file.type ?? '').slice(0, 100),
-    size: Number(file.size) || 0, dataUrl: file.dataUrl,
-  })) };
+  return { title, content_html: contentHtml, attachments: [] };
 }
 
 export function authorKey(current: NonNullable<Awaited<ReturnType<typeof actor>>>) {

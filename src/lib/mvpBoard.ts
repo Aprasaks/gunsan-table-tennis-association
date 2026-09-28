@@ -1,10 +1,6 @@
-export type BoardAttachment = {
-  id: string;
-  name: string;
-  type: string;
-  size: number;
-  dataUrl: string;
-};
+import type { PostAttachment } from '@/lib/postUploads';
+
+export type BoardAttachment = PostAttachment;
 
 export type BoardPost = {
   id: string;

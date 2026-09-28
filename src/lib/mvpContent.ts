@@ -1,12 +1,8 @@
 export type NoticeVisibility = 'public' | 'private';
 
-export type NoticeAttachment = {
-  id: string;
-  name: string;
-  type: string;
-  size: number;
-  dataUrl: string;
-};
+import type { PostAttachment } from '@/lib/postUploads';
+
+export type NoticeAttachment = PostAttachment;
 
 export type AdminNotice = {
   id: string;

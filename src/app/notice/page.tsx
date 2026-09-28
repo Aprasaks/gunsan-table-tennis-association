@@ -15,7 +15,7 @@ export default async function NoticePage() {
     if (!canSeePrivate) query = query.eq('visibility', 'public');
     const result = await query;
     if (result.error) throw result.error;
-    rows = (result.data ?? []).map(postView);
+    rows = (result.data ?? []).map((row) => postView(row));
   } catch (cause) {
     logServerError('[notice/page] failed to load notices', cause);
     error = '공지사항을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';

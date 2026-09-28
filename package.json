@@ -11,10 +11,11 @@
     "@supabase/supabase-js": "latest",
     "cheerio": "latest",
     "exceljs": "latest",
+    "js-hwp": "latest",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "js-hwp": "latest"
+    "sharp": "0.35.5"
   },
   "devDependencies": {
     "@types/node": "latest",
