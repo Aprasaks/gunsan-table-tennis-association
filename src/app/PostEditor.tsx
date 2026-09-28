@@ -62,6 +62,27 @@ function descriptor(file: File, role: PostFileRole): PendingUpload {
   };
 }
 
+async function optimizeImageFile(file: File) {
+  if (!/\.(jpe?g|png|webp)$/i.test(file.name)) return file;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+    const context = canvas.getContext('2d');
+    if (!context) { bitmap.close(); return file; }
+    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', 0.8));
+    if (!blob) return file;
+    const name = file.name.replace(/\.[^.]+$/, '') + '.webp';
+    return new File([blob], name, { type: 'image/webp', lastModified: file.lastModified });
+  } catch {
+    return file;
+  }
+}
+
 export default function PostEditor({
   kind,
   postId,
@@ -89,6 +110,7 @@ export default function PostEditor({
   const [pending, setPending] = useState<PendingUpload[]>([]);
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [busyStatus, setBusyStatus] = useState<string | null>(null);
 
   useEffect(() => {
     if (editorRef.current) editorRef.current.innerHTML = initialContentHtml;
@@ -103,6 +125,13 @@ export default function PostEditor({
       if (file.previewUrl) URL.revokeObjectURL(file.previewUrl);
     });
   }, []);
+
+  useEffect(() => {
+    if (!busyStatus) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = previousOverflow; };
+  }, [busyStatus]);
 
   function rememberSelection() {
     const selection = window.getSelection();
@@ -149,7 +178,7 @@ export default function PostEditor({
     rememberSelection();
   }
 
-  function addImages(event: ChangeEvent<HTMLInputElement>) {
+  async function addImages(event: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files ?? []);
     event.target.value = '';
     if (!files.length) return;
@@ -158,21 +187,27 @@ export default function PostEditor({
     if (error) { setMessage(error); return; }
     if (currentCount + files.length > MAX_INLINE_IMAGES) { setMessage('본문 이미지는 12개까지 넣을 수 있습니다.'); return; }
 
-    const added = files.map((file) => ({ ...descriptor(file, 'inline'), previewUrl: URL.createObjectURL(file) }));
-    setPending((current) => [...current, ...added]);
-    restoreSelection();
-    for (const item of added) {
-      const image = document.createElement('img');
-      image.src = item.previewUrl;
-      image.alt = item.name;
-      image.dataset.uploadId = item.id;
-      document.execCommand('insertHTML', false, image.outerHTML);
+    setBusyStatus('이미지 크기를 줄이고 있습니다…');
+    try {
+      const optimized = await Promise.all(files.map(optimizeImageFile));
+      const added = optimized.map((file) => ({ ...descriptor(file, 'inline'), previewUrl: URL.createObjectURL(file) }));
+      setPending((current) => [...current, ...added]);
+      restoreSelection();
+      for (const item of added) {
+        const image = document.createElement('img');
+        image.src = item.previewUrl;
+        image.alt = item.name;
+        image.dataset.uploadId = item.id;
+        document.execCommand('insertHTML', false, image.outerHTML);
+      }
+      rememberSelection();
+      setMessage('');
+    } finally {
+      setBusyStatus(null);
     }
-    rememberSelection();
-    setMessage('이미지는 등록할 때 WebP로 자동 변환됩니다.');
   }
 
-  function addAttachments(event: ChangeEvent<HTMLInputElement>) {
+  async function addAttachments(event: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files ?? []);
     event.target.value = '';
     if (!files.length) return;
@@ -180,8 +215,15 @@ export default function PostEditor({
     const pendingAttachments = pending.filter((file) => file.role === 'attachment').length;
     if (error) { setMessage(error); return; }
     if (attachments.length + pendingAttachments + files.length > MAX_ATTACHMENTS) { setMessage('첨부파일은 8개까지 올릴 수 있습니다.'); return; }
-    setPending((current) => [...current, ...files.map((file) => descriptor(file, 'attachment'))]);
-    setMessage('');
+    const containsImage = files.some((file) => /\.(jpe?g|png|webp)$/i.test(file.name));
+    if (containsImage) setBusyStatus('첨부 이미지를 최적화하고 있습니다…');
+    try {
+      const optimized = await Promise.all(files.map(optimizeImageFile));
+      setPending((current) => [...current, ...optimized.map((file) => descriptor(file, 'attachment'))]);
+      setMessage('');
+    } finally {
+      setBusyStatus(null);
+    }
   }
 
   function removePending(id: string) {
@@ -223,9 +265,10 @@ export default function PostEditor({
     const activeInlineIds = new Set(Array.from(editor?.querySelectorAll<HTMLImageElement>('img[data-upload-id]') ?? []).map((image) => image.dataset.uploadId));
     const activePending = pending.filter((file) => file.role === 'attachment' || activeInlineIds.has(file.id));
     setSubmitting(true);
-    setMessage(activePending.length ? '파일을 업로드하고 이미지를 WebP로 변환하고 있습니다…' : '게시글을 저장하고 있습니다…');
+    setBusyStatus(activePending.length ? '파일을 업로드하고 있습니다…' : '게시글을 저장하고 있습니다…');
     try {
       await uploadFiles(activePending);
+      setBusyStatus(activePending.length ? '이미지를 변환해 저장하고 있습니다…' : '게시글을 저장하고 있습니다…');
       const response = await fetch(endpoint, {
         method,
         headers: { 'Content-Type': 'application/json' },
@@ -245,6 +288,7 @@ export default function PostEditor({
     } catch (cause) {
       setMessage(cause instanceof Error ? cause.message : '게시글을 저장하지 못했습니다.');
       setSubmitting(false);
+      setBusyStatus(null);
     }
   }
 
@@ -268,7 +312,7 @@ export default function PostEditor({
               <option value="2">작게</option><option value="3">보통</option><option value="4">크게</option><option value="5">매우 크게</option>
             </select>
             <label className={styles.colorControl}><span>글자색</span><input type="color" defaultValue="#222222" onMouseDown={rememberSelection} onChange={(event) => command('foreColor', event.target.value)} /></label>
-            <button type="button" onClick={() => imageInputRef.current?.click()}>이미지</button>
+            <button type="button" onClick={() => imageInputRef.current?.click()} disabled={Boolean(busyStatus)}>이미지</button>
             <button type="button" onClick={addLink}>링크</button>
           </div>
           <div ref={editorRef} className={styles.editor} contentEditable suppressContentEditableWarning data-placeholder={placeholder} onMouseUp={rememberSelection} onKeyUp={rememberSelection} onInput={rememberSelection} />
@@ -278,7 +322,7 @@ export default function PostEditor({
       <div className={styles.row}>
         <label>첨부파일</label>
         <div className={styles.fileActions}>
-          <button type="button" onClick={() => fileInputRef.current?.click()}>파일 추가</button>
+          <button type="button" onClick={() => fileInputRef.current?.click()} disabled={Boolean(busyStatus)}>파일 추가</button>
           <span>파일당 10MB, 최대 8개 · 첨부한 JPG·PNG·GIF·WebP도 WebP로 자동 변환됩니다.</span>
         </div>
         <input ref={fileInputRef} className={styles.hiddenInput} type="file" accept={POST_FILE_ACCEPT} multiple onChange={addAttachments} />
@@ -292,6 +336,13 @@ export default function PostEditor({
         <Link href={cancelHref} className={styles.cancel}>취소</Link>
         <button type="submit" className={styles.submit} disabled={submitting}>{submitting ? '처리 중…' : submitLabel}</button>
       </div>
+      {busyStatus ? <div className={styles.savingOverlay} role="dialog" aria-modal="true" aria-labelledby="saving-title">
+        <div className={styles.savingModal}>
+          <span className={styles.spinner} aria-hidden="true" />
+          <strong id="saving-title">{busyStatus}</strong>
+          <p>잠시만 기다려주세요. 완료되면 자동으로 이동합니다.</p>
+        </div>
+      </div> : null}
     </form>
   );
 }

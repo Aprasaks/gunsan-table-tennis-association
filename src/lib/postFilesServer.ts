@@ -37,11 +37,11 @@ function convertedName(name: string) {
   return cleanFileName(name).replace(/\.[^.]+$/, '') + '.webp';
 }
 
-async function convertImage(buffer: Buffer) {
-  return sharp(buffer, { animated: true, limitInputPixels: 80_000_000 })
+async function convertImage(buffer: Buffer, fileName: string) {
+  return sharp(buffer, { animated: /\.gif$/i.test(fileName), limitInputPixels: 80_000_000 })
     .rotate()
-    .resize({ width: 1920, height: 1920, fit: 'inside', withoutEnlargement: true })
-    .webp({ quality: 82, effort: 4 })
+    .resize({ width: 1600, height: 1600, fit: 'inside', withoutEnlargement: true })
+    .webp({ quality: 80, effort: 2 })
     .toBuffer();
 }
 
@@ -68,37 +68,46 @@ export async function materializeUploads(postId: string, files: UploadDescriptor
   const stagedPaths = files.map((file) => stagingPath(postId, file.id));
 
   try {
-    for (const file of files) {
+    async function materialize(file: UploadDescriptor) {
       const stagedPath = stagingPath(postId, file.id);
       const { data: blob, error: downloadError } = await storage.download(stagedPath);
       if (downloadError || !blob) throw new PostFileInputError(`${file.name} 업로드를 확인하지 못했습니다.`);
       const source = Buffer.from(await blob.arrayBuffer());
       if (!source.length || source.length > 10 * 1024 * 1024) throw new PostFileInputError(`${file.name} 용량을 확인해주세요.`);
-
       const image = isImageName(file.name);
-      const output = image ? await convertImage(source) : source;
+      const output = image ? await convertImage(source, file.name) : source;
       const extension = image ? 'webp' : file.name.toLowerCase().match(/\.([a-z0-9]+)$/)?.[1];
       if (!extension) throw new PostFileInputError(`${file.name} 형식을 확인해주세요.`);
       const finalPath = `posts/${postId}/${file.id}.${extension}`;
       const mimeType = image ? 'image/webp' : (sourceMime(file.name) ?? 'application/octet-stream');
       const storedName = image ? convertedName(file.name) : cleanFileName(file.name);
-      const { error: uploadError } = await storage.upload(finalPath, output, {
-        contentType: mimeType,
-        cacheControl: '31536000',
-        upsert: false,
-      });
+      const { error: uploadError } = await storage.upload(finalPath, output, { contentType: mimeType, cacheControl: '31536000', upsert: false });
       if (uploadError) throw uploadError;
-      uploadedPaths.push(finalPath);
-      rows.push({
-        id: file.id,
-        post_id: postId,
-        file_kind: file.role,
-        storage_path: finalPath,
-        original_name: cleanFileName(file.name),
-        stored_name: storedName,
-        mime_type: mimeType,
-        size: output.length,
-      });
+      return {
+        path: finalPath,
+        row: {
+          id: file.id,
+          post_id: postId,
+          file_kind: file.role,
+          storage_path: finalPath,
+          original_name: cleanFileName(file.name),
+          stored_name: storedName,
+          mime_type: mimeType,
+          size: output.length,
+        } satisfies StoredPostFile,
+      };
+    }
+
+    for (let index = 0; index < files.length; index += 3) {
+      const results = await Promise.allSettled(files.slice(index, index + 3).map(materialize));
+      for (const result of results) {
+        if (result.status === 'fulfilled') {
+          uploadedPaths.push(result.value.path);
+          rows.push(result.value.row);
+        }
+      }
+      const failure = results.find((result) => result.status === 'rejected');
+      if (failure?.status === 'rejected') throw failure.reason;
     }
     if (stagedPaths.length) await storage.remove(stagedPaths);
     return { rows, uploadedPaths };
