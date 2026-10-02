@@ -6,6 +6,32 @@ import { useRouter } from 'next/navigation';
 import styles from '../auth.module.css';
 import { normalizePhone } from '@/lib/mvpAuth';
 
+const clubs = [
+  '코리아',
+  '최강탁구클럽',
+  '미룡탁구클럽',
+  '박승기 탁구클럽',
+  '자유탁구클럽',
+  '티엘탁구클럽',
+  '더원탁구클럽',
+  'JK탁구동호회',
+  '드림허브',
+  '탁구1번지 동호회',
+  '부부탁구클럽',
+  '웰빙 탁구 동호회',
+  '행복탁구클럽',
+  '스타탁구장',
+  '시티탁구클럽',
+  '온리원 탁구클럽',
+  '더샾 탁구',
+  '금강노인복지관 한마음 탁구동우회',
+  '중앙노인복지관',
+  '나운사회복지관 신바람 탁구동우회',
+  '오성탁구클럽',
+  '이영출탁구클럽',
+  '에이스탁구동호회',
+];
+
 const maleRanks = [
   ['남 Ace', '선수부 (Ace)'],
   ['남 1부', '1부'],
@@ -97,7 +123,7 @@ export default function SignupPage() {
           <div className={styles.row}><label htmlFor="birthDate">생년월일 <small>6자리</small></label><input id="birthDate" inputMode="numeric" maxLength={6} value={form.birthDate} onChange={(e) => setForm({ ...form, birthDate: e.target.value.replace(/[^0-9]/g, '').slice(0, 6) })} placeholder="예: 900101" autoComplete="bday" /></div>
           <div className={styles.row}><label htmlFor="gender">성별</label><select id="gender" value={form.gender} onChange={(e) => setForm({ ...form, gender: e.target.value as '' | '남' | '여', rank: '' })}><option value="">성별을 선택하세요</option><option value="남">남</option><option value="여">여</option></select></div>
           <div className={styles.row}><label htmlFor="phone">핸드폰번호</label><input id="phone" type="tel" inputMode="numeric" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="010-0000-0000" autoComplete="tel" /></div>
-          <div className={styles.row}><label htmlFor="club">소속</label><input id="club" value={form.club} onChange={(e) => setForm({ ...form, club: e.target.value })} placeholder="소속 구장 또는 동호회를 입력하세요" /></div>
+          <div className={styles.row}><label htmlFor="club">소속</label><select id="club" value={form.club} onChange={(e) => setForm({ ...form, club: e.target.value })}><option value="">소속을 선택하세요</option>{clubs.map((club) => <option key={club} value={club}>{club}</option>)}</select></div>
           <div className={styles.row}><label htmlFor="rank">부수</label><select id="rank" value={form.rank} onChange={(e) => setForm({ ...form, rank: e.target.value })} disabled={!form.gender}><option value="">{form.gender ? '부수를 선택하세요' : '성별을 먼저 선택하세요'}</option>{rankOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>
 
           <p>협회 직책과 구장 직책은 가입 후 관리자가 부여합니다.</p>
