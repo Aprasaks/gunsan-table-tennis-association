@@ -7,6 +7,7 @@ import styles from '../auth.module.css';
 import { normalizePhone } from '@/lib/mvpAuth';
 
 const clubs = [
+  '개인',
   '코리아',
   '최강탁구클럽',
   '미룡탁구클럽',
