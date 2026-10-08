@@ -1,0 +1,41 @@
+name: Generate Site Icons
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - public/images/association-logo-2026.webp
+      - scripts/generate-site-icons.mjs
+      - .github/workflows/generate-site-icons.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://eqtqyphnxhyliujfccyh.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: build-check-placeholder-key
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - name: Generate favicon and app icons
+        run: node scripts/generate-site-icons.mjs
+      - name: Verify complete Next.js build
+        run: npm run build
+      - name: Commit generated static icons
+        run: |
+          git add src/app/favicon.ico src/app/icon.png src/app/apple-icon.png public/icons/icon-192.png public/icons/icon-512.png
+          if git diff --cached --quiet; then
+            echo 'No icon changes'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m '군산시탁구협회 파비콘 및 앱 아이콘 갱신'
+          git push

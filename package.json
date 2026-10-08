@@ -5,7 +5,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "predev": "node scripts/generate-site-icons.mjs",
+    "prebuild": "node scripts/generate-site-icons.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "latest",
