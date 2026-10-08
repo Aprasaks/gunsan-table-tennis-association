@@ -17,6 +17,7 @@ export default function ProfilePage() {
     name: '',
     gender: '' as '' | '남' | '여',
     phone: '',
+    currentPassword: '',
     password: '',
     passwordConfirm: '',
   });
@@ -28,7 +29,7 @@ export default function ProfilePage() {
       setSignatureDataUrl(currentUser.signatureDataUrl ?? '');
       setForm({
         name: currentUser.name, gender: currentUser.gender, phone: currentUser.phone,
-        password: '', passwordConfirm: '',
+        currentPassword: '', password: '', passwordConfirm: '',
       });
     });
   }, [router]);
@@ -52,6 +53,10 @@ export default function ProfilePage() {
       setSignatureOpen(true);
       return;
     }
+    if (form.password && !form.currentPassword) {
+      setMessage('비밀번호를 변경하려면 현재 비밀번호를 입력해주세요.');
+      return;
+    }
     if (form.password && form.password.length < 8) {
       setMessage('새 비밀번호는 8자 이상 입력해주세요.');
       return;
@@ -62,7 +67,7 @@ export default function ProfilePage() {
     }
 
     const response = await fetch('/api/mvp/profile', { method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: form.name, gender: form.gender, phone, password: form.password, signatureDataUrl }) });
+      body: JSON.stringify({ name: form.name, gender: form.gender, phone, currentPassword: form.currentPassword, password: form.password, signatureDataUrl }) });
     const result = await response.json() as { user?: MvpUser; message?: string };
     if (!response.ok || !result.user) { setMessage(result.message ?? '회원정보를 저장하지 못했습니다.'); return; }
     const updated = result.user;
@@ -72,6 +77,7 @@ export default function ProfilePage() {
     setForm((current) => ({
       ...current,
       phone,
+      currentPassword: '',
       password: '',
       passwordConfirm: '',
     }));
@@ -134,6 +140,11 @@ export default function ProfilePage() {
           <p className={styles.note}>
             소속과 직책은 관리자가 처리합니다. 구장 회장은 이적동의서에 사용할 서명을 이 화면에서 등록할 수 있습니다.
           </p>
+
+          <div className={styles.row}>
+            <label htmlFor="current-password">현재 비밀번호 <small>(비밀번호 변경 시)</small></label>
+            <input id="current-password" type="password" value={form.currentPassword} onChange={(e) => setForm({ ...form, currentPassword: e.target.value })} autoComplete="current-password" />
+          </div>
 
           <div className={styles.row}>
             <label htmlFor="password">새 비밀번호 <small>(변경할 때만 입력)</small></label>

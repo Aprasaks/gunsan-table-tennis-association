@@ -274,7 +274,8 @@ export default function MemberRegistrationPage() {
     }
   }
 
-  function logout() {
+  async function logout() {
+    await fetch('/api/mvp/logout', { method: 'POST' }).catch(() => null);
     clearSession();
     router.push('/login');
   }

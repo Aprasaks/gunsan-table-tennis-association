@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { isAdmin, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
+import { canApproveAssociation, isAdmin, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
 import type { TransferRequest } from '@/lib/mvpTransfer';
 import styles from './dashboard.module.css';
 
@@ -80,8 +80,8 @@ export default function AdminPage() {
   const admin = isAdmin(viewer);
   const activeMembers = overview?.members?.filter((member) => member.memberStatus !== 'withdrawn') ?? [];
   const officers = activeMembers.filter((member) => Boolean(member.associationTitle));
-  const pendingAdmin = overview?.requests.filter((request) => request.status === 'pending_admin') ?? [];
-  const pendingDestination = overview?.requests.filter((request) => request.status === 'pending_destination') ?? [];
+  const pendingAdmin = overview?.requests.filter((request) => request.status === 'pending_admin' || request.status === 'pending_destination') ?? [];
+  const canApprove = canApproveAssociation(viewer);
   const unreadAlerts = overview?.alerts.filter((alert) => !alert.read).length ?? 0;
 
   return <>
@@ -96,8 +96,7 @@ export default function AdminPage() {
         <div className={styles.stats}>
           {admin && <div className={styles.stat}><span>활동 회원</span><strong>{activeMembers.length}명</strong><small>전체 등록 {overview.members?.length ?? 0}명</small></div>}
           {admin && <div className={styles.stat}><span>협회 직책 회원</span><strong>{officers.length}명</strong><small>협회장 · 이사 · 총무 · 고문 · 사무국장</small></div>}
-          <Link href="/members/approvals" className={styles.stat}><span>협회 승인 대기</span><strong>{pendingAdmin.length}건</strong><small>협회 확인이 필요한 업무</small></Link>
-          <Link href="/members/approvals" className={styles.stat}><span>구장 승인 대기</span><strong>{pendingDestination.length}건</strong><small>구장 확인 단계의 이적 업무</small></Link>
+          {canApprove && <Link href="/members/approvals" className={styles.stat}><span>협회 승인 대기</span><strong>{pendingAdmin.length}건</strong><small>관리자·협회장 최종 확인 업무</small></Link>}
           <Link href="/admin/notifications" className={styles.stat}><span>읽지 않은 알림</span><strong>{unreadAlerts}건</strong><small>회원등록 · 이적 · 희망부 알림</small></Link>
           <Link href="/admin/registrations" className={styles.stat}><span>제출 선수등록</span><strong>{overview.rosterCount}건</strong><small>협회에 제출된 구장별 명단</small></Link>
         </div>
@@ -121,7 +120,7 @@ export default function AdminPage() {
       </>}
       <div className={styles.quickLinks}>
         {admin && <Link href="/admin/members">회원 명부와 직책 관리 →</Link>}
-        <Link href="/members/approvals">이적 승인 업무 →</Link>
+        {canApprove && <Link href="/members/approvals">이적 승인 업무 →</Link>}
         <Link href="/admin/notifications">협회 임원 알림함 →</Link>
         <Link href="/admin/registrations">제출된 선수등록 명단 →</Link>
         <Link href="/notice">공지사항 →</Link>

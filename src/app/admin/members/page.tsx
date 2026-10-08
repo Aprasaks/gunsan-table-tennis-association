@@ -56,12 +56,12 @@ export default function AdminMembersPage() {
     alert(result.imported + '명과 이적 신청 ' + result.importedRequests + '건을 가져왔습니다. 이미 등록된 항목은 중복 추가하지 않았습니다.');
   }
 
-  async function save(user: MvpUser, associationTitle: string, position: string) {
+  async function save(user: MvpUser, associationTitle: string, position: string, memberStatus = user.memberStatus ?? 'active') {
     setSaving(user.id); setError('');
     try {
       const response = await fetch('/api/mvp/members/' + user.id, {
         method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ associationTitle, position }),
+        body: JSON.stringify({ associationTitle, position, memberStatus }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message);
@@ -90,13 +90,19 @@ export default function AdminMembersPage() {
         <div className={styles.grid}>
           <div className={styles.field}><label htmlFor={'association-' + user.id}>협회 직책</label>
             <select id={'association-' + user.id} value={user.associationTitle ?? ''} disabled={saving === user.id}
-              onChange={(event) => save(user, event.target.value, user.position)}>
+              onChange={(event) => save(user, event.target.value, user.position, user.memberStatus ?? 'active')}>
               {titles.map((title) => <option key={title} value={title}>{title || '없음'}</option>)}
             </select></div>
           <div className={styles.field}><label htmlFor={'club-' + user.id}>구장 직책</label>
             <select id={'club-' + user.id} value={user.position} disabled={saving === user.id}
-              onChange={(event) => save(user, user.associationTitle ?? '', event.target.value)}>
+              onChange={(event) => save(user, user.associationTitle ?? '', event.target.value, user.memberStatus ?? 'active')}>
               {clubPositions.map((title) => <option key={title}>{title}</option>)}
+            </select></div>
+          <div className={styles.field}><label htmlFor={'status-' + user.id}>회원 상태</label>
+            <select id={'status-' + user.id} value={user.memberStatus ?? 'active'} disabled={saving === user.id}
+              onChange={(event) => save(user, user.associationTitle ?? '', user.position, event.target.value)}>
+              <option value="active">활동</option>
+              <option value="withdrawn">탈퇴/비활성</option>
             </select></div>
         </div>
       </article>)}</div></>}

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { AUTH_CHANGE_EVENT, canReviewAssociation, clearSession, getCurrentUser, isAdmin, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
+import { AUTH_CHANGE_EVENT, canApproveAssociation, canReviewAssociation, clearSession, getCurrentUser, isAdmin, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
 
 export default function AuthStatus() {
   const router = useRouter();
@@ -32,7 +32,9 @@ export default function AuthStatus() {
       ]);
       if (!response?.ok) return;
       const result = await response.json();
-      setPending((result.requests ?? []).filter((item: { status: string }) => item.status === 'pending_admin').length);
+      setPending(canApproveAssociation(user)
+        ? (result.requests ?? []).filter((item: { status: string }) => item.status === 'pending_admin').length
+        : 0);
       if (alertsResponse?.ok) {
         const notifications = await alertsResponse.json();
         setUnread((notifications.alerts ?? []).filter((item: { read: boolean }) => !item.read).length);
@@ -60,7 +62,7 @@ export default function AuthStatus() {
     <span>{admin ? '관리자님 환영합니다.' : user.name + ' 회원님 환영합니다.'}</span>
     {executiveDashboard && <><i aria-hidden="true" /><Link href="/admin">임원 대시보드</Link></>}
     {!admin && <><i aria-hidden="true" /><Link href="/profile">정보수정</Link></>}
-    {canReviewAssociation(user) && <><i aria-hidden="true" /><Link href="/members/approvals">협회 승인 {pending > 0 ? '(' + pending + ')' : ''}</Link></>}
+    {canApproveAssociation(user) && <><i aria-hidden="true" /><Link href="/members/approvals">협회 승인 {pending > 0 ? '(' + pending + ')' : ''}</Link></>}
     {canReviewAssociation(user) && <><i aria-hidden="true" /><Link href="/admin/notifications">임원 알림 {unread > 0 ? '(' + unread + ')' : ''}</Link></>}
     <i aria-hidden="true" />
     <button type="button" onClick={logout} style={{ background: 'none', border: 0, padding: 0, color: 'inherit', cursor: 'pointer' }}>로그아웃</button>

@@ -11,12 +11,8 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
     const action = body?.action;
     const { data: transfer, error } = await db().from('mvp_transfers').select('*').eq('id', id).single();
     if (error || !transfer) return NextResponse.json({ message: '신청을 찾을 수 없습니다.' }, { status: 404 });
-    if (action === 'destination') {
-      if (current.admin || current.user.position !== '회장' || current.user.club !== transfer.to_club) {
-        return NextResponse.json({ message: '도착 소속 회장만 승인할 수 있습니다.' }, { status: 403 });
-      }
-    } else if (!['approve', 'reject'].includes(action) || !(current.admin || current.user.associationTitle)) {
-      return NextResponse.json({ message: '협회 승인 권한이 없습니다.' }, { status: 403 });
+    if (!['approve', 'reject'].includes(action) || !(current.admin || current.user.associationTitle === '협회장')) {
+      return NextResponse.json({ message: '관리자 또는 협회장만 승인할 수 있습니다.' }, { status: 403 });
     }
     const by = current.admin ? 'admin' : current.user.id;
     const { data: outcome, error: rpcError } = await db().rpc('process_mvp_transfer', {

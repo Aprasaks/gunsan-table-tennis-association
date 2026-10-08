@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { actor, db, sameOrigin } from '@/lib/mvpServer';
+import { actor, db, logServerError, sameOrigin } from '@/lib/mvpServer';
 
 export function transferView(row: Record<string, any>) {
   return {
@@ -55,19 +55,22 @@ export async function POST(request: Request) {
     if (!chair?.signature_data_url) {
       return NextResponse.json({ message: '기존 소속 회장 서명을 등록한 뒤 신청해주세요.' }, { status: 400 });
     }
-    const { data: destinationChair } = await db().from('mvp_members').select('id')
-      .eq('club', destination).eq('position', '회장').eq('member_status', 'active').limit(1);
-    if (!destinationChair?.length) {
-      return NextResponse.json({ message: '이적 소속의 회장 계정이 없습니다.' }, { status: 400 });
-    }
     const { error } = await db().from('mvp_transfers').insert({
       member_id: member.id, member_name: member.name, gender: member.gender,
       rank: member.rank, phone: member.phone, from_club: member.club, to_club: destination,
       source_chair_user_id: chair.id, source_chair_name: chair.name,
       source_chair_signature_data_url: chair.signature_data_url,
       request_date: new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Seoul' }),
+      status: 'pending_admin',
     });
     if (error) throw error;
+    const { error: alertError } = await db().from('mvp_alerts').insert({
+      kind: 'transfer',
+      title: '이적 최종 승인 대기',
+      detail: member.name + ': ' + member.club + ' → ' + destination,
+      target_url: '/members/approvals',
+    });
+    if (alertError) logServerError('[api/mvp/transfers] failed to create transfer alert', alertError);
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ message: '이적 신청을 저장하지 못했습니다.' }, { status: 503 });

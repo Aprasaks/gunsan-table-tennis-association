@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { actor, db, passwordDigest, publicMember, sameOrigin } from '@/lib/mvpServer';
+import { actor, db, passwordDigest, passwordMatches, publicMember, sameOrigin } from '@/lib/mvpServer';
 export async function PATCH(request: Request) {
   if (!sameOrigin(request)) return NextResponse.json({ message: '잘못된 요청입니다.' }, { status: 403 });
   try {
@@ -15,6 +15,13 @@ export async function PATCH(request: Request) {
     };
     if (body.password) {
       if (String(body.password).length < 8) return NextResponse.json({ message: '비밀번호는 8자 이상이어야 합니다.' }, { status: 400 });
+      const currentPassword = String(body.currentPassword ?? '');
+      if (!currentPassword) return NextResponse.json({ message: '현재 비밀번호를 입력해주세요.' }, { status: 400 });
+      const { data: credential, error: credentialError } = await db()
+        .from('mvp_members').select('password_hash').eq('id', current.user.id).single();
+      if (credentialError || !credential || !passwordMatches(currentPassword, credential.password_hash)) {
+        return NextResponse.json({ message: '현재 비밀번호가 올바르지 않습니다.' }, { status: 403 });
+      }
       updates.password_hash = passwordDigest(body.password);
     }
     if (body.signatureDataUrl !== undefined) {

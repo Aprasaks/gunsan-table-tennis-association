@@ -68,7 +68,7 @@ export default function TransferPage() {
 
     setMemberId('');
     setToClub('');
-    setMessage('이적 신청이 등록되었습니다. 새 소속 회장 승인 후 협회 승인 업무로 전달됩니다.');
+    setMessage('이적 신청이 등록되었습니다. 협회 최종 승인 업무로 바로 전달됩니다.');
   }
 
   if (!user) return <div className="siteShell pageContent">회원정보를 확인하고 있습니다.</div>;
@@ -81,7 +81,7 @@ export default function TransferPage() {
       <section className="siteShell pageContent">
         <form className={styles.panel} onSubmit={submit}>
           <div className={styles.head}><div><h2>이적 신청서 작성</h2><p>회원정보는 가입정보에서 불러오고, 기존 소속 구장 회장의 저장된 서명을 사용합니다.</p></div></div>
-          <p className={styles.notice}>기존 소속 회장의 서명으로 신청합니다. 새 소속 회장은 서명 없이 승인하고, 그때 협회 담당자 전원에게 승인 업무가 표시됩니다.</p>
+          <p className={styles.notice}>기존 소속 회장의 서명으로 신청합니다. 새 소속 구장의 서명이나 별도 승인은 필요하지 않으며, 신청 즉시 협회 최종 승인 업무로 전달됩니다.</p>
 
           <div className={styles.grid}>
             <div className={styles.field + ' ' + styles.fieldWide}>

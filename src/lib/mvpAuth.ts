@@ -66,6 +66,10 @@ export function canReviewAssociation(user: MvpUser | null | undefined) {
   return isAdmin(user) || Boolean(user?.associationTitle && user.memberStatus !== 'withdrawn');
 }
 
+export function canApproveAssociation(user: MvpUser | null | undefined) {
+  return isAdmin(user) || Boolean(user?.associationTitle === '협회장' && user.memberStatus !== 'withdrawn');
+}
+
 export function getUsers(): MvpUser[] {
   if (typeof window === 'undefined') return [];
   try {
@@ -140,7 +144,10 @@ export function getCurrentUser(): MvpUser | null {
 
 export async function refreshCurrentUser(): Promise<MvpUser | null> {
   const response = await fetch('/api/mvp/me', { cache: 'no-store' });
-  if (!response.ok) return null;
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 403) clearSession();
+    return null;
+  }
   const result = await response.json() as { admin: boolean; user: MvpUser | null };
   if (result.admin) return ADMIN_USER;
   if (result.user) {
