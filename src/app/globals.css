@@ -17,31 +17,6 @@ button,input{font:inherit}
 svg{display:block}
 .siteShell{width:min(1180px,calc(100% - 32px));margin:0 auto}
 
-/* Header */
-.siteHeader{background:#fff}
-.utilityBar{height:31px;background:#f7f8f9;border-bottom:1px solid #e8ecef;color:#717980;font-size:10px}
-.utilityInner{height:31px;display:flex;align-items:center;justify-content:space-between}
-.utilityLinks{display:flex;align-items:center;gap:12px;color:#4a535a}
-.utilityLinks i{display:block;width:1px;height:10px;background:#cbd1d6}
-.utilityLinks a:hover{color:var(--blue)}
-.brandArea{background:#fff;border-bottom:1px solid #eef1f3}
-.brandRow{height:78px;display:flex;align-items:center;justify-content:space-between;overflow:hidden}
-.brandLogo{display:flex;align-items:center;flex:0 0 auto}
-.associationLogoImage{display:block;width:260px;height:auto}
-.headerCityVisual{width:520px;height:78px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;background:linear-gradient(90deg,rgba(255,255,255,0),#eef7fc 62%,#dbeef7);flex:0 0 auto;position:relative;overflow:hidden}
-.headerCityVisual:before{content:"";position:absolute;right:-10px;bottom:0;width:245px;height:42px;opacity:.25;background:linear-gradient(160deg,transparent 46%,#2b78ae 47% 50%,transparent 51%),linear-gradient(20deg,transparent 46%,#2b78ae 47% 50%,transparent 51%)}
-.headerCityVisual div{position:relative;z-index:1;text-align:right;display:flex;flex-direction:column;gap:4px;color:#1f639a}
-.headerCityVisual strong{font-size:14px;letter-spacing:-.04em}
-.headerCityVisual span{font-size:9px;color:#758b9b}
-.mainNavWrap{background:linear-gradient(90deg,#0d5f8f 0%,#167fb4 48%,#145f9f 100%);border-bottom:0;box-shadow:none}
-.navShell{height:50px;display:flex;align-items:stretch}
-.homeNav{width:55px;display:flex;align-items:center;justify-content:center;color:#fff;background:rgba(0,0,0,.12);border-left:1px solid rgba(255,255,255,.13);border-right:1px solid rgba(255,255,255,.12)}
-.homeNav svg{width:20px;height:20px;fill:currentColor}
-.desktopNav{display:flex;flex:1;align-items:stretch}
-.desktopNav a{flex:1;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap;letter-spacing:-.025em}
-.desktopNav a:hover,.homeNav:hover{background:rgba(0,0,0,.11)}
-.mobileMenu{display:none}
-
 /* Hero */
 .mainVisual{height:248px;position:relative;color:#fff;background:#10233a url('https://images.pexels.com/photos/29439338/pexels-photo-29439338.jpeg?auto=compress&cs=tinysrgb&w=1600') center 42%/cover no-repeat;overflow:hidden}
 .visualShade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,20,34,.04) 0%,rgba(5,20,34,.08) 40%,rgba(5,20,34,.52) 65%,rgba(5,20,34,.78) 100%)}
@@ -165,42 +140,8 @@ svg{display:block}
 .matchStatus{display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:22px;border-radius:999px;background:#eaf4ff;color:#176cab;font-size:10px;font-weight:800}.matchStatus.done{background:#eef1f3;color:#68737b}
 
 @media(max-width:980px){
-  .headerCityVisual{width:420px}.associationLogoImage{width:240px}.desktopNav a{font-size:11px}.portalGrid{grid-template-columns:1fr 1fr;grid-template-areas:"notice schedule" "board board"}.heroCopy{width:54%}.divisionHeroGrid{grid-template-columns:1fr}.divisionHeroPanel{max-width:520px}.divisionIntro{grid-template-columns:1fr}.divisionBenefitGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.divisionGuideGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .portalGrid{grid-template-columns:1fr 1fr;grid-template-areas:"notice schedule" "board board"}.heroCopy{width:54%}.divisionHeroGrid{grid-template-columns:1fr}.divisionHeroPanel{max-width:520px}.divisionIntro{grid-template-columns:1fr}.divisionBenefitGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.divisionGuideGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:720px){
-  .siteShell{width:min(100% - 24px,1180px)}.utilityBar{height:29px}.utilityInner{height:29px}.utilityInner>span{display:none}.brandRow{height:68px}.associationLogoImage{width:220px}.headerCityVisual{display:none}.navShell{height:46px}.homeNav{width:48px}.desktopNav{display:none}.mobileMenu{display:block;margin-left:auto;color:#fff;position:relative}.mobileMenu summary{height:46px;display:flex;align-items:center;gap:6px;padding:0 13px;cursor:pointer;list-style:none;font-weight:700}.mobileMenu summary::-webkit-details-marker{display:none}.mobileMenu nav{position:absolute;right:0;top:46px;width:230px;background:#fff;border:1px solid #b8c4cd;border-top:0;z-index:50;box-shadow:0 8px 20px rgba(0,0,0,.14)}.mobileMenu nav>a{display:block;padding:12px 15px;border-bottom:1px solid #e8ebed;color:#33424e;font-size:11px}.mobileUtilityLinks{display:grid;grid-template-columns:1fr 1fr}.mobileUtilityLinks a{padding:11px 8px;text-align:center;color:#315c82;background:#f5f8fa;font-size:10px}.mainVisual{height:230px;background-position:37% center}.visualShade{background:linear-gradient(90deg,rgba(5,18,31,.15),rgba(5,22,38,.82) 58%,rgba(5,19,32,.95))}.heroCopy{width:72%;padding-right:3px}.heroCopy h1{font-size:24px}.heroCopy p{font-size:11px}.portalGrid{grid-template-columns:1fr;grid-template-areas:"notice" "schedule" "board";gap:23px;padding-bottom:44px}.homeScheduleHead,.homeScheduleRow{grid-template-columns:70px minmax(0,1fr) 50px}.homeScheduleHead span:nth-child(3),.homeScheduleRow>span:nth-child(3){display:none}.homeScheduleCompact .homeScheduleHead,.homeScheduleCompact .homeScheduleRow{grid-template-columns:66px minmax(0,1fr) 46px}.boardRow{grid-template-columns:48px minmax(0,1fr) 42px}.boardAuthor{display:none}.footerInner{min-height:130px;display:block;padding:25px 0}.footerInner>p{margin-top:15px}.subHeroInner{min-height:110px}.subHero h1{font-size:23px}.pageContent{padding:29px 0 50px}.dataTable{font-size:9px;display:block;overflow-x:auto;white-space:nowrap}.dataTable th,.dataTable td{padding:10px 8px}.orgSecondRow{grid-template-columns:1fr;gap:12px}.orgSecondRow:before,.orgBox:before{display:none}.orgTopBox{width:180px}.presidentGreeting{padding:26px 20px;margin-bottom:32px}.presidentGreeting h2{font-size:22px}.greetingBody{font-size:15px;line-height:1.8}.orgComingSoon{padding:20px 18px}.scheduleCard{grid-template-columns:78px 1fr;padding:12px 8px;gap:10px}.scheduleCard .status{display:none}.scheduleCard .dateBig{font-size:15px}.loginWrap{padding:22px 18px}.noticeTable .num,.noticeTable th.num,.noticeTable td.num{display:none}.noticeTable .category{width:78px}.noticeTable .date{width:72px}.adminGrid{grid-template-columns:1fr 1fr}.memberServiceGrid{grid-template-columns:1fr}.memberServiceCard p{min-height:auto}.matchBoardRow{grid-template-columns:42px 1fr 48px 1fr;gap:6px}.matchBoardRow strong{font-size:10px}.matchBoardRow b{font-size:12px}.divisionHeroInner{min-height:auto;padding:26px 0}.divisionHero h1{font-size:28px}.divisionHero p{font-size:13px}.divisionHeroPanel{padding:18px}.divisionBadges span{height:28px;font-size:10px}.divisionPage{gap:26px}.divisionIntro{padding:22px 18px}.divisionIntroText h2{font-size:21px}.divisionRoute{grid-template-columns:1fr;gap:8px}.divisionRoute i{display:none}.divisionRoute span{min-height:48px}.divisionBenefitGrid,.divisionGuideGrid,.divisionScheduleGrid{grid-template-columns:1fr}.divisionBenefitCard{min-height:auto}.divisionNoticeBox{display:block}.divisionNoticeBox p{margin-top:7px}
-}
-
-/* Association header: one authoritative override; preserve original logo aspect ratio */
-.utilityBar{height:37px;background:#f7f8fa;color:#65717a;font-size:12px}
-.utilityInner{height:37px}
-.utilityLinks{font-size:12px;gap:12px}
-.brandArea{border-bottom:1px solid #e0e5e9}
-.brandRow{height:78px;justify-content:flex-start;overflow:hidden}
-.brandLogo{min-width:0}
-.associationLogoImage{width:235px;max-width:100%;height:auto;object-fit:contain}
-.mainNavWrap{position:sticky;top:0;z-index:100;background:#0f6fae;border-bottom:1px solid #0c5c91;box-shadow:0 2px 5px rgba(0,0,0,.09)}
-.navShell{height:54px}
-.desktopNav{width:100%}
-.desktopNav a{font-size:15px;font-weight:700;letter-spacing:-.025em;border-left:1px solid rgba(255,255,255,.1)}
-.desktopNav a:last-child{border-right:1px solid rgba(255,255,255,.1)}
-.desktopNav a:hover,.desktopNav a:focus-visible{background:#0b5b91}
-.desktopNav a:focus-visible,.mobileMenu summary:focus-visible{outline:2px solid #fff;outline-offset:-3px}
-@media(max-width:980px) and (min-width:721px){
-  .desktopNav a{font-size:13px}
-  .associationLogoImage{width:225px}
-  .brandRow{height:76px}
-}
-@media(max-width:720px){
-  .utilityBar,.utilityInner{height:34px}
-  .utilityLinks{font-size:12px}
-  .brandRow{height:68px}
-  .associationLogoImage{width:210px}
-  .navShell{height:48px}
-  .mobileMenu{width:100%;margin-left:0}
-  .mobileMenu summary{height:48px;justify-content:flex-end;font-size:15px;padding:0 12px}
-  .mobileMenu nav{top:48px;width:min(300px,calc(100vw - 24px));box-shadow:0 8px 18px rgba(0,0,0,.12)}
-  .mobileMenu nav>a{font-size:15px;padding:14px 16px}
-  .mobileUtilityLinks{grid-template-columns:1fr;gap:0;padding:4px 12px 10px}
-  .mobileUtilityLinks a{font-size:13px}
+  .siteShell{width:min(100% - 24px,1180px)}.mainVisual{height:230px;background-position:37% center}.visualShade{background:linear-gradient(90deg,rgba(5,18,31,.15),rgba(5,22,38,.82) 58%,rgba(5,19,32,.95))}.heroCopy{width:72%;padding-right:3px}.heroCopy h1{font-size:24px}.heroCopy p{font-size:11px}.portalGrid{grid-template-columns:1fr;grid-template-areas:"notice" "schedule" "board";gap:23px;padding-bottom:44px}.homeScheduleHead,.homeScheduleRow{grid-template-columns:70px minmax(0,1fr) 50px}.homeScheduleHead span:nth-child(3),.homeScheduleRow>span:nth-child(3){display:none}.homeScheduleCompact .homeScheduleHead,.homeScheduleCompact .homeScheduleRow{grid-template-columns:66px minmax(0,1fr) 46px}.boardRow{grid-template-columns:48px minmax(0,1fr) 42px}.boardAuthor{display:none}.footerInner{min-height:130px;display:block;padding:25px 0}.footerInner>p{margin-top:15px}.subHeroInner{min-height:110px}.subHero h1{font-size:23px}.pageContent{padding:29px 0 50px}.dataTable{font-size:9px;display:block;overflow-x:auto;white-space:nowrap}.dataTable th,.dataTable td{padding:10px 8px}.orgSecondRow{grid-template-columns:1fr;gap:12px}.orgSecondRow:before,.orgBox:before{display:none}.orgTopBox{width:180px}.presidentGreeting{padding:26px 20px;margin-bottom:32px}.presidentGreeting h2{font-size:22px}.greetingBody{font-size:15px;line-height:1.8}.orgComingSoon{padding:20px 18px}.scheduleCard{grid-template-columns:78px 1fr;padding:12px 8px;gap:10px}.scheduleCard .status{display:none}.scheduleCard .dateBig{font-size:15px}.loginWrap{padding:22px 18px}.noticeTable .num,.noticeTable th.num,.noticeTable td.num{display:none}.noticeTable .category{width:78px}.noticeTable .date{width:72px}.adminGrid{grid-template-columns:1fr 1fr}.memberServiceGrid{grid-template-columns:1fr}.memberServiceCard p{min-height:auto}.matchBoardRow{grid-template-columns:42px 1fr 48px 1fr;gap:6px}.matchBoardRow strong{font-size:10px}.matchBoardRow b{font-size:12px}.divisionHeroInner{min-height:auto;padding:26px 0}.divisionHero h1{font-size:28px}.divisionHero p{font-size:13px}.divisionHeroPanel{padding:18px}.divisionBadges span{height:28px;font-size:10px}.divisionPage{gap:26px}.divisionIntro{padding:22px 18px}.divisionIntroText h2{font-size:21px}.divisionRoute{grid-template-columns:1fr;gap:8px}.divisionRoute i{display:none}.divisionRoute span{min-height:48px}.divisionBenefitGrid,.divisionGuideGrid,.divisionScheduleGrid{grid-template-columns:1fr}.divisionBenefitCard{min-height:auto}.divisionNoticeBox{display:block}.divisionNoticeBox p{margin-top:7px}
 }

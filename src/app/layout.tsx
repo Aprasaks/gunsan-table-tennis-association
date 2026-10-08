@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import SiteNavigation from './SiteNavigation';
 import AuthStatus from './AuthStatus';
 import './globals.css';
 import './readability.css';
@@ -10,20 +11,12 @@ import './notice.css';
 import './board.css';
 import './schedule.css';
 import './admin-controls.css';
+import './site-header.css';
 
 export const metadata: Metadata = {
   title: '군산시탁구협회',
   description: '군산시탁구협회 공식 홈페이지 - 공지사항, 동호인리그, 디비전리그, 대회일정, 게시판, 회원등록 및 이적',
 };
-
-const nav = [
-  ['/notice', '공지사항'],
-  ['/league', '동호인리그'],
-  ['/division', '디비전리그'],
-  ['/schedule', '대회일정'],
-  ['/board', '게시판'],
-  ['/members', '회원등록/이적'],
-];
 
 function AssociationLogo() {
   return (
@@ -45,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <header className="siteHeader">
           <div className="utilityBar">
             <div className="siteShell utilityInner">
-              <span>군산시 탁구 동호인 공식 홈페이지</span>
+              <span className="utilityLabel">군산시 탁구 동호인 공식 홈페이지</span>
               <div className="utilityLinks">
                 <AuthStatus />
               </div>
@@ -62,22 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         </header>
 
-        <div className="mainNavWrap">
-            <div className="siteShell navShell">
-              <nav className="desktopNav" aria-label="주요 메뉴">
-                {nav.map(([href, label]) => <Link key={href} href={href}>{label}</Link>)}
-              </nav>
-              <details className="mobileMenu">
-                <summary aria-label="메뉴 열기">☰ <span>메뉴</span></summary>
-                <nav>
-                  {nav.map(([href, label]) => <Link key={href} href={href}>{label}</Link>)}
-                  <div className="mobileUtilityLinks">
-                    <AuthStatus />
-                  </div>
-                </nav>
-              </details>
-            </div>
-          </div>
+        <SiteNavigation />
 
         <main>{children}</main>
 

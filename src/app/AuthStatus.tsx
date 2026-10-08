@@ -59,12 +59,12 @@ export default function AuthStatus() {
   const admin = isAdmin(user);
   const executiveDashboard = admin || ['협회장', '총무', '사무국장'].includes(user.associationTitle ?? '');
   return <>
-    <span>{admin ? '관리자님 환영합니다.' : user.name + ' 회원님 환영합니다.'}</span>
+    <span className="authGreeting">{admin ? '관리자' : user.name + ' 회원님'}</span>
     {executiveDashboard && <><i aria-hidden="true" /><Link href="/admin">임원 대시보드</Link></>}
     {!admin && <><i aria-hidden="true" /><Link href="/profile">정보수정</Link></>}
     {canApproveAssociation(user) && <><i aria-hidden="true" /><Link href="/members/approvals">협회 승인 {pending > 0 ? '(' + pending + ')' : ''}</Link></>}
     {canReviewAssociation(user) && <><i aria-hidden="true" /><Link href="/admin/notifications">임원 알림 {unread > 0 ? '(' + unread + ')' : ''}</Link></>}
     <i aria-hidden="true" />
-    <button type="button" onClick={logout} style={{ background: 'none', border: 0, padding: 0, color: 'inherit', cursor: 'pointer' }}>로그아웃</button>
+    <button type="button" onClick={logout} className="utilityLogout">로그아웃</button>
   </>;
 }
