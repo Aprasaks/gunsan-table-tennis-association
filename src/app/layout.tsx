@@ -22,10 +22,10 @@ function AssociationLogo() {
   return (
     <Image
       className="associationLogoImage"
-      src="/images/association-logo.png"
+      src="/images/association-logo-2026.webp"
       alt="군산시탁구협회 로고"
-      width={1336}
-      height={324}
+      width={600}
+      height={167}
       priority
     />
   );
