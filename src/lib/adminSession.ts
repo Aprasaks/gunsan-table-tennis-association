@@ -27,7 +27,7 @@ export function verifyAdminSessionToken(token: string | undefined) {
   if (parts.length !== 3) return false;
   const [username, issuedAtString, signature] = parts;
   if (username !== (process.env.ADMIN_USERNAME ?? 'admin') ||
-      !/^\\d{10}$/.test(issuedAtString) || !/^[0-9a-f]{64}$/.test(signature)) return false;
+      !/^\d{10}$/.test(issuedAtString) || !/^[0-9a-f]{64}$/.test(signature)) return false;
   const issuedAt = Number(issuedAtString);
   const now = Math.floor(Date.now() / 1000);
   if (!Number.isSafeInteger(issuedAt) || issuedAt > now + 60 || now - issuedAt > ADMIN_SESSION_SECONDS) return false;

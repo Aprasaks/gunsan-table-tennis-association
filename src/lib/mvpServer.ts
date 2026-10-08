@@ -52,7 +52,7 @@ function parseMemberToken(value: string | undefined) {
   const parts = value.split('.');
   if (parts.length !== 3) return null;
   const [id, issuedAtString, signature] = parts;
-  if (!/^[0-9a-f-]{36}$/.test(id) || !/^\\d{10}$/.test(issuedAtString) || !/^[0-9a-f]{64}$/.test(signature)) return null;
+  if (!/^[0-9a-f-]{36}$/.test(id) || !/^\d{10}$/.test(issuedAtString) || !/^[0-9a-f]{64}$/.test(signature)) return null;
   const issuedAt = Number(issuedAtString);
   const now = Math.floor(Date.now() / 1000);
   if (!Number.isSafeInteger(issuedAt) || issuedAt > now + 60 || now - issuedAt > MEMBER_SESSION_SECONDS) return null;
