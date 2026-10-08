@@ -14,7 +14,7 @@ export default function AuthStatus() {
   useEffect(() => {
     const syncUser = () => setUser(getCurrentUser());
     syncUser();
-    refreshCurrentUser().then((current) => { if (current) setUser(current); }).catch(() => null);
+    refreshCurrentUser().then((current) => setUser(current)).catch(() => null);
     window.addEventListener('storage', syncUser);
     window.addEventListener(AUTH_CHANGE_EVENT, syncUser);
     return () => {

@@ -44,7 +44,8 @@ export default function TransferPage() {
   function sourceChairFor(target: MvpUser) {
     if (!user) return null;
     if (!isAdmin(user)) return user.position === '회장' && user.club === target.club ? user : null;
-    return users.find((item) => item.club === target.club && item.position === '회장') ?? null;
+    return users.find((item) => item.club === target.club && item.position === '회장' && item.signatureDataUrl)
+      ?? users.find((item) => item.club === target.club && item.position === '회장') ?? null;
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {

@@ -44,7 +44,7 @@ export async function POST(request: Request) {
           source_chair_name: String(item.sourceChairName ?? '').slice(0, 80),
           source_chair_signature_data_url: String(item.sourceChairSignatureDataUrl ?? '').slice(0, 300_000),
           request_date: item.requestDate,
-          status: item.status === 'approved' || item.status === 'rejected' ? item.status : 'pending_destination',
+          status: item.status === 'approved' || item.status === 'rejected' ? item.status : 'pending_admin',
           processed_at: item.processedAt ?? null, admin_note: String(item.adminNote ?? '').slice(0, 1000),
         });
         if (!error) importedRequests++;

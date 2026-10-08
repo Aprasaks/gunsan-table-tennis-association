@@ -7,7 +7,7 @@ import type { TransferRequest } from '@/lib/mvpTransfer';
 import styles from '../transfer/transfer.module.css';
 
 const statusLabel: Record<string, string> = {
-  pending_destination: '협회 승인 대기', pending_admin: '협회 승인 대기',
+  pending_admin: '협회 승인 대기',
   approved: '이적 완료', rejected: '반려',
 };
 
@@ -93,7 +93,7 @@ export default function ApprovalsPage() {
             <div className={styles.itemActions}>
               {officer && <><button type="button" onClick={() => download(request, 'consent')} disabled={!!downloading}>이적동의서 HWP</button>
                 <button type="button" onClick={() => download(request, 'application')} disabled={!!downloading}>이적·소속변경 신청서 HWP</button></>}
-              {officer && (request.status === 'pending_admin' || request.status === 'pending_destination') && <><button type="button" className={styles.approve} disabled={!!working} onClick={() => process(request, 'approve')}>최종 승인</button>
+              {officer && request.status === 'pending_admin' && <><button type="button" className={styles.approve} disabled={!!working} onClick={() => process(request, 'approve')}>최종 승인</button>
                 <button type="button" className={styles.reject} disabled={!!working} onClick={() => process(request, 'reject')}>반려</button></>}
             </div>
           </article>;

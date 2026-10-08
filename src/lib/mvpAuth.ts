@@ -149,10 +149,13 @@ export async function refreshCurrentUser(): Promise<MvpUser | null> {
     return null;
   }
   const result = await response.json() as { admin: boolean; user: MvpUser | null };
-  if (result.admin) return ADMIN_USER;
+  if (result.admin) {
+    if (getSession()?.userId !== ADMIN_USER_ID) setAdminSession();
+    return ADMIN_USER;
+  }
   if (result.user) {
     saveUsers([result.user]);
-    setSession(result.user.id);
+    if (getSession()?.userId !== result.user.id) setSession(result.user.id);
   }
   return result.user;
 }

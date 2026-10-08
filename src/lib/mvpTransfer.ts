@@ -1,4 +1,4 @@
-export type TransferStatus = 'pending_destination' | 'pending_admin' | 'approved' | 'rejected';
+export type TransferStatus = 'pending_admin' | 'approved' | 'rejected';
 
 export type TransferRequest = {
   id: string;

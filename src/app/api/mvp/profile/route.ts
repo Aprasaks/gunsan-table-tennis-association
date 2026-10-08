@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { actor, db, passwordDigest, passwordMatches, publicMember, sameOrigin } from '@/lib/mvpServer';
+import { actor, db, MEMBER_COOKIE, MEMBER_SESSION_SECONDS, memberToken, passwordDigest, passwordMatches, publicMember, sameOrigin } from '@/lib/mvpServer';
 export async function PATCH(request: Request) {
   if (!sameOrigin(request)) return NextResponse.json({ message: '잘못된 요청입니다.' }, { status: 403 });
   try {
@@ -34,7 +34,14 @@ export async function PATCH(request: Request) {
     const { data, error } = await db().from('mvp_members').update(updates).eq('id', current.user.id).select('*').single();
     if (error?.code === '23505') return NextResponse.json({ message: '이미 사용 중인 휴대폰번호입니다.' }, { status: 409 });
     if (error || !data) throw error;
-    return NextResponse.json({ user: publicMember(data) });
+    const response = NextResponse.json({ user: publicMember(data) });
+    if (updates.password_hash) {
+      response.cookies.set(MEMBER_COOKIE, memberToken(data.id, data.password_hash), {
+        httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax',
+        path: '/', maxAge: MEMBER_SESSION_SECONDS,
+      });
+    }
+    return response;
   } catch {
     return NextResponse.json({ message: '정보를 저장하지 못했습니다.' }, { status: 503 });
   }

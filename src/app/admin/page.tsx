@@ -80,7 +80,7 @@ export default function AdminPage() {
   const admin = isAdmin(viewer);
   const activeMembers = overview?.members?.filter((member) => member.memberStatus !== 'withdrawn') ?? [];
   const officers = activeMembers.filter((member) => Boolean(member.associationTitle));
-  const pendingAdmin = overview?.requests.filter((request) => request.status === 'pending_admin' || request.status === 'pending_destination') ?? [];
+  const pendingAdmin = overview?.requests.filter((request) => request.status === 'pending_admin') ?? [];
   const canApprove = canApproveAssociation(viewer);
   const unreadAlerts = overview?.alerts.filter((alert) => !alert.read).length ?? 0;
 
@@ -101,13 +101,13 @@ export default function AdminPage() {
           <Link href="/admin/registrations" className={styles.stat}><span>제출 선수등록</span><strong>{overview.rosterCount}건</strong><small>협회에 제출된 구장별 명단</small></Link>
         </div>
         <div className={styles.columns}>
-          <section className={styles.panel} aria-labelledby="pending-heading">
+          {canApprove && <section className={styles.panel} aria-labelledby="pending-heading">
             <div className={styles.heading}><h2 id="pending-heading">협회 승인 대기</h2><Link href="/members/approvals">전체 승인 업무 →</Link></div>
             {pendingAdmin.length === 0 ? <p className={styles.empty}>현재 협회 승인 대기 건이 없습니다.</p> :
               pendingAdmin.slice(0, 5).map((request) => <div className={styles.row} key={request.id}>
                 <strong>{request.memberName}</strong><span>{request.fromClub} → {request.toClub}</span>
               </div>)}
-          </section>
+          </section>}
           <section className={styles.panel} aria-labelledby="alert-heading">
             <div className={styles.heading}><h2 id="alert-heading">최근 임원 알림</h2><Link href="/admin/notifications">알림함 →</Link></div>
             {overview.alerts.length === 0 ? <p className={styles.empty}>현재 알림이 없습니다.</p> :

@@ -24,7 +24,7 @@ export async function GET() {
     if (error) throw error;
     const rows = current.admin || current.user.associationTitle ? data : data?.filter((row) =>
       row.member_id === current.user.id ||
-      (current.user.position === '회장' && (row.from_club === current.user.club || row.to_club === current.user.club))
+      (current.user.position === '회장' && row.from_club === current.user.club)
     );
     return NextResponse.json({ requests: (rows ?? []).map(transferView) });
   } catch {
@@ -54,6 +54,12 @@ export async function POST(request: Request) {
     const chair = current.admin ? chairs?.find((item) => item.signature_data_url) : chairs?.find((item) => item.id === current.user.id);
     if (!chair?.signature_data_url) {
       return NextResponse.json({ message: '기존 소속 회장 서명을 등록한 뒤 신청해주세요.' }, { status: 400 });
+    }
+    const { data: pending, error: pendingError } = await db().from('mvp_transfers')
+      .select('id').eq('member_id', member.id).eq('status', 'pending_admin').limit(1);
+    if (pendingError) throw pendingError;
+    if (pending?.length) {
+      return NextResponse.json({ message: '이미 협회 승인 대기 중인 이적 신청이 있습니다.' }, { status: 409 });
     }
     const { error } = await db().from('mvp_transfers').insert({
       member_id: member.id, member_name: member.name, gender: member.gender,

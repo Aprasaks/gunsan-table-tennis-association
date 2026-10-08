@@ -5,6 +5,7 @@ import { hasAdminSession } from '@/lib/adminSession';
 import type { MvpUser } from '@/lib/mvpAuth';
 
 export const MEMBER_COOKIE = 'gunsan-tt-member-session';
+export const MEMBER_SESSION_SECONDS = 60 * 60 * 12;
 export const TITLES = ['', '협회장', '이사', '총무', '고문', '사무국장'] as const;
 
 export function db() {
@@ -39,16 +40,23 @@ export function passwordMatches(password: string, saved: string) {
   return timingSafeEqual(actual, Buffer.from(hash, 'hex'));
 }
 
-export function memberToken(id: string) {
-  return id + '.' + createHmac('sha256', secret()).update(id).digest('hex');
+export function memberToken(id: string, passwordHash: string) {
+  const issuedAt = Math.floor(Date.now() / 1000).toString();
+  const payload = id + '.' + issuedAt;
+  const signature = createHmac('sha256', secret()).update(payload + '.' + passwordHash).digest('hex');
+  return payload + '.' + signature;
 }
 
-function verifyToken(value: string | undefined) {
+function parseMemberToken(value: string | undefined) {
   if (!value) return null;
-  const [id, signature, extra] = value.split('.');
-  if (extra || !/^[0-9a-f-]{36}$/.test(id) || !/^[0-9a-f]{64}$/.test(signature)) return null;
-  const expected = createHmac('sha256', secret()).update(id).digest('hex');
-  return timingSafeEqual(Buffer.from(signature, 'hex'), Buffer.from(expected, 'hex')) ? id : null;
+  const parts = value.split('.');
+  if (parts.length !== 3) return null;
+  const [id, issuedAtString, signature] = parts;
+  if (!/^[0-9a-f-]{36}$/.test(id) || !/^\\d{10}$/.test(issuedAtString) || !/^[0-9a-f]{64}$/.test(signature)) return null;
+  const issuedAt = Number(issuedAtString);
+  const now = Math.floor(Date.now() / 1000);
+  if (!Number.isSafeInteger(issuedAt) || issuedAt > now + 60 || now - issuedAt > MEMBER_SESSION_SECONDS) return null;
+  return { id, issuedAtString, signature };
 }
 
 export function publicMember(row: Record<string, any>): MvpUser {
@@ -64,10 +72,13 @@ export function publicMember(row: Record<string, any>): MvpUser {
 
 export async function actor() {
   if (await hasAdminSession()) return { admin: true as const, user: null };
-  const id = verifyToken((await cookies()).get(MEMBER_COOKIE)?.value);
-  if (!id) return null;
-  const { data, error } = await db().from('mvp_members').select('*').eq('id', id).single();
+  const token = parseMemberToken((await cookies()).get(MEMBER_COOKIE)?.value);
+  if (!token) return null;
+  const { data, error } = await db().from('mvp_members').select('*').eq('id', token.id).single();
   if (error || !data || data.member_status !== 'active') return null;
+  const expected = createHmac('sha256', secret())
+    .update(token.id + '.' + token.issuedAtString + '.' + data.password_hash).digest('hex');
+  if (!timingSafeEqual(Buffer.from(token.signature, 'hex'), Buffer.from(expected, 'hex'))) return null;
   return { admin: false as const, user: publicMember(data) };
 }
 
