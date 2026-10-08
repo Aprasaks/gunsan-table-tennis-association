@@ -13,8 +13,8 @@
 <meta property="og:site_name" content="전라북도탁구협회" />
 <meta property="og:author" content="전라북도탁구협회" />
 <meta property="og:type" content="" />
-<meta property="og:url" content="http://jbtta.pingpongkorea.com/bbs/download.php?bo_table=community_09&wr_id=1759&no=0&page=3" />
-<link rel="canonical" href="http://jbtta.pingpongkorea.com/bbs/download.php?bo_table=community_09&wr_id=1759&no=0&page=3" />
+<meta property="og:url" content="http://jbtta.pingpongkorea.com/bbs/download.php?bo_table=community_09&wr_id=1759&no=0&page=1" />
+<link rel="canonical" href="http://jbtta.pingpongkorea.com/bbs/download.php?bo_table=community_09&wr_id=1759&no=0&page=1" />
 <meta name="description" content="전라북도탁구협회 홈페이지">
 <meta property="og:type" content="website">
 <meta property="og:title" content="전라북도탁구협회">
@@ -41,7 +41,7 @@ var g5_pim       = "";
 var g5_editor    = "";
 var g5_responsive    = "1";
 var g5_cookie_domain = "";
-var g5_purl = "http://jbtta.pingpongkorea.com/bbs/download.php?bo_table=community_09&wr_id=1759&no=0&page=3";
+var g5_purl = "http://jbtta.pingpongkorea.com/bbs/download.php?bo_table=community_09&wr_id=1759&no=0&page=1";
 </script>
 <script src="http://jbtta.pingpongkorea.com/js/jquery-1.11.3.min.js"></script>
 <script src="http://jbtta.pingpongkorea.com/js/jquery-migrate-1.2.1.min.js"></script>
@@ -54,8 +54,8 @@ var g5_purl = "http://jbtta.pingpongkorea.com/bbs/download.php?bo_table=communit
 
 <script>
 alert("다운로드 권한이 없습니다.\n회원이시라면 로그인 후 이용해 보십시오.");
-//document.location.href = "http://jbtta.pingpongkorea.com/bbs/login.php?wr_id=1759&amp;&amp;page=3&amp;url=http%3A%2F%2Fjbtta.pingpongkorea.com%2Fbbs%2Fboard.php%3Fbo_table%3Dcommunity_09%26amp%3Bwr_id%3D1759";
-document.location.replace("http://jbtta.pingpongkorea.com/bbs/login.php?wr_id=1759&&page=3&url=http%3A%2F%2Fjbtta.pingpongkorea.com%2Fbbs%2Fboard.php%3Fbo_table%3Dcommunity_09%26amp%3Bwr_id%3D1759");
+//document.location.href = "http://jbtta.pingpongkorea.com/bbs/login.php?wr_id=1759&amp;&amp;page=1&amp;url=http%3A%2F%2Fjbtta.pingpongkorea.com%2Fbbs%2Fboard.php%3Fbo_table%3Dcommunity_09%26amp%3Bwr_id%3D1759";
+document.location.replace("http://jbtta.pingpongkorea.com/bbs/login.php?wr_id=1759&&page=1&url=http%3A%2F%2Fjbtta.pingpongkorea.com%2Fbbs%2Fboard.php%3Fbo_table%3Dcommunity_09%26amp%3Bwr_id%3D1759");
 </script>
 
 <noscript>
@@ -64,7 +64,7 @@ document.location.replace("http://jbtta.pingpongkorea.com/bbs/login.php?wr_id=17
     <p class="cbg">
         다운로드 권한이 없습니다.<br>회원이시라면 로그인 후 이용해 보십시오.    </p>
         <div class="btn_confirm">
-        <a href="http://jbtta.pingpongkorea.com/bbs/login.php?wr_id=1759&amp;&amp;page=3&amp;url=http%3A%2F%2Fjbtta.pingpongkorea.com%2Fbbs%2Fboard.php%3Fbo_table%3Dcommunity_09%26amp%3Bwr_id%3D1759">돌아가기</a>
+        <a href="http://jbtta.pingpongkorea.com/bbs/login.php?wr_id=1759&amp;&amp;page=1&amp;url=http%3A%2F%2Fjbtta.pingpongkorea.com%2Fbbs%2Fboard.php%3Fbo_table%3Dcommunity_09%26amp%3Bwr_id%3D1759">돌아가기</a>
     </div>
     
 </div>
