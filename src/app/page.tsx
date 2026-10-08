@@ -22,10 +22,10 @@ type HomeTournament = {
 };
 
 const quickServices = [
-  { href: '/members', title: '회원등록 · 이적', description: '클럽 회원등록 및 이적 안내' },
-  { href: '/schedule', title: '대회일정', description: '대회 날짜와 개최 장소' },
-  { href: '/league', title: '동호인리그', description: '리그 정보 확인' },
-  { href: '/division', title: '디비전리그', description: '디비전리그 안내' },
+  { href: '/members', title: '회원등록 · 이적', description: '등록 신청과 소속 변경 업무' },
+  { href: '/schedule', title: '대회일정', description: '대회 일정과 접수 정보 확인' },
+  { href: '/league', title: '동호인리그', description: '군산 동호인리그 안내' },
+  { href: '/division', title: '디비전리그', description: '디비전리그 정보 확인' },
 ];
 
 function shortDate(date: string) {
@@ -110,9 +110,13 @@ export default async function Home() {
       <section className={styles.hero} aria-labelledby="home-title">
         <div className="siteShell">
           <div className={styles.heroInner}>
-            <span className={styles.heroLabel}>GUNSAN TABLE TENNIS ASSOCIATION</span>
-            <h1 id="home-title">군산시탁구협회</h1>
-            <p>군산시 탁구 동호인을 위한 공지사항과 대회 정보를 안내합니다.</p>
+            <span className={styles.heroLabel}>GUNSAN TABLE TENNIS ASSOCIATION <i aria-hidden="true" /></span>
+            <h1 id="home-title">탁구로 하나 되는 군산,<br />함께하는 우리.</h1>
+            <p>공지사항부터 대회일정, 회원등록과 이적까지.<br className={styles.heroDesktopBreak} /> 군산시 탁구 소식을 한곳에서 확인하세요.</p>
+            <div className={styles.heroActions}>
+              <Link href="/schedule" className={styles.heroPrimary}>대회일정 확인 <span aria-hidden="true">↗</span></Link>
+              <Link href="/members" className={styles.heroSecondary}>회원등록 · 이적 <span aria-hidden="true">↗</span></Link>
+            </div>
           </div>
         </div>
       </section>
@@ -120,8 +124,9 @@ export default async function Home() {
       <section className={styles.services} aria-label="주요 서비스">
         <div className="siteShell">
           <div className={styles.serviceGrid}>
-            {quickServices.map((service) => (
+            {quickServices.map((service, index) => (
               <Link href={service.href} key={service.href} className={styles.service}>
+                <small className={styles.serviceNumber}>{String(index + 1).padStart(2, '0')}</small>
                 <strong>{service.title}</strong>
                 <span>{service.description}</span>
                 <span className={styles.serviceArrow} aria-hidden="true">›</span>
@@ -132,6 +137,10 @@ export default async function Home() {
       </section>
 
       <div className={'siteShell ' + styles.homeContent}>
+        <div className={styles.introRow}>
+          <span>GUNSAN TTA · INFORMATION</span>
+          <p>새로운 소식과 예정된 일정을 빠르게 확인하세요.</p>
+        </div>
         <div className={styles.primaryGrid}>
           <section className={styles.section} aria-labelledby="home-notice-heading">
             <div className={styles.sectionHeading}>

@@ -1,0 +1,112 @@
+/* 군산시탁구협회 공통 디자인: 공공 체육단체에 어울리는 절제된 레드/차콜 */
+:root {
+  --blue:#a32835;
+  --blue-dark:#7f202a;
+  --blue-deep:#60212a;
+  --ink:#282d31;
+  --muted:#677078;
+  --line:#dedfdf;
+  --soft:#f7f7f6;
+  --white:#fff;
+  --red:#a32835;
+  --association-red:#a32835;
+  --association-dark:#252a2e;
+  --association-gold:#b6a17e;
+}
+body {background:#fff;color:#282d31; font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.65;word-break:keep-all;}
+.siteShell {width:min(1200px,calc(100% - 40px));}
+a,button { -webkit-tap-highlight-color:transparent; }
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible {outline:2px solid #a32835;outline-offset:3px;}
+.skipToContent {position:fixed;top:-80px;left:16px;z-index:1000;display:inline-flex;padding:12px 18px;background:#fff;color:#7f202a;border:2px solid #a32835;font-weight:800;}
+.skipToContent:focus{top:12px;}
+.utilityBar {height:38px;background:#292e32;border:0;color:#c4c7c9;}
+.utilityLinks {color:#f0f0ef;}
+.utilityLinks .authGreeting {color:#fff;}
+.utilityLinks i {background:#666d72;}
+.utilityLinks a:hover,.utilityLinks button:hover {color:#fff;text-decoration:underline;}
+.brandArea{background:#fff;border-bottom:1px solid #e3e2e0;}
+.brandRow{height:100px;justify-content:space-between;gap:22px;overflow:visible;}
+.associationLogoImage{width:270px;}
+.brandIdentity{display:flex;flex-direction:column;gap:5px;text-align:right;padding-left:25px;border-left:2px solid #ad303b;}
+.brandIdentityEyebrow {font-size:10px;letter-spacing:.11em;color:#8b7370;font-weight:800;}
+.brandIdentity strong{font-size:15px;color:#414449;letter-spacing:-.03em;}
+.mainNavWrap {background:#2a2d30;border-bottom:3px solid #a32835;box-shadow:0 3px 12px rgba(21,25,29,.08);}
+.navShell{height:58px;}
+.desktopNav{grid-template-columns:repeat(7,minmax(0,1fr));}
+.desktopNav a{border-left:1px solid rgba(255,255,255,.09);font-size:16px;color:#f5f5f4;font-weight:650;}
+.desktopNav a:last-child{border-right:1px solid rgba(255,255,255,.09);}
+.desktopNav a:hover,.desktopNav a:focus-visible {background:#3b3e41;}
+.desktopNav a[aria-current="page"] {background:#393c3f;color:#fff;}
+.desktopNav a[aria-current="page"]::after {height:3px;background:#bd3b45;}
+.siteFooter{background:#25292d;color:#c0c5c8;border-top:3px solid #a32835;}
+.footerInner{min-height:186px;padding:38px 0 34px;align-items:flex-start;gap:32px;}
+.footerBrand{max-width:540px;}
+.footerEyebrow{display:block;margin-bottom:10px;color:#b6a17e;letter-spacing:.11em;font-size:10px;font-weight:800;}
+.footerBrand strong{color:#fff;font-size:23px;letter-spacing:-.05em;}
+.footerBrand p {margin:12px 0 0;font-size:14px;color:#bfc5c9;line-height:1.75;}
+.footerNav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:12px 23px;max-width:490px;padding-top:15px;}
+.footerNav a{font-size:14px;font-weight:550;color:#e1e3e3;}
+.footerNav a:hover {color:#fff;text-decoration:underline;text-underline-offset:4px;}
+.footerBottom{min-height:48px;border-top:1px solid #484d50;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#a3abb0;font-size:12px;}
+.subHero{background:#f6f5f4;border-bottom:1px solid #e1dfdd;}
+.subHeroInner{min-height:155px;padding:30px 0;border-left:4px solid #a32835;padding-left:22px;}
+.subHero .crumb{color:#8b6468;font-size:12px;letter-spacing:.01em;margin-bottom:12px;}
+.subHero h1{color:#272d31;font-weight:800;font-size:35px;letter-spacing:-.055em;}
+.subHero p{font-size:15px;color:#626b72;line-height:1.65;}
+.pageContent{padding-top:45px;padding-bottom:75px;}
+.sectionBar{border-color:#30363a;}
+.sectionBar h2{color:#2a3035;}
+.dataTable{border-top-color:#30363a;}
+.dataTable th{background:#f7f7f6;color:#444c52;}
+.dataTable tbody tr:hover{background:#fcf8f7;}
+.subTabs .active{background:#a32835;border-color:#a32835;color:#fff;}
+.memberServiceCard{border-top-color:#a32835;border-color:#e1dedb;border-top-width:4px;}
+.memberServiceCard>span{color:#a32835;font-weight:800;}
+.memberServiceCard a{color:#882733;border-color:#d6aab0;background:#fffafa;}
+.memberServiceCard a:hover{background:#fbf0f1;}
+.boardToolbarLarge button,.contentAdminButton,.primaryAction{background:#a32835;border-color:#a32835;color:#fff;}
+.boardToolbarLarge button:hover{background:#81222c;}
+.boardTitleCell a:hover,.noticeTitleCell a:hover,.scheduleTitle a:hover,.scheduleAttachments a,.boardAttachments a{color:#a32835;}
+.scheduleDate{color:#9e2834!important;}
+.scheduleStatus-접수중{background:#a32835;}
+.scheduleTableWrap{border-top-color:#30363a;}
+.noticeDetail,.boardDetail,.scheduleDetail,.presidentGreeting{border-top-color:#30363a;}
+.greetingEyebrow{color:#a32835;}
+.workflowPanel{border-top-color:#a32835;}
+.divisionHero{background:linear-gradient(125deg,#f8f7f5,#f2f0ec);border-color:#e6e0db;}
+.divisionLabel,.divisionBadges span {color:#8c2a32;border-color:#e2c6c8;background:#fff;}
+.divisionHero h1{color:#292e32;}
+.divisionHeroPanel,.divisionBenefitCard{border-top-color:#a32835;}
+.divisionRoute span{color:#87303a;border-color:#ddc4c5;background:#fdf8f8;}
+.divisionRoute i{background:#d2a6aa;}
+.divisionRoute i:after{border-left-color:#d2a6aa;}
+.divisionScheduleItem span{color:#a32835;}
+.divisionBadges span{border-radius:3px;}
+@media(max-width:960px){
+ .brandIdentity{display:none;}
+ .brandRow{height:80px;}
+ .associationLogoImage{width:238px;}
+ .navShell{height:50px;}
+ .mobileMenu summary{height:50px;padding:0 14px;}
+ .mobileMenuPanel{border-color:#dfdddb;max-height:calc(100dvh - 130px);}
+ .mobileNav a[aria-current="page"]{border-left-color:#a32835;background:#fdf5f5;color:#8e2831;}
+ .mobileNav a:hover,.mobileNav a:focus-visible{background:#fcf6f5;color:#8e2831;}
+ .mobileUtilityLinks{background:#f8f7f6;}
+}
+@media(max-width:720px){
+ .siteShell{width:calc(100% - 28px);}
+ .brandRow{height:75px;}
+ .associationLogoImage{width:224px;}
+ .subHeroInner{min-height:125px;padding:26px 0 26px 17px;border-left-width:3px;}
+ .subHero h1{font-size:29px;}
+ .subHero p{font-size:14px;}
+ .pageContent{padding-top:28px;padding-bottom:53px;}
+ .footerInner{padding:32px 0;display:flex;flex-direction:column;gap:25px;}
+ .footerNav{justify-content:flex-start;gap:13px 20px;padding:0;}
+ .footerBottom{padding:13px 0;align-items:flex-start;flex-direction:column;gap:3px;font-size:12px;}
+}
+@media(max-width:430px){
+ .associationLogoImage{width:211px;}
+ .brandRow{height:72px;}
+ .footerNav a{font-size:13px;}
+}

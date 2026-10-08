@@ -6,6 +6,7 @@ import { useEffect, useRef } from 'react';
 import AuthStatus from './AuthStatus';
 
 const navigationItems = [
+  { href: '/organization', label: '협회소개' },
   { href: '/notice', label: '공지사항' },
   { href: '/league', label: '동호인리그' },
   { href: '/division', label: '디비전리그' },

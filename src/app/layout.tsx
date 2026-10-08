@@ -11,6 +11,7 @@ import './board.css';
 import './schedule.css';
 import './admin-controls.css';
 import './site-header.css';
+import './association-theme.css';
 
 export const metadata: Metadata = {
   title: '군산시탁구협회',
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       <body>
+        <a href="#main-content" className="skipToContent">본문 바로가기</a>
         <header className="siteHeader">
           <div className="utilityBar">
             <div className="siteShell utilityInner">
@@ -49,6 +51,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/" className="brandLogo" aria-label="군산시탁구협회 홈">
                 <AssociationLogo />
               </Link>
+              <div className="brandIdentity" aria-label="군산시탁구협회 홈페이지 안내">
+                <span className="brandIdentityEyebrow">GUNSAN TABLE TENNIS ASSOCIATION</span>
+                <strong>함께 즐기는 탁구, 함께 성장하는 군산</strong>
+              </div>
             </div>
           </div>
 
@@ -56,15 +62,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <SiteNavigation />
 
-        <main>{children}</main>
+        <main id="main-content">{children}</main>
 
         <footer className="siteFooter">
           <div className="siteShell footerInner">
-            <div>
+            <div className="footerBrand">
+              <span className="footerEyebrow">GUNSAN TABLE TENNIS ASSOCIATION</span>
               <strong>군산시탁구협회</strong>
-              <p>군산시 탁구 동호인과 함께하는 공식 운영 홈페이지</p>
+              <p>군산시 탁구 동호인을 위한 공지, 대회와 회원 업무를 안내합니다.</p>
             </div>
-            <p><Link href="/privacy">개인정보 처리 안내</Link> · © Gunsan TableTennis Association</p>
+            <nav className="footerNav" aria-label="하단 메뉴">
+              <Link href="/organization">협회소개</Link>
+              <Link href="/notice">공지사항</Link>
+              <Link href="/schedule">대회일정</Link>
+              <Link href="/members">회원등록 · 이적</Link>
+              <Link href="/privacy">개인정보 처리 안내</Link>
+            </nav>
+          </div>
+          <div className="siteShell footerBottom">
+            <span>© Gunsan Table Tennis Association</span>
+            <span>군산시탁구협회</span>
           </div>
         </footer>
       </body>
