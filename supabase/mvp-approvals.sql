@@ -33,7 +33,7 @@ create table if not exists mvp_transfers (
   source_chair_signature_data_url text not null,
   request_date date not null,
   requested_at timestamptz not null default now(),
-  status text not null default 'pending_destination' check (status in ('pending_destination','pending_admin','approved','rejected')),
+  status text not null default 'pending_admin' check (status in ('pending_admin','approved','rejected')),
   destination_approved_by uuid references mvp_members(id),
   destination_approved_at timestamptz,
   processed_by text,
@@ -58,14 +58,7 @@ declare v_row mvp_transfers%rowtype;
 begin
   select * into v_row from mvp_transfers where id = p_id for update;
   if not found then return 'missing'; end if;
-  if p_action = 'destination' then
-    if v_row.status <> 'pending_destination' then return 'already_processed'; end if;
-    update mvp_transfers set status = 'pending_admin',
-      destination_approved_by = p_actor::uuid, destination_approved_at = now()
-      where id = p_id;
-    insert into mvp_alerts (kind, title, detail, target_url)
-      values ('transfer', '이적 최종 승인 대기', v_row.member_name || ': ' || v_row.from_club || ' → ' || v_row.to_club, '/members/approvals');
-  elsif p_action = 'approve' then
+  if p_action = 'approve' then
     if v_row.status <> 'pending_admin' then return 'already_processed'; end if;
     update mvp_members set club = v_row.to_club where id = v_row.member_id;
     update mvp_transfers set status = 'approved', processed_by = p_actor,
