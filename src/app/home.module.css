@@ -187,7 +187,13 @@
    pointer-events: none;
  }
  .hero::after {
-   background: linear-gradient(180deg,rgba(8,13,20,.02) 0%,rgba(8,13,20,.16) 26%,rgba(8,13,20,.84) 43%,#101820 54%,#101820 100%);
+   background: linear-gradient(
+     180deg,
+     rgba(8,13,20,.02) 0,
+     rgba(8,13,20,.12) 95px,
+     rgba(8,13,20,.88) 205px,
+     #101820 265px
+   );
  }
  .heroInner{width:100%;margin:0;padding:24px 0 34px;}
  .heroLabel{font-size:10px;margin-bottom:16px;}
