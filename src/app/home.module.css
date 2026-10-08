@@ -1,0 +1,102 @@
+/* 군산시탁구협회 홈페이지 - 정보 중심의 단정한 기관형 레이아웃 */
+.hero {
+  position: relative;
+  min-height: 230px;
+  display: flex;
+  align-items: center;
+  background-color: #1e3344;
+  background-image: linear-gradient(90deg, rgba(5, 23, 38, .06) 0%, rgba(5, 23, 38, .17) 44%, rgba(5, 23, 38, .84) 74%, rgba(5, 23, 38, .93) 100%), url('/images/gunsan-table-tennis-hero.webp');
+  background-position: center 44%;
+  background-size: cover;
+  color: white;
+}
+.hero > div { width: 100%; }
+.heroInner { width: min(450px, 47%); margin-left: auto; padding: 35px 0; }
+.heroLabel { display: block; margin-bottom: 14px; color: #e5e9ed; font-size: 11px; letter-spacing: .09em; }
+.heroInner h1 { margin: 0 0 12px; font-size: 35px; line-height: 1.25; font-weight: 800; letter-spacing: -.065em; }
+.heroInner p { max-width: 370px; margin: 0; font-size: 15px; line-height: 1.7; color: #f1f3f5; }
+
+.services { border-bottom: 1px solid #d8dfe4; background: #f9fafb; }
+.serviceGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.service {
+  position: relative;
+  min-height: 91px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 18px 30px 18px 20px;
+  border-left: 1px solid #e1e6e9;
+  color: #2b3c48;
+}
+.service:last-child { border-right: 1px solid #e1e6e9; }
+.service:hover, .service:focus-visible { background: #eef3f6; }
+.service strong { font-size: 16px; letter-spacing: -.04em; }
+.service > span:not(.serviceArrow) { font-size: 12px; color: #727e87; line-height: 1.5; }
+.serviceArrow { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #8c9ca7; font-size: 23px; font-weight: 400; }
+
+.homeContent { padding-top: 33px; padding-bottom: 58px; }
+.primaryGrid { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 30px; }
+.secondaryGrid { display: grid; grid-template-columns: 1.15fr .85fr; align-items: start; gap: 30px; margin-top: 34px; }
+.section, .infoSection { min-width: 0; }
+.sectionHeading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; min-height: 41px; padding-bottom: 10px; border-bottom: 2px solid #4c5e6b; }
+.sectionHeading h2 { margin: 0; font-size: 19px; color: #263945; letter-spacing: -.05em; font-weight: 750; }
+.sectionHeading > a { flex: 0 0 auto; font-size: 12px; font-weight: 500; color: #667884; white-space: nowrap; }
+.sectionHeading > a span, .infoLink span { margin-left: 3px; font-size: 17px; vertical-align: -1px; }
+.sectionHeading > a:hover, .sectionHeading > a:focus-visible { color: #12679a; text-decoration: underline; }
+.list { min-width: 0; }
+.postLink, .eventLink { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 10px 2px; border-bottom: 1px solid #e7ebee; color: #36444e; }
+.postLink:hover, .eventLink:hover { color: #12679a; background: #fafcfd; }
+.postLabel, .boardLabel { flex: 0 0 auto; width: 36px; text-align: center; color: #6d7b84; font-size: 12px; }
+.postLink:first-child .postLabel { font-weight: 700; color: #a34242; }
+.boardLabel { color: #7a858c; }
+.postTitle { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 500; }
+.postLink time { flex: 0 0 auto; font-size: 12px; color: #89949b; font-variant-numeric: tabular-nums; }
+.eventLink { gap: 15px; min-height: 60px; }
+.eventDate { flex: 0 0 104px; color: #48718d; font-size: 13px; font-weight: 650; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.eventBody { display: flex; flex: 1 1 auto; min-width: 0; flex-direction: column; gap: 4px; }
+.eventBody strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 600; }
+.eventBody small { color: #81909a; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.empty { margin: 0; padding: 17px 2px; border-bottom: 1px solid #e7ebee; color: #71808a; font-size: 14px; }
+.scheduleNote { margin: 10px 0 2px; font-size: 12px; color: #7e8992; line-height: 1.5; }
+.infoSection > p { margin: 14px 0 13px; font-size: 14px; line-height: 1.8; color: #5b6c77; }
+.infoLink { display: inline-flex; align-items: center; color: #225d83; font-size: 13px; font-weight: 700; border-bottom: 1px solid #94b3c7; padding: 2px 0 3px; }
+.infoLink:hover { color: #10466b; }
+@media (max-width: 900px) {
+  .heroInner { width: 52%; }
+  .service { padding-left: 13px; padding-right: 25px; }
+  .service strong { font-size: 14px; }
+  .service > span:not(.serviceArrow) { font-size: 11px; }
+  .primaryGrid, .secondaryGrid { gap: 20px; }
+  .eventDate { flex-basis: 86px; font-size: 12px; }
+}
+@media (max-width: 700px) {
+  .hero { min-height: 210px; background-position: 38% center; background-image: linear-gradient(90deg, rgba(5,23,38,.3), rgba(5,23,38,.82) 58%, rgba(5,23,38,.93)), url('/images/gunsan-table-tennis-hero.webp'); }
+  .heroInner { width: 77%; margin-right: 0; padding: 28px 0; }
+  .heroLabel { font-size: 9px; margin-bottom: 10px; }
+  .heroInner h1 { font-size: 28px; }
+  .heroInner p { font-size: 13px; }
+  .serviceGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .service { min-height: 74px; border-bottom: 1px solid #e1e6e9; }
+  .service:nth-child(2) { border-right: 1px solid #e1e6e9; }
+  .service strong { font-size: 15px; }
+  .service > span:not(.serviceArrow) { font-size: 11px; }
+  .homeContent { padding-top: 22px; padding-bottom: 40px; }
+  .primaryGrid, .secondaryGrid { grid-template-columns: 1fr; gap: 28px; }
+  .secondaryGrid { margin-top: 28px; }
+  .sectionHeading h2 { font-size: 18px; }
+  .sectionHeading > a { font-size: 12px; }
+  .postLink { gap: 8px; min-height: 48px; }
+  .postTitle { font-size: 14px; }
+  .postLink time { font-size: 11px; }
+  .eventBody strong { font-size: 14px; }
+  .infoSection > p { font-size: 14px; }
+}
+@media (max-width: 390px) {
+  .heroInner { width: 83%; }
+  .service { padding: 13px 24px 13px 10px; }
+  .service strong { font-size: 14px; }
+  .serviceArrow { right: 9px; }
+  .eventDate { flex-basis: 84px; }
+}
+@media (prefers-reduced-motion: reduce) { .service { scroll-behavior: auto; } }
