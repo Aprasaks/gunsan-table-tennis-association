@@ -21,13 +21,6 @@ type HomeTournament = {
   source_url: string | null;
 };
 
-const quickServices = [
-  { href: '/members', title: '회원등록 · 이적', description: '등록 신청과 소속 변경 업무' },
-  { href: '/schedule', title: '대회일정', description: '대회 일정과 접수 정보 확인' },
-  { href: '/league', title: '동호인리그', description: '군산 동호인리그 안내' },
-  { href: '/division', title: '디비전리그', description: '디비전리그 정보 확인' },
-];
-
 function shortDate(date: string) {
   return date ? date.slice(5, 7) + '.' + date.slice(8, 10) : '-';
 }
@@ -117,21 +110,6 @@ export default async function Home() {
               <Link href="/schedule" className={styles.heroPrimary}>대회일정 확인 <span aria-hidden="true">↗</span></Link>
               <Link href="/members" className={styles.heroSecondary}>회원등록 · 이적 <span aria-hidden="true">↗</span></Link>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className={styles.services} aria-label="주요 서비스">
-        <div className="siteShell">
-          <div className={styles.serviceGrid}>
-            {quickServices.map((service, index) => (
-              <Link href={service.href} key={service.href} className={styles.service}>
-                <small className={styles.serviceNumber}>{String(index + 1).padStart(2, '0')}</small>
-                <strong>{service.title}</strong>
-                <span>{service.description}</span>
-                <span className={styles.serviceArrow} aria-hidden="true">›</span>
-              </Link>
-            ))}
           </div>
         </div>
       </section>
