@@ -100,7 +100,7 @@ export default function AdminMembersPage() {
             </select></div>
           <div className={styles.field}><label htmlFor={'status-' + user.id}>회원 상태</label>
             <select id={'status-' + user.id} value={user.memberStatus ?? 'active'} disabled={saving === user.id}
-              onChange={(event) => save(user, user.associationTitle ?? '', user.position, event.target.value)}>
+              onChange={(event) => save(user, user.associationTitle ?? '', user.position, event.target.value as 'active' | 'withdrawn')}>
               <option value="active">활동</option>
               <option value="withdrawn">탈퇴/비활성</option>
             </select></div>
