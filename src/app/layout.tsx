@@ -5,7 +5,6 @@ import SiteNavigation from './SiteNavigation';
 import AuthStatus from './AuthStatus';
 import './globals.css';
 import './readability.css';
-import './feature-cards.css';
 import './sticky-footer.css';
 import './notice.css';
 import './board.css';
