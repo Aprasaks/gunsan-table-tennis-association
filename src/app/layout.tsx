@@ -96,7 +96,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <strong>군산시탁구협회</strong>
               <p>군산시 탁구 동호인과 함께하는 공식 운영 홈페이지</p>
             </div>
-            <p>@ Gunsan TableTennis Association</p>
+            <p><Link href="/privacy">개인정보 처리 안내</Link> · © Gunsan TableTennis Association</p>
           </div>
         </footer>
       </body>

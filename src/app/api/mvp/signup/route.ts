@@ -5,6 +5,9 @@ export async function POST(request: Request) {
   if (!sameOrigin(request)) return NextResponse.json({ message: '잘못된 요청입니다.' }, { status: 403 });
   const body = await request.json().catch(() => null);
   const phone = String(body?.phone ?? '').replace(/\D/g, '');
+  if (body?.privacyAgreed !== true) {
+    return NextResponse.json({ message: '개인정보 수집·이용 동의가 필요합니다.' }, { status: 400 });
+  }
   if (!String(body?.name ?? '').trim() || !/^\d{6}$/.test(body?.birthDate) ||
       !['남', '여'].includes(body?.gender) || !/^\d{10,11}$/.test(phone) ||
       !String(body?.club ?? '').trim() || !String(body?.rank ?? '').trim() ||

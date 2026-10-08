@@ -56,6 +56,23 @@ export default function AdminMembersPage() {
     alert(result.imported + '명과 이적 신청 ' + result.importedRequests + '건을 가져왔습니다. 이미 등록된 항목은 중복 추가하지 않았습니다.');
   }
 
+  async function resetPassword(user: MvpUser) {
+    if (!confirm(user.name + ' 회원의 비밀번호를 임시 비밀번호로 초기화하시겠습니까?')) return;
+    setSaving(user.id); setError('');
+    try {
+      const response = await fetch('/api/mvp/members/' + user.id, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'reset-password' }),
+      });
+      const result = await response.json() as { temporaryPassword?: string; message?: string };
+      if (!response.ok || !result.temporaryPassword) throw new Error(result.message ?? '임시 비밀번호를 발급하지 못했습니다.');
+      try { await navigator.clipboard.writeText(result.temporaryPassword); } catch { /* clipboard permission may be unavailable */ }
+      alert(user.name + ' 회원 임시 비밀번호\n\n' + result.temporaryPassword + '\n\n화면을 닫으면 다시 확인할 수 없습니다. 회원에게 전달한 뒤 로그인 후 변경하도록 안내해주세요.');
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : '임시 비밀번호를 발급하지 못했습니다.');
+    } finally { setSaving(''); }
+  }
+
   async function save(user: MvpUser, associationTitle: string, position: string, memberStatus = user.memberStatus ?? 'active') {
     setSaving(user.id); setError('');
     try {
@@ -104,6 +121,9 @@ export default function AdminMembersPage() {
               <option value="active">활동</option>
               <option value="withdrawn">탈퇴/비활성</option>
             </select></div>
+        </div>
+        <div className={styles.itemActions}>
+          <button type="button" disabled={saving === user.id} onClick={() => resetPassword(user)}>임시 비밀번호 발급</button>
         </div>
       </article>)}</div></>}
     </div></section>

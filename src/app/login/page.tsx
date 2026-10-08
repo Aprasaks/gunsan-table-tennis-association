@@ -72,6 +72,7 @@ export default function LoginPage() {
           <button type="submit" className={styles.action}>로그인</button>
           <div className={styles.links}>
             <Link href="/signup">회원가입</Link>
+            <Link href="/forgot-password">비밀번호를 잊으셨나요?</Link>
           </div>
         </form>
       </div>

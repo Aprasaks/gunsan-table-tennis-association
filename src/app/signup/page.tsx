@@ -68,6 +68,7 @@ export default function SignupPage() {
     rank: '',
     password: '',
     passwordConfirm: '',
+    privacyAgreed: false,
   });
 
   const rankOptions = form.gender === '남' ? maleRanks : form.gender === '여' ? femaleRanks : [];
@@ -95,6 +96,10 @@ export default function SignupPage() {
     }
     if (form.password !== form.passwordConfirm) {
       setMessage('비밀번호가 서로 다릅니다.');
+      return;
+    }
+    if (!form.privacyAgreed) {
+      setMessage('개인정보 수집·이용에 동의해주세요.');
       return;
     }
 
@@ -131,6 +136,11 @@ export default function SignupPage() {
 
           <div className={styles.row}><label htmlFor="password">비밀번호</label><input id="password" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="비밀번호를 입력하세요" autoComplete="new-password" /></div>
           <div className={styles.row}><label htmlFor="password-confirm">비밀번호 확인</label><input id="password-confirm" type="password" value={form.passwordConfirm} onChange={(e) => setForm({ ...form, passwordConfirm: e.target.value })} placeholder="비밀번호를 다시 입력하세요" autoComplete="new-password" /></div>
+
+          <label className={styles.consent}>
+            <input type="checkbox" checked={form.privacyAgreed} onChange={(e) => setForm({ ...form, privacyAgreed: e.target.checked })} />
+            <span><strong>[필수]</strong> 회원 관리, 회원등록·이적 및 협회 행정 처리를 위한 개인정보 수집·이용에 동의합니다. <Link href="/privacy">내용 보기</Link></span>
+          </label>
 
           <button className={styles.action} type="submit">가입하기</button>
           <div className={styles.links}><Link href="/login">이미 회원이신가요? 로그인</Link></div>
