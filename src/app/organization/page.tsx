@@ -9,41 +9,20 @@ const presidentMessage = [
 
 export default function OrganizationPage() {
   return (
-    <>
-      <section className="subHero">
-        <div className="siteShell subHeroInner">
-          <span className="crumb">HOME &gt; 협회</span>
-          <h1>협회</h1>
-          <p>군산시탁구협회의 인사말과 조직 안내를 확인하실 수 있습니다.</p>
+    <div className="siteShell pageContent associationPage">
+      <section className="presidentGreeting">
+        <span className="greetingEyebrow">인사말</span>
+        <h1>회원과 함께 만들어가는 군산시탁구협회</h1>
+        <div className="greetingBody">
+          {presidentMessage.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
+        <div className="presidentSignature">
+          <span>군산시탁구협회장</span>
+          <strong>강시원 올림</strong>
         </div>
       </section>
-
-      <div className="siteShell pageContent associationPage">
-        <section className="presidentGreeting">
-          <span className="greetingEyebrow">인사말</span>
-          <h2>회원과 함께 만들어가는 군산시탁구협회</h2>
-          <div className="greetingBody">
-            {presidentMessage.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
-          <div className="presidentSignature">
-            <span>군산시탁구협회장</span>
-            <strong>강시원 올림</strong>
-          </div>
-        </section>
-
-        <section className="organizationPreview">
-          <div className="sectionBar">
-            <h2>협회 조직 안내</h2>
-            <span>조직도 업데이트 예정</span>
-          </div>
-          <div className="orgComingSoon">
-            <strong>조직도는 협회 자료 확정 후 순차적으로 반영하겠습니다.</strong>
-            <p>임원 구성, 분과, 소속 클럽 정보가 정리되는 대로 회원 여러분이 한눈에 확인하실 수 있도록 안내하겠습니다.</p>
-          </div>
-        </section>
-      </div>
-    </>
+    </div>
   );
 }
