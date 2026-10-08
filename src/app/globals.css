@@ -171,28 +171,31 @@ svg{display:block}
   .siteShell{width:min(100% - 24px,1180px)}.utilityBar{height:29px}.utilityInner{height:29px}.utilityInner>span{display:none}.brandRow{height:68px}.associationLogoImage{width:220px}.headerCityVisual{display:none}.navShell{height:46px}.homeNav{width:48px}.desktopNav{display:none}.mobileMenu{display:block;margin-left:auto;color:#fff;position:relative}.mobileMenu summary{height:46px;display:flex;align-items:center;gap:6px;padding:0 13px;cursor:pointer;list-style:none;font-weight:700}.mobileMenu summary::-webkit-details-marker{display:none}.mobileMenu nav{position:absolute;right:0;top:46px;width:230px;background:#fff;border:1px solid #b8c4cd;border-top:0;z-index:50;box-shadow:0 8px 20px rgba(0,0,0,.14)}.mobileMenu nav>a{display:block;padding:12px 15px;border-bottom:1px solid #e8ebed;color:#33424e;font-size:11px}.mobileUtilityLinks{display:grid;grid-template-columns:1fr 1fr}.mobileUtilityLinks a{padding:11px 8px;text-align:center;color:#315c82;background:#f5f8fa;font-size:10px}.mainVisual{height:230px;background-position:37% center}.visualShade{background:linear-gradient(90deg,rgba(5,18,31,.15),rgba(5,22,38,.82) 58%,rgba(5,19,32,.95))}.heroCopy{width:72%;padding-right:3px}.heroCopy h1{font-size:24px}.heroCopy p{font-size:11px}.portalGrid{grid-template-columns:1fr;grid-template-areas:"notice" "schedule" "board";gap:23px;padding-bottom:44px}.homeScheduleHead,.homeScheduleRow{grid-template-columns:70px minmax(0,1fr) 50px}.homeScheduleHead span:nth-child(3),.homeScheduleRow>span:nth-child(3){display:none}.homeScheduleCompact .homeScheduleHead,.homeScheduleCompact .homeScheduleRow{grid-template-columns:66px minmax(0,1fr) 46px}.boardRow{grid-template-columns:48px minmax(0,1fr) 42px}.boardAuthor{display:none}.footerInner{min-height:130px;display:block;padding:25px 0}.footerInner>p{margin-top:15px}.subHeroInner{min-height:110px}.subHero h1{font-size:23px}.pageContent{padding:29px 0 50px}.dataTable{font-size:9px;display:block;overflow-x:auto;white-space:nowrap}.dataTable th,.dataTable td{padding:10px 8px}.orgSecondRow{grid-template-columns:1fr;gap:12px}.orgSecondRow:before,.orgBox:before{display:none}.orgTopBox{width:180px}.presidentGreeting{padding:26px 20px;margin-bottom:32px}.presidentGreeting h2{font-size:22px}.greetingBody{font-size:15px;line-height:1.8}.orgComingSoon{padding:20px 18px}.scheduleCard{grid-template-columns:78px 1fr;padding:12px 8px;gap:10px}.scheduleCard .status{display:none}.scheduleCard .dateBig{font-size:15px}.loginWrap{padding:22px 18px}.noticeTable .num,.noticeTable th.num,.noticeTable td.num{display:none}.noticeTable .category{width:78px}.noticeTable .date{width:72px}.adminGrid{grid-template-columns:1fr 1fr}.memberServiceGrid{grid-template-columns:1fr}.memberServiceCard p{min-height:auto}.matchBoardRow{grid-template-columns:42px 1fr 48px 1fr;gap:6px}.matchBoardRow strong{font-size:10px}.matchBoardRow b{font-size:12px}.divisionHeroInner{min-height:auto;padding:26px 0}.divisionHero h1{font-size:28px}.divisionHero p{font-size:13px}.divisionHeroPanel{padding:18px}.divisionBadges span{height:28px;font-size:10px}.divisionPage{gap:26px}.divisionIntro{padding:22px 18px}.divisionIntroText h2{font-size:21px}.divisionRoute{grid-template-columns:1fr;gap:8px}.divisionRoute i{display:none}.divisionRoute span{min-height:48px}.divisionBenefitGrid,.divisionGuideGrid,.divisionScheduleGrid{grid-template-columns:1fr}.divisionBenefitCard{min-height:auto}.divisionNoticeBox{display:block}.divisionNoticeBox p{margin-top:7px}
 }
 
-/* 2026 final association header: simple institutional layout */
+/* Association header: one authoritative override; preserve original logo aspect ratio */
 .utilityBar{height:37px;background:#f7f8fa;color:#65717a;font-size:12px}
 .utilityInner{height:37px}
 .utilityLinks{font-size:12px;gap:12px}
 .brandArea{border-bottom:1px solid #e0e5e9}
-.brandRow{height:92px;justify-content:flex-start;overflow:visible}
-.associationLogoImage{width:245px;max-width:100%;height:auto}
+.brandRow{height:104px;justify-content:flex-start;overflow:hidden}
+.brandLogo{min-width:0}
+.associationLogoImage{width:360px;max-width:100%;height:auto;object-fit:contain}
 .mainNavWrap{position:sticky;top:0;z-index:100;background:#0f6fae;border-bottom:1px solid #0c5c91;box-shadow:0 2px 5px rgba(0,0,0,.09)}
 .navShell{height:54px}
 .desktopNav{width:100%}
 .desktopNav a{font-size:15px;font-weight:700;letter-spacing:-.025em;border-left:1px solid rgba(255,255,255,.1)}
 .desktopNav a:last-child{border-right:1px solid rgba(255,255,255,.1)}
 .desktopNav a:hover,.desktopNav a:focus-visible{background:#0b5b91}
+.desktopNav a:focus-visible,.mobileMenu summary:focus-visible{outline:2px solid #fff;outline-offset:-3px}
 @media(max-width:980px) and (min-width:721px){
   .desktopNav a{font-size:13px}
-  .associationLogoImage{width:225px}
+  .associationLogoImage{width:300px}
+  .brandRow{height:92px}
 }
 @media(max-width:720px){
   .utilityBar,.utilityInner{height:34px}
   .utilityLinks{font-size:12px}
-  .brandRow{height:74px}
-  .associationLogoImage{width:210px}
+  .brandRow{height:76px}
+  .associationLogoImage{width:240px}
   .navShell{height:48px}
   .mobileMenu{width:100%;margin-left:0}
   .mobileMenu summary{height:48px;justify-content:flex-end;font-size:15px;padding:0 12px}

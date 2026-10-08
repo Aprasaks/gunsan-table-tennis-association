@@ -13,7 +13,7 @@ import './admin-controls.css';
 
 export const metadata: Metadata = {
   title: '군산시탁구협회',
-  description: '군산시탁구협회 공식 홈페이지 - 공지사항, 동호인리그, 디비전리그, 대회일정, 회원등록 및 이적',
+  description: '군산시탁구협회 공식 홈페이지 - 공지사항, 동호인리그, 디비전리그, 대회일정, 게시판, 회원등록 및 이적',
 };
 
 const nav = [
@@ -30,7 +30,7 @@ function AssociationLogo() {
     <Image
       className="associationLogoImage"
       src="/images/association-logo.png"
-      alt="군산시탁구협회"
+      alt="군산시탁구협회 로고"
       width={1336}
       height={324}
       priority
