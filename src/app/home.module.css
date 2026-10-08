@@ -1,23 +1,4 @@
 /* 군산시탁구협회 홈페이지: 홈 공지·대회·서비스 및 반응형 히어로 */
-.services { border-bottom: 1px solid #d8dfe4; background: #f9fafb; }
-.serviceGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.service {
-  position: relative;
-  min-height: 91px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5px;
-  padding: 18px 30px 18px 20px;
-  border-left: 1px solid #e1e6e9;
-  color: #2b3c48;
-}
-.service:last-child { border-right: 1px solid #e1e6e9; }
-.service:hover, .service:focus-visible { background: #eef3f6; }
-.service strong { font-size: 16px; letter-spacing: -.04em; }
-.service > span:not(.serviceArrow) { font-size: 12px; color: #727e87; line-height: 1.5; }
-.serviceArrow { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #8c9ca7; font-size: 23px; font-weight: 400; }
-
 .homeContent { padding-top: 33px; padding-bottom: 58px; }
 .primaryGrid { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 30px; }
 .secondaryGrid { display: grid; grid-template-columns: 1.15fr .85fr; align-items: start; gap: 30px; margin-top: 34px; }
@@ -46,18 +27,10 @@
 .infoLink { display: inline-flex; align-items: center; color: #225d83; font-size: 13px; font-weight: 700; border-bottom: 1px solid #94b3c7; padding: 2px 0 3px; }
 .infoLink:hover { color: #10466b; }
 @media (max-width: 900px) {
-  .service { padding-left: 13px; padding-right: 25px; }
-  .service strong { font-size: 14px; }
-  .service > span:not(.serviceArrow) { font-size: 11px; }
   .primaryGrid, .secondaryGrid { gap: 20px; }
   .eventDate { flex-basis: 86px; font-size: 12px; }
 }
 @media (max-width: 700px) {
-  .serviceGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .service { min-height: 74px; border-bottom: 1px solid #e1e6e9; }
-  .service:nth-child(2) { border-right: 1px solid #e1e6e9; }
-  .service strong { font-size: 15px; }
-  .service > span:not(.serviceArrow) { font-size: 11px; }
   .homeContent { padding-top: 22px; padding-bottom: 40px; }
   .primaryGrid, .secondaryGrid { grid-template-columns: 1fr; gap: 28px; }
   .secondaryGrid { margin-top: 28px; }
@@ -70,12 +43,8 @@
   .infoSection > p { font-size: 14px; }
 }
 @media (max-width: 390px) {
-  .service { padding: 13px 24px 13px 10px; }
-  .service strong { font-size: 14px; }
-  .serviceArrow { right: 9px; }
   .eventDate { flex-basis: 84px; }
 }
-@media (prefers-reduced-motion: reduce) { .service { scroll-behavior: auto; } }
 
 
 /* 2026 association visual refresh - original data and navigation are preserved */
@@ -84,7 +53,7 @@
   display: flex;
   align-items: center;
   color: #fff;
-  min-height: 392px;
+  min-height: clamp(485px, 39vw, 555px);
   overflow: hidden;
   isolation: isolate;
   border-bottom: 4px solid #9a2632;
@@ -135,15 +104,6 @@
 .heroSecondary { background:rgba(18,23,28,.28); border:1px solid rgba(255,255,255,.65); color:#fff; }
 .heroSecondary:hover,.heroSecondary:focus-visible { background:rgba(255,255,255,.16); }
 .heroPrimary span,.heroSecondary span {font-size:18px; font-weight:400;}
-.services { background:#fff; border-bottom:1px solid #e5e2de; }
-.serviceGrid { grid-template-columns:repeat(4,minmax(0,1fr)); }
-.service { min-height:118px; padding:20px 32px 19px 24px; gap:5px; border-left:1px solid #e6e3df; }
-.service:last-child {border-right:1px solid #e6e3df;}
-.service:hover,.service:focus-visible { background:#fcf7f5; }
-.serviceNumber { display:block; font-size:11px; letter-spacing:.08em; color:#a52c37; font-weight:800; margin-bottom:7px; }
-.service strong { font-size:17px; color:#25292e; }
-.service > span:not(.serviceArrow) {font-size:12px; color:#6a7177;}
-.serviceArrow { color:#9f2d36; right:20px; font-size:24px; }
 .homeContent {padding-top:38px; padding-bottom:70px;}
 .introRow { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:27px; padding-bottom:13px; border-bottom:1px solid #e3e0db; }
 .introRow span {font-size:11px; letter-spacing:.12em; font-weight:800; color:#a32a35;}
@@ -172,8 +132,6 @@
 @media(max-width:900px){
  .heroInner {width:min(540px,60%);}
  .primaryGrid,.secondaryGrid {gap:26px;}
- .service{padding-left:17px;padding-right:24px;}
- .service strong{font-size:15px;}
 }
 @media (min-width: 701px) and (max-width: 1100px) {
  .hero::before {
@@ -218,10 +176,6 @@
  .heroDesktopBreak{display:none;}
  .heroActions{gap:8px;margin-top:22px;}
  .heroPrimary,.heroSecondary{font-size:13px;gap:10px;min-height:46px;padding:10px 13px;}
- .serviceGrid{grid-template-columns:repeat(2,minmax(0,1fr));}
- .service{min-height:105px;padding:15px 27px 16px 15px;}
- .service strong{font-size:15px;}
- .serviceNumber{margin-bottom:3px;}
  .homeContent{padding-top:29px;padding-bottom:48px;}
  .introRow{display:block;margin-bottom:24px;}
  .introRow p{margin:5px 0 0;font-size:13px;}
