@@ -1,15 +1,15 @@
-.panel{background:#fff;border:1px solid #d8e0e6;padding:24px;box-shadow:0 8px 24px rgba(21,59,91,.05)}
+.panel{background:#fff;border:1px solid #dedfdd;padding:24px;box-shadow:0 8px 24px rgba(21,59,91,.05)}
 .topbar{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:22px}
 .topbar h2{margin:0 0 6px;font-size:22px;letter-spacing:-.04em}.topbar p{margin:0;color:#6d7a84;font-size:13px;line-height:1.6}
-.logout{border:1px solid #cbd5dd;background:#fff;padding:8px 12px;border-radius:4px;cursor:pointer;color:#53636f}
-.clubGrid{display:grid;grid-template-columns:1fr 1.4fr;gap:14px;margin-bottom:24px;padding:18px;background:#f6f9fb;border:1px solid #e0e7ec}
-.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:12px;font-weight:700;color:#40515e}.field input,.field select{height:42px;border:1px solid #cbd5dd;border-radius:4px;background:#fff;padding:0 10px;font-size:13px;min-width:0}
-.notice{margin:0 0 18px;padding:12px 14px;background:#eef7fc;border-left:3px solid #167fb4;color:#49606f;font-size:12px;line-height:1.6}
+.logout{border:1px solid #d1d3d2;background:#fff;padding:8px 12px;border-radius:4px;cursor:pointer;color:#53636f}
+.clubGrid{display:grid;grid-template-columns:1fr 1.4fr;gap:14px;margin-bottom:24px;padding:18px;background:#f8f7f6;border:1px solid #e0e7ec}
+.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:12px;font-weight:700;color:#40515e}.field input,.field select{height:42px;border:1px solid #d1d3d2;border-radius:4px;background:#fff;padding:0 10px;font-size:13px;min-width:0}
+.notice{margin:0 0 18px;padding:12px 14px;background:#fcf4f4;border-left:3px solid #a32835;color:#49606f;font-size:12px;line-height:1.6}
 .sectionTitle{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:0 0 10px}.sectionTitle h3{margin:0;font-size:18px}.sectionTitle span{font-size:12px;color:#71808b}
-.officerGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px}.officerCard{padding:16px;border:1px solid #d8e0e6;background:#fbfcfd}.officerCard>strong{display:block;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #1578ad;color:#173f5b;font-size:15px}.officerCard .field+.field{margin-top:10px}
-.memberHeader{display:flex;align-items:center;justify-content:space-between;margin:24px 0 10px}.memberHeader h3{margin:0;font-size:18px}.memberHeader .unlimited{display:block;margin-top:5px;color:#71808b;font-size:12px}.addButton{border:0;background:#126da5;color:#fff;border-radius:4px;padding:9px 13px;font-weight:700;cursor:pointer}
-.tableWrap{overflow-x:auto;border:1px solid #d8e0e6}.table{width:100%;border-collapse:collapse;min-width:1180px}.table th{background:#eef2f5;font-size:11px;color:#4d5c67;padding:9px 7px;border-right:1px solid #d8e0e6;border-bottom:1px solid #cfd8df;white-space:nowrap}.table td{padding:6px;border-right:1px solid #e4e9ed;border-bottom:1px solid #e4e9ed}.table input,.table select{width:100%;height:36px;border:1px solid #d1dae1;border-radius:3px;padding:0 7px;font-size:12px;background:#fff}.table select:disabled{background:#f1f3f5;color:#9aa3aa}.deleteButton{width:32px;height:32px;border:1px solid #e0c7c7;background:#fff;color:#b54141;border-radius:3px;cursor:pointer}
-.summary{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:20px;padding-top:18px;border-top:1px solid #dce3e8}.summary strong{font-size:15px}.summary span{display:block;margin-top:4px;color:#73808a;font-size:12px}.summary .saveStatus{display:inline-flex;margin-top:8px;padding:4px 8px;border:1px solid #cfe0ec;background:#f4f9fc;color:#2e6f96;font-weight:700;border-radius:3px}.actions{display:flex;gap:10px}.secondary,.primary{height:44px;border-radius:4px;padding:0 16px;font-weight:800;cursor:pointer}.secondary{background:#fff;border:1px solid #bdc9d2;color:#4d5f6c}.primary{border:0;background:#126da5;color:#fff}.primary:disabled{opacity:.55;cursor:wait}.error{margin-top:14px;color:#a63131;font-size:12px}.success{margin-top:14px;color:#197047;font-size:12px}
+.officerGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px}.officerCard{padding:16px;border:1px solid #dedfdd;background:#fbfcfd}.officerCard>strong{display:block;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #a32835;color:#343a40;font-size:15px}.officerCard .field+.field{margin-top:10px}
+.memberHeader{display:flex;align-items:center;justify-content:space-between;margin:24px 0 10px}.memberHeader h3{margin:0;font-size:18px}.memberHeader .unlimited{display:block;margin-top:5px;color:#71808b;font-size:12px}.addButton{border:0;background:#a32835;color:#fff;border-radius:4px;padding:9px 13px;font-weight:700;cursor:pointer}
+.tableWrap{overflow-x:auto;border:1px solid #dedfdd}.table{width:100%;border-collapse:collapse;min-width:1180px}.table th{background:#eef2f5;font-size:11px;color:#4d5c67;padding:9px 7px;border-right:1px solid #dedfdd;border-bottom:1px solid #cfd8df;white-space:nowrap}.table td{padding:6px;border-right:1px solid #e4e9ed;border-bottom:1px solid #e4e9ed}.table input,.table select{width:100%;height:36px;border:1px solid #d1dae1;border-radius:3px;padding:0 7px;font-size:12px;background:#fff}.table select:disabled{background:#f1f3f5;color:#9aa3aa}.deleteButton{width:32px;height:32px;border:1px solid #e0c7c7;background:#fff;color:#b54141;border-radius:3px;cursor:pointer}
+.summary{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:20px;padding-top:18px;border-top:1px solid #dce3e8}.summary strong{font-size:15px}.summary span{display:block;margin-top:4px;color:#73808a;font-size:12px}.summary .saveStatus{display:inline-flex;margin-top:8px;padding:4px 8px;border:1px solid #e5c9cc;background:#fcf8f8;color:#8b2733;font-weight:700;border-radius:3px}.actions{display:flex;gap:10px}.secondary,.primary{height:44px;border-radius:4px;padding:0 16px;font-weight:800;cursor:pointer}.secondary{background:#fff;border:1px solid #bdc9d2;color:#4d5f6c}.primary{border:0;background:#a32835;color:#fff}.primary:disabled{opacity:.55;cursor:wait}.error{margin-top:14px;color:#a63131;font-size:12px}.success{margin-top:14px;color:#197047;font-size:12px}
 @media(max-width:900px){.officerGrid{grid-template-columns:1fr}}
 @media(max-width:760px){
   .panel{padding:18px 14px}
@@ -43,3 +43,13 @@
   .secondary,.primary{width:100%;height:50px;font-size:16px}
   .error,.success{font-size:14px;line-height:1.6}
 }
+
+.panel{box-shadow:none;border-color:#dedfdd}
+.clubGrid,.officerCard{background:#faf9f8}
+.notice{color:#644b4f}
+.table{min-width:1270px}
+.table th{font-size:13px;background:#f6f5f4}
+.table input,.table select{font-size:14px;height:39px}
+.tableWrap:focus-within{border-color:#bd9599}
+.addButton:hover,.primary:hover{background:#84222d}
+@media(max-width:760px){.table{min-width:1340px}.table input,.table select{height:43px;font-size:15px}}

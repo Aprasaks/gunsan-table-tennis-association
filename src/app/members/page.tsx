@@ -3,24 +3,12 @@
 import Link from 'next/link';
 import { MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { getCurrentUser, isAdmin } from '@/lib/mvpAuth';
+import { canApproveAssociation, getCurrentUser, isAdmin } from '@/lib/mvpAuth';
 
 const registrationManagers = new Set(['회장', '부회장', '총무']);
 
 export default function MembersPage() {
   const router = useRouter();
-
-  function requireLogin(event: MouseEvent<HTMLAnchorElement>, destination: string) {
-    event.preventDefault();
-    const currentUser = getCurrentUser();
-
-    if (!currentUser) {
-      router.push('/login');
-      return;
-    }
-
-    router.push(destination);
-  }
 
   function openRegistration(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
@@ -65,6 +53,10 @@ export default function MembersPage() {
       return;
     }
 
+    if (!canApproveAssociation(currentUser)) {
+      alert('이적 최종 승인 업무는 관리자와 협회장만 이용할 수 있습니다.');
+      return;
+    }
     router.push('/members/approvals');
   }
 
@@ -82,8 +74,8 @@ export default function MembersPage() {
             <Link href="/members/transfer" onClick={openTransfer}>이적 신청하기</Link>
           </article>
           <article className="memberServiceCard">
-            <span>03</span><h2>알림 · 승인</h2><p>회원등록 변동과 이적 승인 등 권한에 따라 확인하거나 처리해야 할 업무 알림을 보여줍니다.</p>
-            <Link href="/members/approvals" onClick={openApprovals}>알림 · 승인 보기</Link>
+            <span>03</span><h2>협회 승인 업무</h2><p>관리자와 협회장이 이적 신청을 최종 승인하거나 반려할 수 있습니다.</p>
+            <Link href="/members/approvals" onClick={openApprovals}>승인 업무 보기</Link>
           </article>
         </div>
       </section>
