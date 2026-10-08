@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   background-color: #1e3344;
-  background-image: linear-gradient(90deg, rgba(5, 23, 38, .06) 0%, rgba(5, 23, 38, .17) 44%, rgba(5, 23, 38, .84) 74%, rgba(5, 23, 38, .93) 100%), url('/images/gunsan-table-tennis-hero.webp');
+  background-image: linear-gradient(90deg, rgba(5, 23, 38, .06) 0%, rgba(5, 23, 38, .17) 44%, rgba(5, 23, 38, .84) 74%, rgba(5, 23, 38, .93) 100%), url('/images/gunsan-harbor-table-tennis-hero.avif');
   background-position: center 44%;
   background-size: cover;
   color: white;
@@ -71,7 +71,7 @@
   .eventDate { flex-basis: 86px; font-size: 12px; }
 }
 @media (max-width: 700px) {
-  .hero { min-height: 210px; background-position: 38% center; background-image: linear-gradient(90deg, rgba(5,23,38,.3), rgba(5,23,38,.82) 58%, rgba(5,23,38,.93)), url('/images/gunsan-table-tennis-hero.webp'); }
+  .hero { min-height: 210px; background-position: 38% center; background-image: linear-gradient(90deg, rgba(5,23,38,.3), rgba(5,23,38,.82) 58%, rgba(5,23,38,.93)), url('/images/gunsan-harbor-table-tennis-hero.avif'); }
   .heroInner { width: 77%; margin-right: 0; padding: 28px 0; }
   .heroLabel { font-size: 9px; margin-bottom: 10px; }
   .heroInner h1 { font-size: 28px; }
@@ -109,7 +109,7 @@
   isolation: isolate;
   border-bottom: 4px solid #9a2632;
   background-color: #172028;
-  background-image: linear-gradient(90deg, rgba(9,14,19,.08) 0%, rgba(9,14,19,.17) 32%, rgba(9,14,19,.77) 57%, rgba(9,14,19,.96) 100%), url('/images/gunsan-table-tennis-hero.webp');
+  background-image: linear-gradient(90deg, rgba(9,14,19,.08) 0%, rgba(9,14,19,.17) 32%, rgba(9,14,19,.77) 57%, rgba(9,14,19,.96) 100%), url('/images/gunsan-harbor-table-tennis-hero.avif');
   background-position: center 45%;
 }
 .heroInner { width: min(570px, 53%); padding: 58px 0 56px; }
@@ -165,7 +165,7 @@
  .service strong{font-size:15px;}
 }
 @media(max-width:700px){
- .hero{min-height:360px; background-image:linear-gradient(90deg,rgba(9,14,19,.48),rgba(9,14,19,.9) 72%),url('/images/gunsan-table-tennis-hero.webp');background-position:36% center;}
+ .hero{min-height:360px; background-image:linear-gradient(90deg,rgba(9,14,19,.48),rgba(9,14,19,.9) 72%),url('/images/gunsan-harbor-table-tennis-hero.avif');background-position:36% center;}
  .heroInner{width:100%;margin:0;padding:47px 0 43px;}
  .heroLabel{font-size:10px;margin-bottom:16px;}
  .heroInner h1{font-size:clamp(31px,7.4vw,39px);line-height:1.35;}
