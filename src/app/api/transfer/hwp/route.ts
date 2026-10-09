@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { DocumentBuilder, save } from 'js-hwp';
 import { actor, db, sameOrigin } from '@/lib/mvpServer';
+import { isAssociationOfficer } from '@/lib/mvpAuth';
 import { transferView } from '@/app/api/mvp/transfers/route';
 
 type TransferPayload = {
@@ -93,7 +94,7 @@ export async function POST(request: NextRequest) {
   try {
     if (!sameOrigin(request)) return NextResponse.json({ error: '잘못된 요청입니다.' }, { status: 403 });
     const current = await actor();
-    if (!current || !(current.admin || current.user.associationTitle)) {
+    if (!current || !(current.admin || isAssociationOfficer(current.user))) {
       return NextResponse.json({ error: '협회 담당자 권한이 필요합니다.' }, { status: 403 });
     }
     const body = await request.json() as HwpRequest;

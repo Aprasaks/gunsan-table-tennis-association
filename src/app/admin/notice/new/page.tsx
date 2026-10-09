@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import PostEditor from '@/app/PostEditor';
-import { refreshCurrentUser } from '@/lib/mvpAuth';
+import { isAssociationOfficer, refreshCurrentUser } from '@/lib/mvpAuth';
 
 export default function NewNoticePage() {
   const router = useRouter();
@@ -13,7 +13,7 @@ export default function NewNoticePage() {
   useEffect(() => {
     setPostId(crypto.randomUUID());
     refreshCurrentUser().then((current) => {
-      if (!current || (current.role !== 'admin' && !current.associationTitle)) router.replace('/login');
+      if (!isAssociationOfficer(current)) router.replace('/notice');
       else setReady(true);
     });
   }, [router]);

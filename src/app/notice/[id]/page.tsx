@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { actor, db, logServerError } from '@/lib/mvpServer';
-import { authorKey, postView } from '@/lib/mvpPostsServer';
+import { postView } from '@/lib/mvpPostsServer';
+import { isAssociationOfficer } from '@/lib/mvpAuth';
 import { postFiles } from '@/lib/postFilesServer';
 import RichContentViewer from '@/app/RichContentViewer';
 import NoticeActions from './NoticeActions';
@@ -20,7 +21,7 @@ export default async function NoticeDetailPage({ params }: { params: Promise<{ i
     row = result.data;
     if (!row) notFound();
     if (row.visibility === 'private') {
-      if (!(current?.admin || current?.user?.associationTitle)) notFound();
+      if (!(current?.admin || isAssociationOfficer(current?.user))) notFound();
     }
   } catch (cause) {
     logServerError('[notice/detail] failed to load notice', cause);
@@ -31,9 +32,8 @@ export default async function NoticeDetailPage({ params }: { params: Promise<{ i
     return [];
   });
   const notice = postView(row, files);
-  const isOwner = Boolean(current && row.author_key === authorKey(current));
-  const canEdit = Boolean(current && (current.admin || (isOwner && current.user?.associationTitle)));
-  const canDelete = Boolean(current && (current.admin || isOwner));
+  const canEdit = isAssociationOfficer(current?.user);
+  const canDelete = canEdit;
   return <>
     <div className="siteShell pageContent noticeDetailWrap"><article className="noticeDetail">
       <header className="noticeDetailHeader"><h1>{notice.title}{notice.visibility === 'private' && <span className="noticePrivateBadge noticePrivateBadgeDetail">비공개</span>}</h1><div className="noticeDetailMeta"><span>등록일</span><time>{notice.date}</time>{notice.updatedAt ? <span>수정됨</span> : null}</div></header>

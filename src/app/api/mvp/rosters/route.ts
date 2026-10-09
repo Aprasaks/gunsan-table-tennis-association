@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
+import { isAssociationOfficer } from '@/lib/mvpAuth';
 import { actor, db } from '@/lib/mvpServer';
 
 export async function GET() {
   try {
     const current = await actor();
-    if (!current || (!current.admin && !current.user.associationTitle))
+    if (!current || (!current.admin && !isAssociationOfficer(current.user)))
       return NextResponse.json({ message: '협회 임원 권한이 필요합니다.' }, { status: 403 });
     const { data, error } = await db().from('mvp_rosters')
       .select('manager_id,club,submitted_at,submitted_snapshot').not('submitted_at', 'is', null)

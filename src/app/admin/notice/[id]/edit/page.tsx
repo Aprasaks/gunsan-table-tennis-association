@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import PostEditor from '@/app/PostEditor';
-import { refreshCurrentUser } from '@/lib/mvpAuth';
+import { isAssociationOfficer, refreshCurrentUser } from '@/lib/mvpAuth';
 import type { NoticeVisibility } from '@/lib/mvpContent';
 import type { PostAttachment } from '@/lib/postUploads';
 
@@ -25,16 +25,16 @@ export default function EditNoticePage() {
   useEffect(() => {
     async function loadNotice() {
       const current = await refreshCurrentUser();
-      if (!current || (current.role !== 'admin' && !current.associationTitle)) {
+      if (!isAssociationOfficer(current)) {
         router.replace('/login');
         return;
       }
       const response = await fetch(`/api/mvp/posts/${params.id}`, { cache: 'no-store' });
       const result = await response.json().catch(() => null);
       const loaded = response.ok ? result?.post as EditableNotice : null;
-      if (!loaded || (current.role !== 'admin' && loaded.authorId !== current.id)) {
-        window.alert(loaded ? '작성자만 공지사항을 수정할 수 있습니다.' : '공지사항을 찾을 수 없습니다.');
-        router.replace(loaded ? `/notice/${params.id}` : '/notice');
+      if (!loaded) {
+        window.alert('공지사항을 찾을 수 없습니다.');
+        router.replace('/notice');
         return;
       }
       setNotice(loaded);

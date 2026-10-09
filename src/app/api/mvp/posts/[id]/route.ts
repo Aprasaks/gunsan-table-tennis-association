@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { isAssociationOfficer } from '@/lib/mvpAuth';
 import { actor, db, logServerError, sameOrigin } from '@/lib/mvpServer';
 import { authorKey, postView, validPostInput } from '@/lib/mvpPostsServer';
 import {
@@ -23,7 +24,7 @@ export async function GET(_request: Request, context: Context) {
     if (error || !data) return NextResponse.json({ message: '게시글이 없습니다.' }, { status: 404 });
     if (data.visibility === 'private') {
       const current = await actor();
-      if (!(current?.admin || current?.user?.associationTitle)) return NextResponse.json({ message: '게시글이 없습니다.' }, { status: 404 });
+      if (!(current?.admin || isAssociationOfficer(current?.user))) return NextResponse.json({ message: '게시글이 없습니다.' }, { status: 404 });
     }
     const files = await postFiles(id);
     return NextResponse.json({ post: postView(data, files) });
@@ -43,7 +44,7 @@ export async function PATCH(request: Request, context: Context) {
     const { data: existing } = await db().from('mvp_posts').select('*').eq('id', id).single();
     const ownsPost = existing?.author_key === authorKey(current);
     const canEdit = existing?.kind === 'notice'
-      ? Boolean(current.admin || (ownsPost && current.user?.associationTitle))
+      ? isAssociationOfficer(current.user)
       : ownsPost;
     if (!existing || !canEdit)
       return NextResponse.json({ message: '수정 권한이 없습니다.' }, { status: 403 });
@@ -97,7 +98,9 @@ export async function DELETE(request: Request, context: Context) {
     if (!current) return NextResponse.json({ message: '로그인이 필요합니다.' }, { status: 401 });
     const { id } = await context.params;
     const { data: existing } = await db().from('mvp_posts').select('kind,author_key').eq('id', id).single();
-    if (!existing || (existing.author_key !== authorKey(current) && !current.admin))
+    if (!existing || (existing.kind === 'notice'
+      ? !isAssociationOfficer(current.user)
+      : existing.author_key !== authorKey(current) && !current.admin))
       return NextResponse.json({ message: '삭제 권한이 없습니다.' }, { status: 403 });
     const files = await postFiles(id);
     const { error } = await db().from('mvp_posts').delete().eq('id', id);

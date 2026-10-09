@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { actor, db, logServerError } from '@/lib/mvpServer';
+import { isAssociationOfficer } from '@/lib/mvpAuth';
 import { postView } from '@/lib/mvpPostsServer';
 export const dynamic = 'force-dynamic';
 
@@ -9,8 +10,8 @@ export default async function NoticePage() {
   let canWrite = false;
   try {
     const current = await actor();
-    canWrite = Boolean(current?.admin || current?.user?.associationTitle);
-    const canSeePrivate = Boolean(current?.admin || current?.user?.associationTitle);
+    canWrite = isAssociationOfficer(current?.user);
+    const canSeePrivate = Boolean(current?.admin || isAssociationOfficer(current?.user));
     let query = db().from('mvp_posts').select('*').eq('kind', 'notice').order('created_at', { ascending: false });
     if (!canSeePrivate) query = query.eq('visibility', 'public');
     const result = await query;

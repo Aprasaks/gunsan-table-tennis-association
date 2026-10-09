@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { isAssociationOfficer } from '@/lib/mvpAuth';
 import { actor, db, logServerError } from '@/lib/mvpServer';
 import { POST_FILE_BUCKET, isUuid } from '@/lib/postUploads';
 
@@ -22,7 +23,7 @@ export async function GET(_request: Request, context: Context) {
     if (!post) return new NextResponse(null, { status: 404 });
     if (post.visibility === 'private') {
       const current = await actor();
-      if (!(current?.admin || current?.user?.associationTitle)) return new NextResponse(null, { status: 404 });
+      if (!(current?.admin || isAssociationOfficer(current?.user))) return new NextResponse(null, { status: 404 });
     }
     const { data: blob, error } = await db().storage.from(POST_FILE_BUCKET).download(file.storage_path);
     if (error || !blob) return new NextResponse(null, { status: 404 });

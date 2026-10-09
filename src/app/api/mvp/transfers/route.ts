@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { isAssociationOfficer } from '@/lib/mvpAuth';
 import { actor, db, logServerError, sameOrigin } from '@/lib/mvpServer';
 
 export function transferView(row: Record<string, any>) {
@@ -22,7 +23,7 @@ export async function GET() {
     if (!current) return NextResponse.json({ message: '로그인이 필요합니다.' }, { status: 401 });
     const { data, error } = await db().from('mvp_transfers').select('*').order('requested_at', { ascending: false });
     if (error) throw error;
-    const rows = current.admin || current.user.associationTitle ? data : data?.filter((row) =>
+    const rows = current.admin || isAssociationOfficer(current.user) ? data : data?.filter((row) =>
       row.member_id === current.user.id ||
       (current.user.position === '회장' && row.from_club === current.user.club)
     );

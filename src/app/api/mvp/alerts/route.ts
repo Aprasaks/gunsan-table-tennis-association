@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
+import { isAssociationOfficer } from '@/lib/mvpAuth';
 import { actor, db, sameOrigin } from '@/lib/mvpServer';
 
 async function recipient() {
   const current = await actor();
-  if (!current || (!current.admin && !current.user.associationTitle)) return null;
+  if (!current || (!current.admin && !isAssociationOfficer(current.user))) return null;
   return current.admin ? 'admin-root' : current.user.id;
 }
 export async function GET() {

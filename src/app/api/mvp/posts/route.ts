@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { isAssociationOfficer } from '@/lib/mvpAuth';
 import { actor, db, logServerError, sameOrigin } from '@/lib/mvpServer';
 import { authorKey, authorName, postView, validPostInput, type PostKind } from '@/lib/mvpPostsServer';
 import { materializeUploads, normalizePostHtml, parseUploadDescriptors, PostFileInputError, removeStoredFiles } from '@/lib/postFilesServer';
@@ -14,7 +15,7 @@ export async function GET(request: NextRequest) {
   try {
     const current = await actor();
     let query = db().from('mvp_posts').select('*').eq('kind', kind).order('created_at', { ascending: false }).limit(100);
-    if (kind === 'notice' && !(current?.admin || current?.user?.associationTitle)) query = query.eq('visibility', 'public');
+    if (kind === 'notice' && !(current?.admin || isAssociationOfficer(current?.user))) query = query.eq('visibility', 'public');
     const { data, error } = await query;
     if (error) throw error;
     return NextResponse.json({ posts: (data ?? []).map((row) => postView(row)) });
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest) {
   let insertedPost = false;
   try {
     const current = await actor();
-    if (!current || (kind === 'notice' && !current.admin && !current.user.associationTitle))
+    if (!current || (kind === 'notice' && !isAssociationOfficer(current.user)))
       return NextResponse.json({ message: '글쓰기 권한이 없습니다.' }, { status: 403 });
     const body = await request.json().catch(() => null);
     const postId = body?.id;
