@@ -57,9 +57,10 @@ export default function AuthStatus() {
   }
 
   const admin = isAdmin(user);
-  const executiveDashboard = canReviewAssociation(user);
+  const executiveDashboard = !admin && canReviewAssociation(user);
   return <>
     <span className="authGreeting">{admin ? '관리자' : user.name + ' 회원님'}</span>
+    {admin && <><i aria-hidden="true" /><Link href="/admin/system">관리자 대시보드</Link></>}
     {executiveDashboard && <><i aria-hidden="true" /><Link href="/admin">임원 대시보드</Link></>}
     {!admin && <><i aria-hidden="true" /><Link href="/profile">정보수정</Link></>}
     {canApproveAssociation(user) && <><i aria-hidden="true" /><Link href="/members/approvals">협회 승인 {pending > 0 ? '(' + pending + ')' : ''}</Link></>}

@@ -32,7 +32,7 @@ export default function LoginPage() {
       }
 
       setAdminSession();
-      router.push('/admin');
+      router.push('/admin/system');
       return;
     }
 
