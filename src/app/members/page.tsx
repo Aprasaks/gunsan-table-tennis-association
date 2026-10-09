@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { canApproveAssociation, canSubmitClubRoster, getCurrentUser, isAdmin } from '@/lib/mvpAuth';
+import { canApproveAssociation, canSubmitClubRoster, getCurrentUser, isAdmin, isPersonalClub } from '@/lib/mvpAuth';
 
 export default function MembersPage() {
   const router = useRouter();
@@ -34,8 +34,8 @@ export default function MembersPage() {
       return;
     }
 
-    if (!isAdmin(currentUser) && currentUser.position !== '회장') {
-      alert('이적 신청은 구장 회장 또는 관리자만 이용할 수 있습니다.');
+    if (isAdmin(currentUser) || currentUser.position !== '회장' || isPersonalClub(currentUser.club)) {
+      alert('이적 업무는 동호회 회장만 이용할 수 있습니다.');
       return;
     }
 
@@ -68,7 +68,7 @@ export default function MembersPage() {
             <Link href="/members/register" onClick={openRegistration}>회원등록 시작하기</Link>
           </article>
           <article className="memberServiceCard">
-            <span>02</span><h2>회원 이적신청</h2><p>기존 소속 구장 회장이 이적을 확인하고, 협회에서 최종 처리하는 이적 흐름입니다.</p>
+            <span>02</span><h2>회원 이적신청</h2><p>새 소속 동호회 회장이 신청하면 기존 소속 회장에게 동의 요청이 전달됩니다.</p>
             <Link href="/members/transfer" onClick={openTransfer}>이적 신청하기</Link>
           </article>
           <article className="memberServiceCard">

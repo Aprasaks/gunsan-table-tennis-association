@@ -15,3 +15,9 @@
 .route{background:#f7f6f5;color:#343b3e}
 .primary:hover,.itemActions .approve:hover{background:#82232c}
 .itemActions button:hover{background:#fcf3f3}
+
+.sectionGap{margin-top:20px}
+.field .helper,.helper{margin:4px 0 0;font-size:13px;color:#62727d;line-height:1.65}
+.head .secondary{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;text-decoration:none;flex-shrink:0}
+.actions .secondary{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.primary:disabled{opacity:.55;cursor:not-allowed}
