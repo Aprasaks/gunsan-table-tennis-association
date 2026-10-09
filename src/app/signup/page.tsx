@@ -8,6 +8,7 @@ import { normalizePhone } from '@/lib/mvpAuth';
 
 const clubs = [
   '개인',
+  '개인(타지역)',
   '코리아',
   '최강탁구클럽',
   '미룡탁구클럽',
