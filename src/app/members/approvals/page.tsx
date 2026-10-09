@@ -77,7 +77,7 @@ export default function ApprovalsPage() {
   const officer = canApproveAssociation(user);
 
   return <>
-    <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME / 회원등록·이적 / 알림·승인</span><h1>알림 · 승인</h1><p>기존 소속 회장 서명이 포함된 이적 신청을 관리자 또는 협회장이 최종 확인합니다.</p></div></section>
+    <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME / 회원등록·이적 / 알림·승인</span><h1>알림 · 승인</h1><p>협회장·사무국장·총무가 이적 신청을 최종 확인합니다.</p></div></section>
     <section className="siteShell pageContent"><div className={styles.panel}>
       <div className={styles.head}><div><h2>이적 승인 업무</h2><p>{officer ? '협회 승인 대기와 처리 결과를 확인합니다.' : '내 소속의 이적 신청과 처리 결과를 확인합니다.'}</p></div></div>
       {message && <p role="status" className={styles.message}>{message}</p>}

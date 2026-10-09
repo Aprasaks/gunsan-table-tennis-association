@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { actor, db, sameOrigin } from '@/lib/mvpServer';
+import { isAssociationOfficer } from '@/lib/mvpAuth';
 
 export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
   if (!sameOrigin(request)) return NextResponse.json({ message: '잘못된 요청입니다.' }, { status: 403 });
@@ -11,10 +12,10 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
     const action = body?.action;
     const { data: transfer, error } = await db().from('mvp_transfers').select('*').eq('id', id).single();
     if (error || !transfer) return NextResponse.json({ message: '신청을 찾을 수 없습니다.' }, { status: 404 });
-    if (!['approve', 'reject'].includes(action) || !(current.admin || current.user.associationTitle === '협회장')) {
-      return NextResponse.json({ message: '관리자 또는 협회장만 승인할 수 있습니다.' }, { status: 403 });
+    if (!['approve', 'reject'].includes(action) || !current.user || !isAssociationOfficer(current.user)) {
+      return NextResponse.json({ message: '협회장·사무국장·총무만 승인할 수 있습니다.' }, { status: 403 });
     }
-    const by = current.admin ? 'admin' : current.user.id;
+    const by = current.user.id;
     const { data: outcome, error: rpcError } = await db().rpc('process_mvp_transfer', {
       p_id: id, p_action: action, p_actor: by, p_note: String(body?.note ?? '').slice(0, 1000),
     });

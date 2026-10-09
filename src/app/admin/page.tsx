@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { canApproveAssociation, isAdmin, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
+import { canApproveAssociation, isAdmin, isAssociationOfficer, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
 import type { TransferRequest } from '@/lib/mvpTransfer';
 import styles from './dashboard.module.css';
 
@@ -22,8 +22,6 @@ type Overview = {
   rosterCount: number;
 };
 
-const executiveTitles = ['협회장', '총무', '사무국장'];
-
 export default function AdminPage() {
   const router = useRouter();
   const [viewer, setViewer] = useState<MvpUser | null>(null);
@@ -36,7 +34,7 @@ export default function AdminPage() {
       try {
         const current = await refreshCurrentUser();
         const admin = isAdmin(current);
-        const executive = Boolean(current && executiveTitles.includes(current.associationTitle ?? ''));
+        const executive = isAssociationOfficer(current);
         if (!current || (!admin && !executive)) {
           router.replace('/login');
           return;
@@ -79,7 +77,7 @@ export default function AdminPage() {
 
   const admin = isAdmin(viewer);
   const activeMembers = overview?.members?.filter((member) => member.memberStatus !== 'withdrawn') ?? [];
-  const officers = activeMembers.filter((member) => Boolean(member.associationTitle));
+  const officers = activeMembers.filter(isAssociationOfficer);
   const pendingAdmin = overview?.requests.filter((request) => request.status === 'pending_admin') ?? [];
   const canApprove = canApproveAssociation(viewer);
   const unreadAlerts = overview?.alerts.filter((alert) => !alert.read).length ?? 0;
@@ -95,8 +93,8 @@ export default function AdminPage() {
       {overview && <>
         <div className={styles.stats}>
           {admin && <div className={styles.stat}><span>활동 회원</span><strong>{activeMembers.length}명</strong><small>전체 등록 {overview.members?.length ?? 0}명</small></div>}
-          {admin && <div className={styles.stat}><span>협회 직책 회원</span><strong>{officers.length}명</strong><small>협회장 · 이사 · 총무 · 고문 · 사무국장</small></div>}
-          {canApprove && <Link href="/members/approvals" className={styles.stat}><span>협회 승인 대기</span><strong>{pendingAdmin.length}건</strong><small>관리자·협회장 최종 확인 업무</small></Link>}
+          {admin && <div className={styles.stat}><span>협회 직책 회원</span><strong>{officers.length}명</strong><small>협회장 · 사무국장 · 총무</small></div>}
+          {canApprove && <Link href="/members/approvals" className={styles.stat}><span>협회 승인 대기</span><strong>{pendingAdmin.length}건</strong><small>협회 임원진 최종 확인 업무</small></Link>}
           <Link href="/admin/notifications" className={styles.stat}><span>읽지 않은 알림</span><strong>{unreadAlerts}건</strong><small>회원등록 · 이적 · 희망부 알림</small></Link>
           <Link href="/admin/registrations" className={styles.stat}><span>제출 선수등록</span><strong>{overview.rosterCount}건</strong><small>협회에 제출된 구장별 명단</small></Link>
         </div>

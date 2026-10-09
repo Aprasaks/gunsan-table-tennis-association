@@ -2,11 +2,11 @@ import { createHash, createHmac, randomBytes, scryptSync, timingSafeEqual } from
 import { cookies } from 'next/headers';
 import { createAdminServerSupabase } from '@/lib/supabase/server';
 import { hasAdminSession } from '@/lib/adminSession';
-import type { MvpUser } from '@/lib/mvpAuth';
+import { ASSOCIATION_TITLES, type MvpUser } from '@/lib/mvpAuth';
 
 export const MEMBER_COOKIE = 'gunsan-tt-member-session';
 export const MEMBER_SESSION_SECONDS = 60 * 60 * 12;
-export const TITLES = ['', '협회장', '이사', '총무', '고문', '사무국장'] as const;
+export const TITLES = ['', ...ASSOCIATION_TITLES] as const;
 
 export function db() {
   const client = createAdminServerSupabase();

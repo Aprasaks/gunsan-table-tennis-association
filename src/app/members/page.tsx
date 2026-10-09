@@ -54,7 +54,7 @@ export default function MembersPage() {
     }
 
     if (!canApproveAssociation(currentUser)) {
-      alert('이적 최종 승인 업무는 관리자와 협회장만 이용할 수 있습니다.');
+      alert('이적 최종 승인은 협회장·사무국장·총무만 이용할 수 있습니다.');
       return;
     }
     router.push('/members/approvals');
@@ -74,7 +74,7 @@ export default function MembersPage() {
             <Link href="/members/transfer" onClick={openTransfer}>이적 신청하기</Link>
           </article>
           <article className="memberServiceCard">
-            <span>03</span><h2>협회 승인 업무</h2><p>관리자와 협회장이 이적 신청을 최종 승인하거나 반려할 수 있습니다.</p>
+            <span>03</span><h2>협회 승인 업무</h2><p>협회장·사무국장·총무가 이적 신청을 승인하거나 반려합니다.</p>
             <Link href="/members/approvals" onClick={openApprovals}>승인 업무 보기</Link>
           </article>
         </div>

@@ -1,5 +1,6 @@
 export type MemberStatus = 'active' | 'withdrawn';
 export type UserRole = 'member' | 'admin';
+export const ASSOCIATION_TITLES = ['협회장', '사무국장', '총무'] as const;
 
 export type MvpUser = {
   id: string;
@@ -15,7 +16,7 @@ export type MvpUser = {
   memberStatus?: MemberStatus;
   role?: UserRole;
   loginId?: string;
-  associationTitle?: '' | '협회장' | '이사' | '총무' | '고문' | '사무국장';
+  associationTitle?: '' | (typeof ASSOCIATION_TITLES)[number];
   createdAt?: string;
 };
 
@@ -62,12 +63,17 @@ export function isAdmin(user: MvpUser | null | undefined) {
   return user?.role === 'admin' || user?.id === ADMIN_USER_ID;
 }
 
+export function isAssociationOfficer(user: MvpUser | null | undefined) {
+  return Boolean(user?.associationTitle && user.memberStatus !== 'withdrawn' &&
+    ASSOCIATION_TITLES.some((title) => title === user.associationTitle));
+}
+
 export function canReviewAssociation(user: MvpUser | null | undefined) {
-  return isAdmin(user) || Boolean(user?.associationTitle && user.memberStatus !== 'withdrawn');
+  return isAdmin(user) || isAssociationOfficer(user);
 }
 
 export function canApproveAssociation(user: MvpUser | null | undefined) {
-  return isAdmin(user) || Boolean(user?.associationTitle === '협회장' && user.memberStatus !== 'withdrawn');
+  return isAssociationOfficer(user);
 }
 
 export function getUsers(): MvpUser[] {

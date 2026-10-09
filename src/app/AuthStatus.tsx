@@ -57,7 +57,7 @@ export default function AuthStatus() {
   }
 
   const admin = isAdmin(user);
-  const executiveDashboard = admin || ['협회장', '총무', '사무국장'].includes(user.associationTitle ?? '');
+  const executiveDashboard = canReviewAssociation(user);
   return <>
     <span className="authGreeting">{admin ? '관리자' : user.name + ' 회원님'}</span>
     {executiveDashboard && <><i aria-hidden="true" /><Link href="/admin">임원 대시보드</Link></>}

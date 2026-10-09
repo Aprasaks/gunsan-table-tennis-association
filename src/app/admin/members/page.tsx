@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getUsers, isAdmin, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
+import { ASSOCIATION_TITLES, getUsers, isAdmin, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
 import { getTransferRequests } from '@/lib/mvpTransfer';
 import styles from '@/app/members/transfer/transfer.module.css';
 import roster from './roster.module.css';
 
-const titles = ['', '협회장', '이사', '총무', '고문', '사무국장'];
+const titles = ['', ...ASSOCIATION_TITLES];
 const clubPositions = ['일반', '회장', '부회장', '총무'];
 
 export default function AdminMembersPage() {
@@ -108,6 +108,7 @@ export default function AdminMembersPage() {
           <div className={styles.field}><label htmlFor={'association-' + user.id}>협회 직책</label>
             <select id={'association-' + user.id} value={user.associationTitle ?? ''} disabled={saving === user.id}
               onChange={(event) => save(user, event.target.value, user.position, user.memberStatus ?? 'active')}>
+              {user.associationTitle && !titles.includes(user.associationTitle) && <option value={user.associationTitle} disabled>{user.associationTitle} (이전 직책 · 변경 필요)</option>}
               {titles.map((title) => <option key={title} value={title}>{title || '없음'}</option>)}
             </select></div>
           <div className={styles.field}><label htmlFor={'club-' + user.id}>구장 직책</label>
