@@ -1,8 +1,11 @@
-export type TransferStatus = 'pending_admin' | 'approved' | 'rejected';
+export type TransferStatus = 'pending_source_chair' | 'pending_admin' | 'approved' | 'rejected';
 
 export type TransferRequest = {
   id: string;
-  memberId: string;
+  memberId: string | null;
+  birthDate?: string;
+  draftMemberId?: string;
+  requestedBy?: string;
   memberName: string;
   gender: '남' | '여';
   rank: string;

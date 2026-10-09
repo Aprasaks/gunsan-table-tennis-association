@@ -101,6 +101,9 @@ export async function POST(request: NextRequest) {
     if (!body?.requestId || (body.kind !== 'consent' && body.kind !== 'application')) return NextResponse.json({ error: '잘못된 요청입니다.' }, { status: 400 });
     const { data, error } = await db().from('mvp_transfers').select('*').eq('id', body.requestId).single();
     if (error || !data) return NextResponse.json({ error: '신청을 찾을 수 없습니다.' }, { status: 404 });
+    if (data.status === 'pending_source_chair' || !data.source_chair_signature_data_url) {
+      return NextResponse.json({ error: '기존 동호회 회장의 동의와 서명이 완료된 후 다운로드할 수 있습니다.' }, { status: 409 });
+    }
     const transfer = transferView(data) as TransferPayload;
 
     const bytes = body.kind === 'consent' ? buildConsent(transfer) : buildApplication(transfer);

@@ -15,6 +15,9 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
     if (!['approve', 'reject'].includes(action) || !current.user || !isAssociationOfficer(current.user)) {
       return NextResponse.json({ message: '협회장·사무국장·총무만 승인할 수 있습니다.' }, { status: 403 });
     }
+    if (transfer.status === 'pending_source_chair') {
+      return NextResponse.json({ message: '기존 동호회 회장의 동의가 완료되지 않았습니다.' }, { status: 409 });
+    }
     const by = current.user.id;
     const { data: outcome, error: rpcError } = await db().rpc('process_mvp_transfer', {
       p_id: id, p_action: action, p_actor: by, p_note: String(body?.note ?? '').slice(0, 1000),

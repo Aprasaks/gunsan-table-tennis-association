@@ -24,7 +24,7 @@ export default function ApprovalsPage() {
       const response = await fetch('/api/mvp/transfers', { cache: 'no-store' });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message);
-      setRequests(result.requests);
+      setRequests((result.requests as TransferRequest[]).filter((item) => item.status !== 'pending_source_chair'));
     } catch (cause) {
       setMessage(cause instanceof Error ? cause.message : '승인 목록을 불러오지 못했습니다.');
     }
