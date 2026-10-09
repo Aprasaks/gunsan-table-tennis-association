@@ -3,9 +3,7 @@
 import Link from 'next/link';
 import { MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { canApproveAssociation, getCurrentUser, isAdmin } from '@/lib/mvpAuth';
-
-const registrationManagers = new Set(['회장', '부회장', '총무']);
+import { canApproveAssociation, canSubmitClubRoster, getCurrentUser, isAdmin } from '@/lib/mvpAuth';
 
 export default function MembersPage() {
   const router = useRouter();
@@ -19,8 +17,8 @@ export default function MembersPage() {
       return;
     }
 
-    if (isAdmin(currentUser) || !registrationManagers.has(currentUser.position)) {
-      alert('회원등록 권한이 없습니다. 소속 회장, 부회장, 총무만 회원등록 업무를 이용할 수 있습니다.');
+    if (!canSubmitClubRoster(currentUser)) {
+      alert('회원등록 권한이 없습니다. 소속 동호회 회장·총무만 회원등록 업무를 이용할 수 있습니다.');
       return;
     }
 

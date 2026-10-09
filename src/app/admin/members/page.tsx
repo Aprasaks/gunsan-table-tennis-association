@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ASSOCIATION_TITLES, getUsers, isAdmin, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
+import { ASSOCIATION_TITLES, CLUB_POSITIONS, getUsers, isAdmin, isPersonalClub, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
 import { getTransferRequests } from '@/lib/mvpTransfer';
 import styles from '@/app/members/transfer/transfer.module.css';
 import roster from './roster.module.css';
 
 const titles = ['', ...ASSOCIATION_TITLES];
-const clubPositions = ['일반', '회장', '부회장', '총무'];
+const clubPositions = CLUB_POSITIONS;
 
 export default function AdminMembersPage() {
   const router = useRouter();
@@ -112,8 +112,9 @@ export default function AdminMembersPage() {
               {titles.map((title) => <option key={title} value={title}>{title || '없음'}</option>)}
             </select></div>
           <div className={styles.field}><label htmlFor={'club-' + user.id}>구장 직책</label>
-            <select id={'club-' + user.id} value={user.position} disabled={saving === user.id}
+            <select id={'club-' + user.id} value={user.position} disabled={saving === user.id || isPersonalClub(user.club)}
               onChange={(event) => save(user, user.associationTitle ?? '', event.target.value, user.memberStatus ?? 'active')}>
+              {!clubPositions.some((title) => title === user.position) && <option value={user.position} disabled>{user.position} (이전 직책 · 변경 필요)</option>}
               {clubPositions.map((title) => <option key={title}>{title}</option>)}
             </select></div>
           <div className={styles.field}><label htmlFor={'status-' + user.id}>회원 상태</label>

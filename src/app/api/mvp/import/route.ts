@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { actor, db, sameOrigin } from '@/lib/mvpServer';
+import { isPersonalClub } from '@/lib/mvpAuth';
 export async function POST(request: Request) {
   if (!sameOrigin(request)) return NextResponse.json({ message: '잘못된 요청입니다.' }, { status: 403 });
   try {
@@ -17,7 +18,7 @@ export async function POST(request: Request) {
         id: user.id, name: String(user.name).trim().slice(0, 80),
         birth_date: user.birthDate, gender: user.gender, phone,
         club: String(user.club).trim().slice(0, 100), rank: String(user.rank ?? '').slice(0, 40),
-        position: ['회장', '총무', '부회장'].includes(user.position) ? user.position : '일반',
+        position: !isPersonalClub(user.club) && ['회장', '총무'].includes(user.position) ? user.position : '회원',
         association_title: '', password_hash: user.passwordHash,
         signature_data_url: /^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(user.signatureDataUrl ?? '') &&
           user.signatureDataUrl.length <= 300_000 ? user.signatureDataUrl : null,

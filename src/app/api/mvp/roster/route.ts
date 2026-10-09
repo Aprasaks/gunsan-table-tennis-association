@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { actor, db, sameOrigin } from '@/lib/mvpServer';
+import { canSubmitClubRoster } from '@/lib/mvpAuth';
 
 async function manager() {
   const current = await actor();
-  return current && !current.admin && ['회장', '부회장', '총무'].includes(current.user.position) ? current.user : null;
+  return current && !current.admin && canSubmitClubRoster(current.user) ? current.user : null;
 }
 export async function GET() {
   try {

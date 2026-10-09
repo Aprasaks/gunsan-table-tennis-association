@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './registration.module.css';
-import { clearSession, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
+import { canSubmitClubRoster, clearSession, CLUB_POSITIONS, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
 
 type RegistrationMember = {
   id: string;
@@ -42,9 +42,8 @@ type RankOption = {
   label: string;
 };
 
-const positions = ['관장', '회장', '부회장', '총무', '재무', '이사', '회원', '기타'];
+const positions = CLUB_POSITIONS;
 const registrationTypes = ['기존', '신규', '이적'];
-const registrationManagers = new Set(['회장', '부회장', '총무']);
 
 function blankMember(id: string): RegistrationMember {
   return {
@@ -127,7 +126,7 @@ export default function MemberRegistrationPage() {
     async function load() {
       const currentUser = await refreshCurrentUser();
       if (!currentUser) { router.replace('/login'); return; }
-      if (!registrationManagers.has(currentUser.position)) { router.replace('/members'); return; }
+      if (!canSubmitClubRoster(currentUser)) { router.replace('/members'); return; }
       try {
         const response = await fetch('/api/mvp/roster', { cache: 'no-store' });
         const result = await response.json();
@@ -201,7 +200,7 @@ export default function MemberRegistrationPage() {
     const activeMembers = members.filter((member) => member.name.trim());
     if (activeMembers.length === 0) return '등록할 회원을 한 명 이상 입력해주세요.';
 
-    const incomplete = activeMembers.find((member) => !member.birthDate.trim() || !member.gender || !member.rank.trim() || !member.address.trim() || !member.position || !member.phone.trim());
+    const incomplete = activeMembers.find((member) => !member.birthDate.trim() || !member.gender || !member.rank.trim() || !member.address.trim() || !positions.includes(member.position as typeof positions[number]) || !member.phone.trim());
     if (incomplete) return '회원 명단의 성명, 생년월일, 성별, 부수, 주소, 직위, 연락처를 모두 입력해주세요.';
     return '';
   }
@@ -306,7 +305,7 @@ export default function MemberRegistrationPage() {
             <button className={styles.logout} type="button" onClick={logout}>로그아웃</button>
           </div>
 
-          <p className={styles.notice}>회원등록 업무는 회장·부회장·총무만 이용할 수 있습니다. 관장·회장·총무가 실제 등록 대상이면 아래 회원 명단에도 별도로 추가해주세요.</p>
+          <p className={styles.notice}>회원등록 업무는 소속 동호회 회장·총무만 이용할 수 있습니다. 관장·회장·총무가 실제 등록 대상이면 아래 회원 명단에도 별도로 추가해주세요.</p>
 
           <div className={styles.clubGrid}>
             <div className={styles.field}>
@@ -372,7 +371,7 @@ export default function MemberRegistrationPage() {
                         </select>
                       </td>
                       <td><input value={member.address} onChange={(e) => updateMember(member.id, 'address', e.target.value)} placeholder="군산시 나운동" /></td>
-                      <td><select value={member.position} onChange={(e) => updateMember(member.id, 'position', e.target.value)}>{positions.map((position) => <option key={position} value={position}>{position}</option>)}</select></td>
+                      <td><select value={member.position} onChange={(e) => updateMember(member.id, 'position', e.target.value)}>{!positions.includes(member.position as typeof positions[number]) && <option value={member.position} disabled>{member.position} (이전 직책 · 변경 필요)</option>}{positions.map((position) => <option key={position} value={position}>{position}</option>)}</select></td>
                       <td><input value={member.phone} onChange={(e) => updateMember(member.id, 'phone', e.target.value)} placeholder="010-0000-0000" /></td>
                       <td><select value={member.registrationType} onChange={(e) => updateMember(member.id, 'registrationType', e.target.value)}>{registrationTypes.map((type) => <option key={type} value={type}>{type}</option>)}</select></td>
                       <td><input value={member.nationality} onChange={(e) => updateMember(member.id, 'nationality', e.target.value)} placeholder="선택사항" /></td>

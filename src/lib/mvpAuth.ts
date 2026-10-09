@@ -1,6 +1,17 @@
 export type MemberStatus = 'active' | 'withdrawn';
 export type UserRole = 'member' | 'admin';
 export const ASSOCIATION_TITLES = ['협회장', '사무국장', '총무'] as const;
+export const CLUB_POSITIONS = ['회원', '회장', '총무'] as const;
+export const PERSONAL_CLUBS = ['개인', '개인(타지역)'] as const;
+
+export function isPersonalClub(club: string) {
+  return PERSONAL_CLUBS.some((value) => value === club);
+}
+
+export function canSubmitClubRoster(user: MvpUser | null | undefined) {
+  return Boolean(user && user.memberStatus !== 'withdrawn' &&
+    !isPersonalClub(user.club) && ['회장', '총무'].includes(user.position));
+}
 
 export type MvpUser = {
   id: string;

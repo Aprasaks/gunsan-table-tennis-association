@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     const { error } = await db().from('mvp_members').insert({
       name: String(body.name).trim().slice(0, 80), birth_date: body.birthDate,
       gender: body.gender, phone, club: String(body.club).trim().slice(0, 100),
-      rank: String(body.rank).slice(0, 40), position: '일반', association_title: '',
+      rank: String(body.rank).slice(0, 40), position: '회원', association_title: '',
       password_hash: passwordDigest(body.password),
     });
     if (error?.code === '23505') return NextResponse.json({ message: '이미 가입된 휴대폰번호입니다.' }, { status: 409 });
