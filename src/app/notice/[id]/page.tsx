@@ -35,9 +35,8 @@ export default async function NoticeDetailPage({ params }: { params: Promise<{ i
   const canEdit = Boolean(current && (current.admin || (isOwner && current.user?.associationTitle)));
   const canDelete = Boolean(current && (current.admin || isOwner));
   return <>
-    <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME &gt; 공지사항 &gt; 상세</span><h1>공지사항</h1><p>군산시탁구협회의 주요 공지와 안내를 확인합니다.</p></div></section>
     <div className="siteShell pageContent noticeDetailWrap"><article className="noticeDetail">
-      <header className="noticeDetailHeader"><h2>{notice.title}{notice.visibility === 'private' && <span className="noticePrivateBadge noticePrivateBadgeDetail">비공개</span>}</h2><div className="noticeDetailMeta"><span>등록일</span><time>{notice.date}</time>{notice.updatedAt ? <span>수정됨</span> : null}</div></header>
+      <header className="noticeDetailHeader"><h1>{notice.title}{notice.visibility === 'private' && <span className="noticePrivateBadge noticePrivateBadgeDetail">비공개</span>}</h1><div className="noticeDetailMeta"><span>등록일</span><time>{notice.date}</time>{notice.updatedAt ? <span>수정됨</span> : null}</div></header>
       <RichContentViewer html={notice.contentHtml} className="noticeDetailBody noticeRichBody" />
       {notice.attachments.length > 0 && <div className="noticeAttachments"><strong>첨부파일</strong><ul>{notice.attachments.map((file) => <li key={file.id}><a href={file.url || file.dataUrl} download={file.name}>{file.name}</a></li>)}</ul></div>}
     </article><NoticeActions noticeId={notice.id} canEdit={canEdit} canDelete={canDelete} /></div>
