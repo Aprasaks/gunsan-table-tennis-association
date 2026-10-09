@@ -1,3 +1,27 @@
+/* 공지사항: 반복 설명 배너 없이 글 목록과 작성 업무에 집중 */
+.noticeListHeading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:16px;
+  margin-bottom:20px;
+}
+.noticeListHeading h1{
+  margin:0;
+  color:#282d31;
+  font-size:28px;
+  font-weight:800;
+  letter-spacing:-.05em;
+  line-height:1.35;
+}
+.noticeListHeading .contentAdminButton{min-height:42px;}
+@media(max-width:600px){
+  .noticeListHeading{gap:12px;margin-bottom:16px;}
+  .noticeListHeading h1{font-size:24px;}
+  .noticeListHeading .contentAdminButton{width:auto;min-height:42px;padding:0 15px;}
+}
+
 .noticeTable th,
 .noticeTable td{
   text-align:center !important;
@@ -65,7 +89,7 @@
   text-align:center;
 }
 
-.noticeDetailHeader h2{
+.noticeDetailHeader h1{
   margin:0 0 18px;
   font-size:28px;
   line-height:1.45;
@@ -223,7 +247,7 @@
     padding:22px 16px 18px;
   }
 
-  .noticeDetailHeader h2{
+  .noticeDetailHeader h1{
     font-size:22px;
     margin-bottom:14px;
   }
