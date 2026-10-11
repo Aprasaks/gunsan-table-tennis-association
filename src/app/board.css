@@ -1,15 +1,44 @@
-.boardToolbarLarge{display:flex;justify-content:flex-end;margin-bottom:16px}
-.boardToolbarLarge button{min-width:112px;height:48px;padding:0 22px;border:0;border-radius:4px;background:#126da5;color:#fff;font-size:16px;font-weight:800;cursor:pointer}
-.boardToolbarLarge button:hover{background:#0d5f8f}
-.boardTable th,.boardTable td{text-align:center!important;vertical-align:middle}
-.boardTable .boardNumber{width:82px}
-.boardTable .boardAuthorColumn{width:150px}
-.boardTable .boardDateColumn{width:120px}
-.boardTitleCell{text-align:left!important}
-.boardTitleCell a{display:block;padding:2px 6px;font-weight:600;color:#2d3943}
-.boardTitleCell a:hover{color:#126da5;text-decoration:underline;text-underline-offset:3px}
-.boardAuthorCell{font-weight:600;color:#435562;white-space:nowrap}
-.boardEmpty{text-align:center!important;padding:40px 12px!important;color:#77858f}
+/* 게시판: 크고 명확한 글 제목, 절제된 표, 좁은 화면에서도 읽히는 목록 */
+.boardPageHeading{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:24px}
+.boardPageHeading h1{margin:0;color:#282d31;font-size:28px;font-weight:800;letter-spacing:-.055em;line-height:1.35}
+.boardPageHeading p{margin:5px 0 0;color:#677078;font-size:14px;line-height:1.6}
+.boardWriteButton{flex:none;min-width:106px;height:43px;padding:0 20px;background:#a32835;border:1px solid #a32835;border-radius:3px;color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+.boardWriteButton:hover{background:#81222c}
+.boardWriteButton:disabled{opacity:.65;cursor:wait}
+.boardListTools{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}
+.boardTotal{margin:0;color:#6b7278;font-size:14px;white-space:nowrap}
+.boardSearch{display:flex;align-items:center;gap:7px;min-width:0}
+.boardSearch label{font-size:13px;color:#555d63;white-space:nowrap;margin-right:5px}
+.boardSearch input{width:245px;max-width:100%;height:40px;padding:0 12px;border:1px solid #ccd0d2;border-radius:3px;color:#262b2f;background:#fff;font-size:14px;min-width:0}
+.boardSearch input:focus{border-color:#a32835;outline-offset:2px}
+.boardSearch button{height:40px;padding:0 15px;background:#30363a;color:#fff;border:1px solid #30363a;border-radius:3px;font-size:14px;font-weight:650;cursor:pointer;white-space:nowrap}
+.boardSearch button:hover{background:#4c5053}
+.boardSearch .boardSearchReset{background:#fff;border-color:#ccd0d2;color:#606970}
+.boardSearch .boardSearchReset:hover{background:#f7f7f6}
+.boardListTable{table-layout:fixed;width:100%;border-collapse:collapse;border-top:2px solid #30363a;border-bottom:1px solid #dcdedd}
+.boardListTable thead th{height:46px;padding:11px 15px;text-align:center;background:#f7f7f6;border-bottom:1px solid #dbdcda;color:#52585d;font-size:14px;font-weight:700}
+.boardListTable th:nth-child(2){text-align:left}
+.boardListTable td{padding:15px 14px;border-bottom:1px solid #ebeceb;text-align:center;vertical-align:middle;color:#454c51;font-size:14px;line-height:1.55}
+.boardListTable tbody tr:hover{background:#fcf8f7}
+.boardListTable .boardNumber{width:76px;color:#879096;font-variant-numeric:tabular-nums}
+.boardListTable .boardAuthorColumn{width:140px}
+.boardListTable .boardDateColumn{width:145px}
+.boardListTable .boardTitleCell{text-align:left;padding-left:15px;padding-right:12px}
+.boardTitleCell a{display:block;color:#282e32;font-size:16px;font-weight:600;line-height:1.5;letter-spacing:-.025em;overflow-wrap:anywhere}
+.boardTitleCell a:hover{color:#a32835;text-decoration:underline;text-underline-offset:3px}
+.boardAuthorCell{font-weight:500;color:#59626a!important;overflow-wrap:anywhere}
+.boardDateCell{color:#717a81!important;font-size:13px!important;font-variant-numeric:tabular-nums}
+.boardListTable .boardEmpty{text-align:center;padding:68px 16px;color:#798087;font-size:15px}
+.boardError{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px;padding:12px 15px;border:1px solid #e6c3c7;background:#fff7f7;color:#8b2732;font-size:14px}
+.boardError button{flex:none;padding:6px 9px;background:#fff;border:1px solid #d2a5a9;border-radius:3px;color:#8b2732;cursor:pointer}
+.boardPagination{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:27px}
+.boardPagination button{min-width:37px;height:37px;padding:0 10px;background:#fff;border:1px solid #d9dcdd;border-radius:3px;color:#535b60;font-size:14px;cursor:pointer}
+.boardPagination button:hover:not(:disabled){border-color:#a32835;color:#a32835}
+.boardPagination button[aria-current="page"]{background:#30363a;border-color:#30363a;color:#fff;font-weight:700}
+.boardPagination button:disabled{color:#b3b8ba;cursor:not-allowed}
+.boardEditorHeading{max-width:860px;margin:0 auto 18px}
+.boardEditorHeading h1{margin:0;font-size:24px;color:#282d31;letter-spacing:-.045em}
+.boardEditorHeading p{margin:5px 0 0;color:#727b80;font-size:14px}
 .boardDetailWrap{max-width:980px}
 .boardDetail{border-top:3px solid #263b4c;border-bottom:1px solid #dce3e8;background:#fff}
 .boardDetailHeader{padding:28px 26px 22px;border-bottom:1px solid #dce3e8;text-align:center}
@@ -52,4 +81,52 @@
   .boardAttachments{margin:0 18px 26px;padding:15px}
   .boardDetailActions{flex-direction:column}
   .boardListButton,.boardEditButton,.boardDeleteButton{width:100%;height:50px;font-size:16px}
+}
+
+
+/* 글 상세도 목록과 같은 협회 사이트의 차분한 문서형 톤으로 정리 */
+.boardDetailHeader{text-align:left;padding:30px 32px 24px}
+.boardDetailHeader h2{font-size:27px;line-height:1.45;color:#282d31;overflow-wrap:anywhere}
+.boardDetailMeta{justify-content:flex-start;color:#6f787e}
+.boardDetailBody{color:#343d42}
+.boardDetailBody a,.boardAttachments a{color:#93313a}
+.boardDetailActions{justify-content:flex-end}
+.boardListButton{color:#343d42;border-color:#c9cccd}
+.boardListButton:hover{background:#f6f6f5;border-color:#aeb3b5}
+.boardEditButton{color:#30363a;background:#f7f7f6;border-color:#bfc4c6}
+.boardEditButton:hover{background:#eceeed}
+.boardDeleteButton{color:#9b3039;background:#fff;border-color:#d9b2b6}
+.boardDeleteButton:hover{background:#fff5f5}
+.boardDeleteButton:disabled{opacity:.55;cursor:wait}
+.boardDetailError{max-width:980px;margin:0 auto 18px;padding:13px 16px;border:1px solid #dfb2b6;background:#fff8f8;color:#922c35;font-size:14px}
+.boardMissing{margin:0 0 22px;font-size:15px;color:#616a70}
+@media(max-width:720px){
+  .boardPageHeading{align-items:flex-start;gap:12px;margin-bottom:18px}
+  .boardPageHeading h1{font-size:24px}
+  .boardPageHeading p{font-size:13px}
+  .boardWriteButton{min-width:82px;height:40px;padding:0 12px;font-size:14px}
+  .boardListTools{align-items:stretch;flex-direction:column;gap:10px}
+  .boardSearch label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .boardSearch input{width:auto;flex:1}
+  .boardListTable .boardNumber{display:none}
+  .boardListTable .boardAuthorColumn{width:90px}
+  .boardListTable .boardDateColumn{width:106px}
+  .boardListTable th{height:42px;font-size:13px;padding:9px 7px}
+  .boardListTable td{padding:12px 7px;font-size:13px}
+  .boardListTable .boardTitleCell{padding-left:10px;padding-right:5px}
+  .boardTitleCell a{font-size:14px;line-height:1.55}
+  .boardDateCell{font-size:12px!important}
+  .boardListTable .boardEmpty{padding:50px 12px}
+  .boardDetailHeader{text-align:left;padding:22px 17px}
+  .boardDetailHeader h2{font-size:23px}
+  .boardDetailMeta{justify-content:flex-start}
+}
+@media(max-width:410px){
+  .boardListTable .boardAuthorColumn{width:70px}
+  .boardListTable .boardDateColumn{width:94px}
+  .boardListTable .boardAuthorCell{font-size:12px}
+  .boardDateCell{font-size:11px!important}
+  .boardSearch{gap:5px}
+  .boardSearch button{padding:0 10px}
+  .boardPageHeading p{max-width:195px}
 }
