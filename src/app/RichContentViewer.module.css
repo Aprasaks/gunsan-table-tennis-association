@@ -124,3 +124,32 @@
 @media(prefers-reduced-motion:reduce){
   .content img,.closeButton,.arrowButton{transition:none}
 }
+
+
+/* The only iframe allowed in post content is generated from a validated YouTube ID. */
+.videoEmbed{
+  width:min(100%,780px);
+  max-width:100%;
+  margin:26px auto;
+  overflow:hidden;
+}
+.videoEmbed iframe{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:16 / 9;
+  border:0;
+  background:#171717;
+}
+.videoEmbed a{
+  display:inline-block;
+  margin-top:7px;
+  font-size:13px;
+  color:#6a7075;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+@media(max-width:720px){
+  .videoEmbed{margin:18px auto}
+  .videoEmbed a{font-size:12px}
+}
