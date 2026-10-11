@@ -34,6 +34,38 @@ export default function ProfilePage() {
     });
   }, [router]);
 
+  // 다른 화면에서 관리자가 직책을 변경한 뒤 돌아와도 최신 직책을 보여준다.
+  // 입력 중인 이름·연락처·서명 초안은 덮어쓰지 않는다.
+  useEffect(() => {
+    let active = true;
+    const syncRoles = async () => {
+      try {
+        const fresh = await refreshCurrentUser();
+        if (active && fresh) {
+          setUser((previous) => previous ? {
+            ...previous,
+            club: fresh.club,
+            position: fresh.position,
+            associationTitle: fresh.associationTitle,
+            memberStatus: fresh.memberStatus,
+          } : fresh);
+        }
+      } catch {
+        // 일시적인 조회 실패 시 작성 중인 폼은 그대로 보존한다.
+      }
+    };
+    const refreshOnReturn = () => {
+      if (document.visibilityState === 'visible') void syncRoles();
+    };
+    window.addEventListener('focus', refreshOnReturn);
+    document.addEventListener('visibilitychange', refreshOnReturn);
+    return () => {
+      active = false;
+      window.removeEventListener('focus', refreshOnReturn);
+      document.removeEventListener('visibilitychange', refreshOnReturn);
+    };
+  }, []);
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!user) return;
@@ -124,7 +156,14 @@ export default function ProfilePage() {
             <input value={user.club || '미소속'} readOnly className={styles.readOnly} />
           </div>
 
-          <div className={styles.row}><label>구장 직책 / 협회 직책</label><input readOnly value={user.position + ' / ' + (user.associationTitle || '없음')} /></div>
+          <div className={styles.row}>
+            <label>동호회 직책</label>
+            <input readOnly value={user.position || '회원'} className={styles.readOnly} />
+          </div>
+          <div className={styles.row}>
+            <label>협회 임원 직책</label>
+            <input readOnly value={user.associationTitle || '미지정'} className={styles.readOnly} />
+          </div>
 
           {user.position === '회장' && (
             <div className={styles.signatureBox}>
