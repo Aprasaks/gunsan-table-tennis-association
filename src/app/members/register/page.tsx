@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './registration.module.css';
 import { canSubmitClubRoster, clearSession, CLUB_POSITIONS, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
@@ -120,6 +120,7 @@ export default function MemberRegistrationPage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [lastSavedAt, setLastSavedAt] = useState('');
+  const lastSavedAtRef = useRef<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -142,6 +143,7 @@ export default function MemberRegistrationPage() {
         setClubAddress(draft?.clubAddress ?? '');
         setOfficers(draft?.officers ?? blankOfficers(currentUser));
         setMembers(draft?.members?.length ? draft.members : [blankMember('member-1')]);
+        lastSavedAtRef.current = result.savedAt ?? null;
         setLastSavedAt(result.savedAt ?? '');
         setLoaded(true);
       } catch (cause) { if (!cancelled) setError(cause instanceof Error ? cause.message : '회원등록 내역을 불러오지 못했습니다.'); }
@@ -153,9 +155,10 @@ export default function MemberRegistrationPage() {
   async function persist(action: 'save' | 'submit') {
     if (!user) return;
     const response = await fetch('/api/mvp/roster', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action, draft: { clubName: user.club, clubAddress, officers, members } }) });
+      body: JSON.stringify({ action, expectedSavedAt: lastSavedAtRef.current, draft: { clubName: user.club, clubAddress, officers, members } }) });
     const result = await response.json();
     if (!response.ok) throw new Error(result.message);
+    lastSavedAtRef.current = result.savedAt;
     setLastSavedAt(result.savedAt);
     localStorage.removeItem(`gunsan-tt-registration-draft-${user.id}`);
     return result;
