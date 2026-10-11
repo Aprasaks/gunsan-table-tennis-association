@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, ClipboardEvent, FormEvent, MouseEvent, useEffect, useRef, useState } from 'react';
+import { youtubeEmbedUrl, youtubeVideoId, youtubeWatchUrl } from '@/lib/youtube';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import {
@@ -40,7 +41,7 @@ type Props = {
 function sanitizeEditorHtml(html: string) {
   const container = document.createElement('div');
   container.innerHTML = html;
-  container.querySelectorAll('script,style,iframe,object,embed,form,svg,math,template').forEach((node) => node.remove());
+  container.querySelectorAll('script,style,iframe,object,embed,form,svg,math,template,[data-video-remove]').forEach((node) => node.remove());
   container.querySelectorAll('*').forEach((node) => {
     Array.from(node.attributes).forEach((attribute) => {
       const name = attribute.name.toLowerCase();
@@ -49,6 +50,51 @@ function sanitizeEditorHtml(html: string) {
     });
   });
   return container.innerHTML;
+}
+
+// A YouTube preview is non-editable; its ordinary <a href> survives sanitizing
+// while the iframe and remove button never get saved to the database.
+function makeYouTubePreview(id: string) {
+  const wrapper = document.createElement('div');
+  wrapper.className = styles.youtubePreview;
+  wrapper.dataset.youtubePreview = 'true';
+  wrapper.contentEditable = 'false';
+
+  const frame = document.createElement('iframe');
+  frame.src = youtubeEmbedUrl(id);
+  frame.title = '유튜브 영상 미리보기';
+  frame.loading = 'lazy';
+  frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+  frame.referrerPolicy = 'strict-origin-when-cross-origin';
+  frame.allowFullscreen = true;
+
+  const actions = document.createElement('div');
+  actions.className = styles.youtubePreviewActions;
+  const link = document.createElement('a');
+  link.href = youtubeWatchUrl(id);
+  link.textContent = '유튜브 영상 보기 ↗';
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  const remove = document.createElement('button');
+  remove.type = 'button';
+  remove.dataset.videoRemove = 'true';
+  remove.textContent = '영상 삭제';
+  actions.append(link, remove);
+  wrapper.append(frame, actions);
+  return wrapper;
+}
+
+function restoreYouTubePreviews(root: HTMLDivElement) {
+  root.querySelectorAll<HTMLAnchorElement>('a[href]').forEach((anchor) => {
+    const id = youtubeVideoId(anchor.getAttribute('href') ?? '');
+    if (!id) return;
+    const parent = anchor.parentElement;
+    if (parent && ['P', 'DIV'].includes(parent.tagName) &&
+      parent.textContent?.trim() === anchor.textContent?.trim() &&
+      parent.querySelectorAll('a').length === 1) {
+      parent.replaceWith(makeYouTubePreview(id));
+    }
+  });
 }
 
 function descriptor(file: File, role: PostFileRole): PendingUpload {
@@ -113,8 +159,11 @@ export default function PostEditor({
   const [busyStatus, setBusyStatus] = useState<string | null>(null);
 
   useEffect(() => {
-    if (editorRef.current) editorRef.current.innerHTML = initialContentHtml;
-  }, [initialContentHtml]);
+    if (editorRef.current) {
+      editorRef.current.innerHTML = initialContentHtml;
+      if (kind === 'board') restoreYouTubePreviews(editorRef.current);
+    }
+  }, [initialContentHtml, kind]);
 
   useEffect(() => {
     pendingRef.current = pending;
@@ -176,6 +225,49 @@ export default function PostEditor({
       document.execCommand('insertHTML', false, anchor.outerHTML);
     }
     rememberSelection();
+  }
+
+  function insertYouTubeVideo(id: string, keepCurrentSelection = false) {
+    if (!keepCurrentSelection) restoreSelection();
+    const wrapper = makeYouTubePreview(id);
+    const inserted = document.execCommand('insertHTML', false, wrapper.outerHTML + '<p><br></p>');
+    if (!inserted && editorRef.current) {
+      editorRef.current.append(wrapper);
+      const paragraph = document.createElement('p');
+      paragraph.append(document.createElement('br'));
+      editorRef.current.append(paragraph);
+    }
+    rememberSelection();
+    setMessage('');
+  }
+
+  function addYouTubeVideo() {
+    const raw = window.prompt('유튜브 영상 주소를 붙여넣어 주세요.\n예: https://youtu.be/영상ID');
+    if (raw === null) return;
+    const id = youtubeVideoId(raw);
+    if (!id) {
+      setMessage('올바른 유튜브 영상 주소를 입력해주세요. (youtube.com 또는 youtu.be)');
+      return;
+    }
+    insertYouTubeVideo(id);
+  }
+
+  function handleEditorPaste(event: ClipboardEvent<HTMLDivElement>) {
+    if (kind !== 'board') return;
+    const id = youtubeVideoId(event.clipboardData.getData('text/plain'));
+    if (!id) return;
+    event.preventDefault();
+    insertYouTubeVideo(id, true);
+  }
+
+  function handleEditorClick(event: MouseEvent<HTMLDivElement>) {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const button = target.closest<HTMLButtonElement>('[data-video-remove]');
+    if (!button || !editorRef.current?.contains(button)) return;
+    event.preventDefault();
+    button.closest('[data-youtube-preview]')?.remove();
+    setMessage('');
   }
 
   async function addImages(event: ChangeEvent<HTMLInputElement>) {
@@ -297,7 +389,7 @@ export default function PostEditor({
   return (
     <form className={styles.wrap} onSubmit={submit}>
       {message && <p className={styles.message} aria-live="polite">{message}</p>}
-      {authorName && <div className={styles.row}><label>작성자</label><input value={authorName} readOnly /></div>}
+      {kind === 'notice' && authorName && <div className={styles.row}><label>작성자</label><input value={authorName} readOnly /></div>}
       <div className={styles.row}>
         <label htmlFor="post-title">제목</label>
         <input id="post-title" value={title} onChange={(event) => setTitle(event.target.value)} placeholder={kind === 'notice' ? '공지사항 제목' : '게시글 제목'} maxLength={180} />
@@ -314,8 +406,9 @@ export default function PostEditor({
             <label className={styles.colorControl}><span>글자색</span><input type="color" defaultValue="#222222" onMouseDown={rememberSelection} onChange={(event) => command('foreColor', event.target.value)} /></label>
             <button type="button" onClick={() => imageInputRef.current?.click()} disabled={Boolean(busyStatus)}>이미지</button>
             <button type="button" onClick={addLink}>링크</button>
+            {kind === 'board' && <button type="button" onMouseDown={rememberSelection} onClick={addYouTubeVideo}>유튜브 영상</button>}
           </div>
-          <div ref={editorRef} className={styles.editor} contentEditable suppressContentEditableWarning data-placeholder={placeholder} onMouseUp={rememberSelection} onKeyUp={rememberSelection} onInput={rememberSelection} />
+          <div ref={editorRef} className={styles.editor} contentEditable suppressContentEditableWarning data-placeholder={placeholder} onMouseUp={rememberSelection} onKeyUp={rememberSelection} onInput={rememberSelection} onPaste={handleEditorPaste} onClick={handleEditorClick} />
           <input ref={imageInputRef} className={styles.hiddenInput} type="file" accept={POST_IMAGE_ACCEPT} multiple onChange={addImages} />
         </div>
       </div>
