@@ -13,7 +13,7 @@ export function postView(row: Record<string, any>, files: StoredPostFile[] = [])
     url: String(file.dataUrl ?? ''),
     dataUrl: String(file.dataUrl ?? ''),
   })).filter((file: { url: string }) => file.url.startsWith('data:')) : [];
-  return { id: row.id, title: row.title, contentHtml: row.content_html,
+  return { id: row.id, kind: row.kind, title: row.title, contentHtml: row.content_html,
     visibility: row.visibility, authorId: row.author_key, authorName: row.author_name,
     attachments: [...storedAttachments, ...legacyAttachments], date: new Date(row.created_at).toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' }).replace(/\s/g, ''),
     createdAt: row.created_at, updatedAt: row.updated_at };
