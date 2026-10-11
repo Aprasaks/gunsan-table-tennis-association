@@ -31,7 +31,7 @@ export default function BoardWritePage() {
   return (
     <div className="siteShell pageContent">
       <div className="boardEditorHeading"><h1>게시글 작성</h1><p>제목과 내용을 작성한 뒤 게시글을 등록해주세요.</p></div>
-      <PostEditor kind="board" postId={postId} authorName={user.name} endpoint="/api/mvp/posts?kind=board" successHref={'/board/' + postId} cancelHref="/board" submitLabel="게시글 등록" placeholder="내용을 입력하세요." />
+      <PostEditor kind="board" postId={postId} endpoint="/api/mvp/posts?kind=board" successHref={'/board/' + postId} cancelHref="/board" submitLabel="게시글 등록" placeholder="내용을 입력하세요." />
     </div>
   );
 }

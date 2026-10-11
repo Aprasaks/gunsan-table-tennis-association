@@ -42,3 +42,52 @@
 .toolbar button:hover,.fileActions button:hover{background:#fcf4f4}
 .editor:focus-visible{outline:2px solid #a32835;outline-offset:-2px}
 .submit:hover{background:#86232d}
+
+
+/* 본문에 넣은 유튜브 링크는 에디터에서 재생 가능하며 저장할 때 링크만 남깁니다. */
+.youtubePreview{
+  width:min(100%,720px);
+  max-width:100%;
+  margin:18px auto;
+  padding:10px;
+  background:#f7f7f6;
+  border:1px solid #d9dddf;
+  border-radius:4px;
+  overflow:hidden;
+}
+.youtubePreview iframe{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:16 / 9;
+  background:#111;
+  border:0;
+}
+.youtubePreviewActions{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:9px 2px 0;
+  font-size:13px;
+}
+.youtubePreviewActions a{color:#575f65;text-decoration:underline;text-underline-offset:2px}
+.youtubePreviewActions button{
+  padding:5px 9px;
+  background:#fff;
+  border:1px solid #c9adaf;
+  border-radius:3px;
+  color:#92313a;
+  font-size:13px;
+  cursor:pointer;
+}
+.youtubePreviewActions button:hover{background:#fff0f0}
+.editor{overflow-wrap:anywhere;min-width:0}
+.editor img{max-width:100%;height:auto}
+@media(max-width:720px){
+  .youtubePreview{padding:5px;margin:13px 0;width:100%}
+  .youtubePreviewActions{padding:8px 5px 3px;font-size:12px}
+  .youtubePreviewActions button{font-size:12px}
+}
+
+.editorHelp{margin:1px 0 0;font-size:13px;color:#727a7f;line-height:1.65}

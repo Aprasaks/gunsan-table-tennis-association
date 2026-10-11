@@ -132,3 +132,6 @@
 }
 
 .boardDetailHeader h1{margin:0 0 18px}
+
+/* 본문 이미지도 화면 폭에 맞추되 데스크톱에서는 충분히 크게 보여줍니다. */
+.boardDetailBody img{max-width:min(100%,780px);max-height:1000px;height:auto;width:auto}

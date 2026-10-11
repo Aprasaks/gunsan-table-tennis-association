@@ -1,6 +1,7 @@
 'use client';
 
-import { type MouseEvent, useEffect, useState } from 'react';
+import { type MouseEvent, useEffect, useRef, useState } from 'react';
+import { youtubeEmbedUrl, youtubeVideoId, youtubeWatchUrl } from '@/lib/youtube';
 import styles from './RichContentViewer.module.css';
 
 type ViewerImage = {
@@ -14,10 +15,49 @@ type RichContentViewerProps = {
 };
 
 export default function RichContentViewer({ html, className }: RichContentViewerProps) {
+  const contentRef = useRef<HTMLDivElement>(null);
   const [images, setImages] = useState<ViewerImage[]>([]);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const hasImages = /<img(?:\s|>)/i.test(html);
   const activeImage = activeIndex === null ? null : images[activeIndex];
+
+  useEffect(() => {
+    const root = contentRef.current;
+    if (!root) return;
+
+    root.querySelectorAll<HTMLAnchorElement>('a[href]').forEach((anchor) => {
+      const id = youtubeVideoId(anchor.getAttribute('href') ?? '');
+      if (!id) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = styles.videoEmbed;
+      const iframe = document.createElement('iframe');
+      iframe.src = youtubeEmbedUrl(id);
+      iframe.title = '유튜브 영상';
+      iframe.loading = 'lazy';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      iframe.allowFullscreen = true;
+
+      const watchLink = document.createElement('a');
+      watchLink.href = youtubeWatchUrl(id);
+      watchLink.textContent = '유튜브에서 보기 ↗';
+      watchLink.target = '_blank';
+      watchLink.rel = 'noopener noreferrer';
+      wrapper.append(iframe, watchLink);
+
+      const parent = anchor.parentElement;
+      if (parent && ['P', 'DIV'].includes(parent.tagName) &&
+        parent.textContent?.trim() === anchor.textContent?.trim() &&
+        parent.querySelectorAll('a').length === 1 && !parent.querySelector('img')) {
+        parent.replaceWith(wrapper);
+      } else if (parent) {
+        // Don't create a block element within an inline paragraph.
+        if (parent.tagName === 'P') parent.after(wrapper);
+        else anchor.after(wrapper);
+      }
+    });
+  }, [html]);
 
   useEffect(() => {
     if (activeIndex === null) return;
@@ -69,6 +109,7 @@ export default function RichContentViewer({ html, className }: RichContentViewer
   return <>
     {hasImages && <p className={styles.hint}><span aria-hidden="true">⌕</span> 이미지를 누르면 크게 볼 수 있습니다.</p>}
     <div
+      ref={contentRef}
       className={`${className} ${styles.content}`}
       onClick={openImage}
       dangerouslySetInnerHTML={{ __html: html }}
