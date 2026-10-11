@@ -51,7 +51,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: '다른 화면에서 명부가 변경되었습니다. 새로고침해주세요.', conflict: true }, { status: 409 });
     }
     if (result.error) throw result.error;
-    return NextResponse.json({ ok: true, savedAt: result.data.saved_at, submittedAt: submit ? payload.submitted_at : previous?.submitted_at ?? null,
+    return NextResponse.json({ ok: true, savedAt: result.data?.saved_at ?? savedAt, submittedAt: submit ? payload.submitted_at : previous?.submitted_at ?? null,
       alreadySubmitted: submit && sameSubmission });
   } catch { return NextResponse.json({ message: '회원등록 내역을 저장하지 못했습니다.' }, { status: 503 }); }
 }
