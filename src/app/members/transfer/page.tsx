@@ -18,7 +18,8 @@ type DraftMember = {
 };
 
 const statusLabels: Record<string, string> = {
-  pending_source_chair: '기존 소속 서명 확인 대기',
+  pending_source_chair: 'A회장 서명 대기',
+  pending_destination: 'B회장 접수 확인 대기',
   pending_admin: '협회 승인 대기',
   approved: '이적 완료',
   rejected: '반려',
@@ -34,6 +35,7 @@ export default function TransferPage() {
   const [requests, setRequests] = useState<TransferRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [working, setWorking] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
@@ -83,6 +85,8 @@ export default function TransferPage() {
 
   const selected = draftMembers.find((member) => member.id === draftMemberId);
   const outgoing = useMemo(() => requests.filter((request) => request.requestedBy === user?.id), [requests, user?.id]);
+  const incoming = useMemo(() => requests.filter((request) =>
+    request.toClub === user?.club && request.requestedBy !== user?.id), [requests, user?.club, user?.id]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -112,6 +116,32 @@ export default function TransferPage() {
       setError(cause instanceof Error ? cause.message : '이적 요청에 실패했습니다.');
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function advance(request: TransferRequest, action: 'source_sign' | 'destination_confirm' | 'destination_reject') {
+    const label = action === 'source_sign' ? '이적동의서에 등록된 내 서명을 적용하시겠습니까?' :
+      action === 'destination_confirm' ? '이적 신청을 접수 완료하고 협회 임원에게 최종 승인을 요청하시겠습니까?' :
+      '이적 신청을 반려하시겠습니까?';
+    if (!window.confirm(request.memberName + ' 선수\n' + request.fromClub + ' → ' + request.toClub + '\n\n' + label)) return;
+    setWorking(request.id);
+    setError('');
+    setMessage('');
+    try {
+      const response = await fetch('/api/mvp/transfers/' + request.id, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      });
+      const result = await response.json() as { message?: string };
+      if (!response.ok) throw new Error(result.message ?? '요청을 처리하지 못했습니다.');
+      setMessage(action === 'source_sign' ? 'A회장 서명이 적용되었습니다. B동호회 회장의 접수 확인을 기다립니다.' :
+        action === 'destination_confirm' ? '이적 접수를 완료했습니다. 협회 임원에게 승인 알림이 전달되었습니다.' :
+        '이적 신청이 반려되었습니다.');
+      await refreshRequests();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : '처리하지 못했습니다.');
+    } finally {
+      setWorking('');
     }
   }
 
@@ -178,6 +208,47 @@ export default function TransferPage() {
                   <div className={styles.itemTop}><h3>{request.memberName}</h3><span className={styles.badge}>{statusLabels[request.status] ?? request.status}</span></div>
                   <div className={styles.route}>{request.fromClub} → {request.toClub}</div>
                   <p className={styles.meta}>신청일 {request.requestDate}</p>
+                  {request.adminNote && <p className={styles.meta}>반려 사유: {request.adminNote}</p>}
+                  {request.status === 'pending_source_chair' &&
+                    <div className={styles.itemActions}>
+                      {user.signatureDataUrl ?
+                        <button className={styles.approve} type="button" disabled={!!working}
+                          onClick={() => advance(request, 'source_sign')}>
+                          {working === request.id ? '처리 중…' : 'A회장 서명 동의'}
+                        </button> :
+                        <Link className={styles.secondary} href="/profile">회장 서명 먼저 등록하기 →</Link>}
+                    </div>}
+                  {request.status === 'pending_destination' && <p className={styles.helper}>서명 완료 · B동호회 확인을 기다리는 중입니다.</p>}
+                </article>
+              ))}
+            </div>}
+        </section>
+        <section className={styles.panel + ' ' + styles.sectionGap}>
+          <div className={styles.head}>
+            <div><h2>받은 이적 신청</h2><p>다른 동호회에서 우리 동호회로 이적을 요청한 선수입니다.</p></div>
+          </div>
+          {!incoming.length ? <p className={styles.empty}>받은 이적 신청이 없습니다.</p> :
+            <div className={styles.list}>
+              {incoming.map((request) => (
+                <article key={request.id} className={styles.item}>
+                  <div className={styles.itemTop}>
+                    <h3>{request.memberName}</h3>
+                    <span className={styles.badge}>{statusLabels[request.status] ?? request.status}</span>
+                  </div>
+                  <div className={styles.route}>{request.fromClub} → {request.toClub}</div>
+                  <p className={styles.meta}>생년월일 {request.birthDate || '-'} · {request.gender} · {request.rank} · 신청일 {request.requestDate}</p>
+                  {request.status === 'pending_source_chair' && <p className={styles.helper}>A동호회 회장이 서명 동의를 완료하면 접수 확인을 진행할 수 있습니다.</p>}
+                  {request.status === 'pending_destination' &&
+                    <div className={styles.itemActions}>
+                      <button type="button" className={styles.approve} disabled={!!working}
+                        onClick={() => advance(request, 'destination_confirm')}>
+                        {working === request.id ? '처리 중…' : '이적신청 완료 · 협회 승인 요청'}
+                      </button>
+                      <button type="button" className={styles.reject} disabled={!!working}
+                        onClick={() => advance(request, 'destination_reject')}>접수 반려</button>
+                    </div>}
+                  {request.status === 'pending_admin' && <p className={styles.helper}>B동호회 접수 완료 · 협회 임원의 최종 승인을 기다리는 중입니다.</p>}
+                  {request.status === 'approved' && <p className={styles.helper}>협회 승인 완료 · 현재 우리 동호회 선수등록 명부에 ‘이적’으로 반영되었습니다.</p>}
                   {request.adminNote && <p className={styles.meta}>반려 사유: {request.adminNote}</p>}
                 </article>
               ))}
