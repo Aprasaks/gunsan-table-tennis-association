@@ -16,6 +16,8 @@ export function transferView(row: Record<string, any>) {
     status: row.status, processedBy: row.processed_by,
     processedAt: row.processed_at, adminNote: row.admin_note,
     destinationApprovedAt: row.destination_approved_at,
+    destinationApprovedBy: row.destination_approved_by,
+    sourceSignedAt: row.source_signed_at,
   };
 }
 
@@ -23,16 +25,16 @@ export async function GET() {
   try {
     const current = await actor();
     if (!current) return NextResponse.json({ message: '로그인이 필요합니다.' }, { status: 401 });
-    let query = db().from('mvp_transfers').select('*').order('requested_at', { ascending: false }).limit(150);
-    if (!current.admin && !isAssociationOfficer(current.user)) {
-      const id = current.user.id;
-      query = current.user.position === '회장' && !isPersonalClub(current.user.club)
-        ? query.or('requested_by.eq.' + id + ',source_chair_user_id.eq.' + id + ',member_id.eq.' + id)
-        : query.eq('member_id', id);
-    }
-    const { data, error } = await query;
+    const { data, error } = await db().from('mvp_transfers').select('*')
+      .order('requested_at', { ascending: false }).limit(500);
     if (error) throw error;
-    return NextResponse.json({ requests: (data ?? []).map(transferView) });
+    // Service-role 결과에서 이용자에게 허용된 신청만 반환한다.
+    const rows = current.admin || isAssociationOfficer(current.user) ? data ?? [] :
+      (data ?? []).filter((row) => row.member_id === current.user.id ||
+        (current.user.position === '회장' && !isPersonalClub(current.user.club) &&
+          (row.requested_by === current.user.id || row.source_chair_user_id === current.user.id ||
+           row.to_club === current.user.club)));
+    return NextResponse.json({ requests: rows.map(transferView) });
   } catch (cause) {
     logServerError('[api/mvp/transfers] list failed', cause);
     return NextResponse.json({ message: '이적 신청을 불러오지 못했습니다.' }, { status: 503 });
@@ -66,7 +68,7 @@ export async function POST(request: Request) {
 
     const client = db();
     const { data: roster, error: rosterError } = await client.from('mvp_rosters')
-      .select('club,draft').eq('manager_id', current.user.id).maybeSingle();
+      .select('club,draft').eq('club', current.user.club).maybeSingle();
     if (rosterError) throw rosterError;
     if (!roster || roster.club !== current.user.club || roster.draft?.clubName !== current.user.club) {
       return NextResponse.json({ message: '먼저 현재 동호회의 선수등록 명단을 저장해주세요.' }, { status: 400 });
@@ -95,7 +97,7 @@ export async function POST(request: Request) {
 
     const { data: pending, error: pendingError } = await client.from('mvp_transfers')
       .select('id').eq('from_club', current.user.club).eq('member_name', name)
-      .eq('birth_date', birthDate).in('status', ['pending_source_chair', 'pending_admin']).limit(1);
+      .eq('birth_date', birthDate).in('status', ['pending_source_chair', 'pending_destination', 'pending_admin']).limit(1);
     if (pendingError) throw pendingError;
     if (pending?.length) return NextResponse.json({ message: '이미 처리 대기 중인 이적 신청입니다.' }, { status: 409 });
 
@@ -113,7 +115,16 @@ export async function POST(request: Request) {
       if (insertError.code === '23505') return NextResponse.json({ message: '이미 처리 대기 중인 이적 신청입니다.' }, { status: 409 });
       throw insertError;
     }
-    // 서명 동의·최종 승인 전에는 신청자에게만 진행 상태가 보인다.
+    const { error: alertError } = await client.from('mvp_alerts').insert({
+      kind: 'transfer', title: '이적 접수 확인 요청',
+      detail: name + ': ' + current.user.club + ' → ' + destination,
+      target_url: '/members/transfer', recipient_key: chairs[0].id,
+    });
+    if (alertError) {
+      const { error: cleanupError } = await client.from('mvp_transfers').delete().eq('id', transfer.id);
+      if (cleanupError) logServerError('[api/mvp/transfers] failed to revert request', cleanupError);
+      throw alertError;
+    }
     return NextResponse.json({ ok: true, id: transfer.id, status: 'pending_source_chair' }, { status: 201 });
   } catch (cause) {
     logServerError('[api/mvp/transfers] request failed', cause);
