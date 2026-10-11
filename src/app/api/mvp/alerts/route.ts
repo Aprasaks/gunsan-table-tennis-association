@@ -8,7 +8,8 @@ async function recipient() {
   const officer = current.admin || isAssociationOfficer(current.user);
   const chair = !current.admin && current.user.position === '회장' && !isPersonalClub(current.user.club);
   if (!officer && !chair) return null;
-  return { key: current.admin ? 'admin-root' : current.user.id, officer, chair };
+  return { key: current.admin ? 'admin-root' : current.user.id, officer, chair,
+    club: current.admin ? '' : current.user.club };
 }
 
 function visibleAlerts(key: string, officer: boolean, chair: boolean) {
@@ -30,7 +31,32 @@ export async function GET() {
     ]);
     if (error || readError) throw error ?? readError;
     const readIds = new Set((reads ?? []).map((row) => row.alert_id));
-    return NextResponse.json({ alerts: (alerts ?? []).map((row) => ({
+
+    // 회장에게 보내는 이적 알림은 "읽지 않은 기록"이 아니라
+    // 실제 새 소속 회장의 확인 업무가 남아 있는 동안에만 노출합니다.
+    // 협회 공통 알림(recipient_key=null)은 이 필터의 적용 대상이 아닙니다.
+    let visible = alerts ?? [];
+    const personalTransfers = visible.filter((row) =>
+      viewer.chair && row.kind === 'transfer' && row.recipient_key === viewer.key);
+    if (personalTransfers.length > 0) {
+      const { data: waiting, error: transferError } = await db().from('mvp_transfers')
+        .select('member_name,from_club,to_club,requested_at')
+        .eq('to_club', viewer.club).eq('status', 'pending_destination').limit(500);
+      if (transferError) throw transferError;
+      visible = visible.filter((alert) => {
+        if (alert.kind !== 'transfer' || alert.recipient_key !== viewer.key) return true;
+        const alertTime = Date.parse(alert.created_at);
+        if (!Number.isFinite(alertTime)) return false;
+        return (waiting ?? []).some((transfer) => {
+          const requestedAt = Date.parse(transfer.requested_at);
+          return alert.detail === transfer.member_name + ': ' + transfer.from_club + ' → ' + transfer.to_club &&
+            Number.isFinite(requestedAt) &&
+            alertTime >= requestedAt - 5000 && alertTime <= requestedAt + 300000;
+        });
+      });
+    }
+
+    return NextResponse.json({ alerts: visible.map((row) => ({
       id: row.id, kind: row.kind, title: row.title, detail: row.detail, targetUrl: row.target_url,
       createdAt: row.created_at, read: readIds.has(row.id),
     })) });
