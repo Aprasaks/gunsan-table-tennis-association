@@ -64,15 +64,15 @@ export default function MembersPage() {
       <section className="siteShell pageContent">
         <div className="memberServiceGrid">
           <article className="memberServiceCard">
-            <span>01</span><h2>회원등록</h2><p>희망부는 상시 등록할 수 있습니다. 명단을 협회에 제출하고 전북협회 제출용 Excel 파일도 생성합니다.</p>
+            <span>01</span><h2>회원등록</h2>
             <Link href="/members/register" onClick={openRegistration}>회원등록 시작하기</Link>
           </article>
           <article className="memberServiceCard">
-            <span>02</span><h2>회원 이적신청</h2><p>기존 소속 동호회 회장이 자기 명부에서 선수를 선택해 새 동호회로 이적을 신청합니다.</p>
+            <span>02</span><h2>회원 이적신청</h2>
             <Link href="/members/transfer" onClick={openTransfer}>이적 신청하기</Link>
           </article>
           <article className="memberServiceCard">
-            <span>03</span><h2>협회 승인 업무</h2><p>협회장·사무국장·총무가 이적 신청을 승인하거나 반려합니다.</p>
+            <span>03</span><h2>협회 승인 업무</h2>
             <Link href="/members/approvals" onClick={openApprovals}>승인 업무 보기</Link>
           </article>
         </div>
