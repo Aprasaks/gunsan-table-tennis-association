@@ -110,3 +110,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
  .brandRow{height:72px;}
  .footerNav a{font-size:13px;}
 }
+
+/* 반복되는 내부 페이지의 상단 소개 배너는 사용하지 않습니다. 본문과 메인 화면은 유지합니다. */
+.subHero,
+.divisionHero {
+  display: none;
+}
