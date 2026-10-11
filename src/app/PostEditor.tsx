@@ -411,6 +411,7 @@ export default function PostEditor({
           <div ref={editorRef} className={styles.editor} contentEditable suppressContentEditableWarning data-placeholder={placeholder} onMouseUp={rememberSelection} onKeyUp={rememberSelection} onInput={rememberSelection} onPaste={handleEditorPaste} onClick={handleEditorClick} />
           <input ref={imageInputRef} className={styles.hiddenInput} type="file" accept={POST_IMAGE_ACCEPT} multiple onChange={addImages} />
         </div>
+        {kind === 'board' && <p className={styles.editorHelp}>사진은 본문에서 원하는 위치에 넣을 수 있습니다. 유튜브 주소를 붙여넣으면 영상으로 표시됩니다.</p>}
       </div>
       <div className={styles.row}>
         <label>첨부파일</label>
