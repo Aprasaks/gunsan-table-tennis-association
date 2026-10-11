@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { getCurrentUser, isAdmin, type MvpUser } from '@/lib/mvpAuth';
+import { isAdmin, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
 import type { BoardPost } from '@/lib/mvpBoard';
 import RichContentViewer from '@/app/RichContentViewer';
 
@@ -12,54 +12,80 @@ export default function BoardDetailPage() {
   const router = useRouter();
   const [post, setPost] = useState<BoardPost | null | undefined>(undefined);
   const [user, setUser] = useState<MvpUser | null>(null);
+  const [loadError, setLoadError] = useState('');
+  const [actionError, setActionError] = useState('');
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    fetch('/api/mvp/posts/' + params.id, { cache: 'no-store' }).then(async (response) => {
-      const result = await response.json();
-      setPost(response.ok ? result.post : null);
-    }).catch(() => setPost(null));
-    setUser(getCurrentUser());
+    const controller = new AbortController();
+    setPost(undefined);
+    setLoadError('');
+    setActionError('');
+
+    fetch('/api/mvp/posts/' + params.id, { cache: 'no-store', signal: controller.signal }).then(async (response) => {
+      const result = await response.json().catch(() => null) as { post?: BoardPost; message?: string } | null;
+      if (controller.signal.aborted) return;
+      if (response.status === 404 || result?.post?.kind !== 'board' && response.ok) { setPost(null); return; }
+      if (!response.ok) throw new Error(result?.message ?? '게시글을 불러오지 못했습니다.');
+      setPost(result?.post ?? null);
+    }).catch((cause: unknown) => {
+      if (controller.signal.aborted) return;
+      setPost(null);
+      setLoadError(cause instanceof Error ? cause.message : '게시글을 불러오지 못했습니다.');
+    });
+
+    refreshCurrentUser().then((current) => {
+      if (!controller.signal.aborted) setUser(current);
+    }).catch(() => {
+      if (!controller.signal.aborted) setUser(null);
+    });
+
+    return () => controller.abort();
   }, [params.id]);
 
   async function removePost() {
-    if (!post || !user) return;
-    const canDelete = post.authorId === user.id || isAdmin(user);
-    if (!canDelete) return;
-    if (!confirm('이 게시글을 삭제하시겠습니까?')) return;
+    if (!post || post.kind !== 'board' || !user || deleting) return;
+    if (post.authorId !== user.id && !isAdmin(user)) return;
+    if (!window.confirm('이 게시글을 삭제하시겠습니까? 삭제 후에는 복구할 수 없습니다.')) return;
 
-    const response = await fetch('/api/mvp/posts/' + post.id, { method: 'DELETE' });
-    if (!response.ok) {
-      alert('게시글을 삭제할 권한이 없습니다.');
-      return;
+    setDeleting(true);
+    setActionError('');
+    try {
+      const response = await fetch('/api/mvp/posts/' + post.id, { method: 'DELETE' });
+      const result = await response.json().catch(() => null) as { message?: string } | null;
+      if (!response.ok) throw new Error(result?.message ?? '게시글을 삭제하지 못했습니다.');
+      router.replace('/board');
+      router.refresh();
+    } catch (cause) {
+      setActionError(cause instanceof Error ? cause.message : '게시글을 삭제하지 못했습니다.');
+    } finally {
+      setDeleting(false);
     }
-
-    alert('게시글이 삭제되었습니다.');
-    router.push('/board');
   }
 
-  if (post === undefined) return <div className="siteShell pageContent">게시글을 불러오고 있습니다.</div>;
+  if (post === undefined) return <div className="siteShell pageContent" role="status">게시글을 불러오고 있습니다.</div>;
 
   if (!post) {
-    return <>
-      <h1 className="visuallyHidden">게시판</h1>
-      <div className="siteShell pageContent boardDetailWrap"><Link href="/board" className="boardListButton">목록으로</Link></div>
-    </>;
+    return (
+      <div className="siteShell pageContent boardDetailWrap">
+        <h1 className="boardMissing">{loadError || '게시글을 찾을 수 없습니다.'}</h1>
+        <Link href="/board" className="boardListButton">목록으로</Link>
+      </div>
+    );
   }
 
   const isOwner = Boolean(user && user.id === post.authorId);
   const canDelete = Boolean(user && (isOwner || isAdmin(user)));
 
-  return <>
-    <h1 className="visuallyHidden">게시판</h1>
-
+  return (
     <div className="siteShell pageContent boardDetailWrap">
       <article className="boardDetail">
         <header className="boardDetailHeader">
-          <h2>{post.title}</h2>
+          <h1>{post.title}</h1>
           <div className="boardDetailMeta">
             <span><strong>작성자</strong> {post.authorName}</span>
-            <span><strong>등록일</strong> {post.date}</span>
-            {post.updatedAt && <span><strong>수정됨</strong></span>}
+            <span><strong>등록일</strong> <time dateTime={post.createdAt.slice(0, 10)}>{post.date}</time></span>
+            {post.updatedAt && new Date(post.updatedAt).getTime() > new Date(post.createdAt).getTime() + 1000 && <span>수정된 글</span>}
           </div>
         </header>
 
@@ -77,11 +103,12 @@ export default function BoardDetailPage() {
         )}
       </article>
 
+      {actionError && <p className="boardDetailError" role="alert">{actionError}</p>}
       <div className="boardDetailActions">
         <Link href="/board" className="boardListButton">목록으로</Link>
         {isOwner && <Link href={'/board/' + post.id + '/edit'} className="boardEditButton">수정</Link>}
-        {canDelete && <button type="button" className="boardDeleteButton" onClick={removePost}>삭제</button>}
+        {canDelete && <button type="button" className="boardDeleteButton" onClick={removePost} disabled={deleting}>{deleting ? '삭제 중…' : '삭제'}</button>}
       </div>
     </div>
-  </>;
+  );
 }
