@@ -4,6 +4,7 @@ export type BoardAttachment = PostAttachment;
 
 export type BoardPost = {
   id: string;
+  kind?: 'board' | 'notice';
   title: string;
   contentHtml: string;
   authorId: string;

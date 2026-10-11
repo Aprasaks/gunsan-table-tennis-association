@@ -14,8 +14,25 @@ export async function GET(request: NextRequest) {
   if (!kind) return NextResponse.json({ message: '게시판을 선택해주세요.' }, { status: 400 });
   try {
     const current = await actor();
+
+    // 게시판은 서버에서 검색·페이지 이동을 처리해 100개 제한 없이 열람할 수 있습니다.
+    if (kind === 'board') {
+      const pageSize = 15;
+      const pageParam = request.nextUrl.searchParams.get('page') ?? '1';
+      const page = /^[1-9]\d{0,5}$/.test(pageParam) ? Number(pageParam) : 1;
+      const search = (request.nextUrl.searchParams.get('q') ?? '').trim().slice(0, 80);
+      let query = db().from('mvp_posts').select('*', { count: 'exact' })
+        .eq('kind', 'board')
+        .order('created_at', { ascending: false })
+        .order('id', { ascending: false });
+      if (search) query = query.ilike('title', '%' + search.replace(/[\\%_]/g, '\\$&') + '%');
+      const { data, count, error } = await query.range((page - 1) * pageSize, page * pageSize - 1);
+      if (error) throw error;
+      return NextResponse.json({ posts: (data ?? []).map((row) => postView(row)), total: count ?? 0, page, pageSize });
+    }
+
     let query = db().from('mvp_posts').select('*').eq('kind', kind).order('created_at', { ascending: false }).limit(100);
-    if (kind === 'notice' && !(current?.admin || isAssociationOfficer(current?.user))) query = query.eq('visibility', 'public');
+    if (!(current?.admin || isAssociationOfficer(current?.user))) query = query.eq('visibility', 'public');
     const { data, error } = await query;
     if (error) throw error;
     return NextResponse.json({ posts: (data ?? []).map((row) => postView(row)) });
