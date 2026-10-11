@@ -153,3 +153,6 @@
   .videoEmbed{margin:18px auto}
   .videoEmbed a{font-size:12px}
 }
+
+.content{min-width:0;overflow-wrap:anywhere}
+.content img{max-width:100%;height:auto}

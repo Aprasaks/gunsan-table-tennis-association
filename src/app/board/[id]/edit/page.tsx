@@ -53,7 +53,7 @@ export default function BoardEditPage() {
   return (
     <div className="siteShell pageContent">
       <div className="boardEditorHeading"><h1>게시글 수정</h1><p>내용을 변경한 뒤 수정 완료를 눌러주세요.</p></div>
-      <PostEditor kind="board" postId={post.id} authorName={post.authorName} initialTitle={post.title} initialContentHtml={post.contentHtml} initialAttachments={post.attachments} method="PATCH" endpoint={'/api/mvp/posts/' + post.id} successHref={'/board/' + post.id} cancelHref={'/board/' + post.id} submitLabel="수정 완료" placeholder="내용을 입력하세요." />
+      <PostEditor kind="board" postId={post.id} initialTitle={post.title} initialContentHtml={post.contentHtml} initialAttachments={post.attachments} method="PATCH" endpoint={'/api/mvp/posts/' + post.id} successHref={'/board/' + post.id} cancelHref={'/board/' + post.id} submitLabel="수정 완료" placeholder="내용을 입력하세요." />
     </div>
   );
 }
