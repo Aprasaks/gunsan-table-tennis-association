@@ -42,7 +42,7 @@
 .boardDetailWrap{max-width:980px}
 .boardDetail{border-top:3px solid #263b4c;border-bottom:1px solid #dce3e8;background:#fff}
 .boardDetailHeader{padding:28px 26px 22px;border-bottom:1px solid #dce3e8;text-align:center}
-.boardDetailHeader h2{margin:0 0 18px;font-size:28px;line-height:1.45;letter-spacing:-.035em;color:#243746}
+.boardDetailHeader h1{margin:0 0 18px;font-size:28px;line-height:1.45;letter-spacing:-.035em;color:#243746}
 .boardDetailMeta{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;color:#6d7983;font-size:14px}
 .boardDetailMeta strong{margin-right:6px;color:#475763}
 .boardDetailBody{min-height:280px;padding:38px 32px 52px;font-size:16px;line-height:1.9;color:#3e4a53}
@@ -75,7 +75,7 @@
   .boardTitleCell a{font-size:14px;line-height:1.5}
   .boardAuthorCell{font-size:14px!important}
   .boardDetailHeader{padding:22px 16px 18px}
-  .boardDetailHeader h2{font-size:22px}
+  .boardDetailHeader h1{font-size:22px}
   .boardDetailMeta{gap:10px 18px;font-size:14px}
   .boardDetailBody{min-height:220px;padding:28px 18px 40px;font-size:16px;line-height:1.85}
   .boardAttachments{margin:0 18px 26px;padding:15px}
@@ -86,7 +86,7 @@
 
 /* 글 상세도 목록과 같은 협회 사이트의 차분한 문서형 톤으로 정리 */
 .boardDetailHeader{text-align:left;padding:30px 32px 24px}
-.boardDetailHeader h2{font-size:27px;line-height:1.45;color:#282d31;overflow-wrap:anywhere}
+.boardDetailHeader h1{font-size:27px;line-height:1.45;color:#282d31;overflow-wrap:anywhere}
 .boardDetailMeta{justify-content:flex-start;color:#6f787e}
 .boardDetailBody{color:#343d42}
 .boardDetailBody a,.boardAttachments a{color:#93313a}
@@ -118,7 +118,7 @@
   .boardDateCell{font-size:12px!important}
   .boardListTable .boardEmpty{padding:50px 12px}
   .boardDetailHeader{text-align:left;padding:22px 17px}
-  .boardDetailHeader h2{font-size:23px}
+  .boardDetailHeader h1{font-size:23px}
   .boardDetailMeta{justify-content:flex-start}
 }
 @media(max-width:410px){
@@ -130,3 +130,5 @@
   .boardSearch button{padding:0 10px}
   .boardPageHeading p{max-width:195px}
 }
+
+.boardDetailHeader h1{margin:0 0 18px}
