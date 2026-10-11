@@ -112,6 +112,7 @@ export default function TransferPage() {
       setToClub('');
       setMessage('이적 신청을 접수했습니다. 기존 소속 회장의 서명 확인과 협회 승인은 다음 단계에서 진행됩니다. 현재 선수는 기존 명부에 남아 있습니다.');
       await refreshRequests();
+      window.dispatchEvent(new Event('gunsan-tt-alerts-change'));
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : '이적 요청에 실패했습니다.');
     } finally {
@@ -138,6 +139,7 @@ export default function TransferPage() {
         action === 'destination_confirm' ? '이적 접수를 완료했습니다. 협회 임원에게 승인 알림이 전달되었습니다.' :
         '이적 신청이 반려되었습니다.');
       await refreshRequests();
+      window.dispatchEvent(new Event('gunsan-tt-alerts-change'));
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : '처리하지 못했습니다.');
     } finally {

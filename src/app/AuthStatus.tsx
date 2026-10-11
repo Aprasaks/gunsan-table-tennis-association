@@ -10,6 +10,7 @@ export default function AuthStatus() {
   const [user, setUser] = useState<MvpUser | null>(null);
   const [pending, setPending] = useState(0);
   const [unread, setUnread] = useState(0);
+  const [chairPending, setChairPending] = useState(0);
 
   useEffect(() => {
     const syncUser = () => setUser(getCurrentUser());
@@ -26,31 +27,61 @@ export default function AuthStatus() {
   useEffect(() => {
     const officer = canReviewAssociation(user);
     const clubChair = Boolean(user && !isAdmin(user) && user.position === '회장' && !isPersonalClub(user.club));
-    if (!officer && !clubChair) { setPending(0); setUnread(0); return; }
+    if (!officer && !clubChair) {
+      setPending(0);
+      setUnread(0);
+      setChairPending(0);
+      return;
+    }
+
+    let cancelled = false;
     const update = async () => {
-      const [response, alertsResponse] = await Promise.all([
-        officer ? fetch('/api/mvp/transfers', { cache: 'no-store' }).catch(() => null) : Promise.resolve(null),
-        fetch('/api/mvp/alerts', { cache: 'no-store' }).catch(() => null),
+      const [transfersResponse, alertsResponse] = await Promise.all([
+        fetch('/api/mvp/transfers', { cache: 'no-store' }).catch(() => null),
+        officer ? fetch('/api/mvp/alerts', { cache: 'no-store' }).catch(() => null) : Promise.resolve(null),
       ]);
-      if (response?.ok) {
-        const result = await response.json();
-        setPending(canApproveAssociation(user)
-          ? (result.requests ?? []).filter((item: { status: string }) => item.status === 'pending_admin').length
+      if (cancelled) return;
+
+      if (transfersResponse?.ok) {
+        const result = await transfersResponse.json() as {
+          requests?: Array<{ status: string; sourceChairUserId?: string; toClub?: string }>;
+        };
+        if (cancelled) return;
+        const requests = result.requests ?? [];
+        setPending(officer && canApproveAssociation(user)
+          ? requests.filter((item) => item.status === 'pending_admin').length
+          : 0);
+        setChairPending(clubChair && user
+          ? requests.filter((item) =>
+            (item.status === 'pending_source_chair' && item.sourceChairUserId === user.id) ||
+            (item.status === 'pending_destination' && item.toClub === user.club)
+          ).length
           : 0);
       }
       if (alertsResponse?.ok) {
-        const notifications = await alertsResponse.json();
-        setUnread((notifications.alerts ?? []).filter((item: { read: boolean }) => !item.read).length);
+        const notifications = await alertsResponse.json() as {
+          alerts?: Array<{ read: boolean }>;
+        };
+        if (!cancelled) setUnread((notifications.alerts ?? []).filter((item) => !item.read).length);
+      } else if (!officer) {
+        setUnread(0);
       }
     };
-    update();
-    window.addEventListener('gunsan-tt-alerts-change', update);
-    const interval = window.setInterval(update, 15000);
+
+    void update();
+    const refresh = () => {
+      if (document.visibilityState === 'visible') void update();
+    };
+    window.addEventListener('gunsan-tt-alerts-change', refresh);
+    document.addEventListener('visibilitychange', refresh);
+    const interval = window.setInterval(refresh, 15000);
     return () => {
-      window.removeEventListener('gunsan-tt-alerts-change', update);
+      cancelled = true;
+      window.removeEventListener('gunsan-tt-alerts-change', refresh);
+      document.removeEventListener('visibilitychange', refresh);
       window.clearInterval(interval);
     };
-  }, [user?.id, user?.associationTitle]);
+  }, [user?.id, user?.club, user?.position, user?.associationTitle, user?.memberStatus]);
 
   async function logout() {
     if (isAdmin(user)) await fetch('/api/admin/logout', { method: 'POST' }).catch(() => null);
@@ -72,7 +103,7 @@ export default function AuthStatus() {
     {!admin && <><i aria-hidden="true" /><Link href="/profile">정보수정</Link></>}
     {canApproveAssociation(user) && <><i aria-hidden="true" /><Link href="/members/approvals">협회 승인 {pending > 0 ? '(' + pending + ')' : ''}</Link></>}
     {canReviewAssociation(user) && <><i aria-hidden="true" /><Link href="/admin/notifications">임원 알림 {unread > 0 ? '(' + unread + ')' : ''}</Link></>}
-    {!canReviewAssociation(user) && !admin && user.position === '회장' && !isPersonalClub(user.club) && <><i aria-hidden="true" /><Link href="/members/transfer">이적 요청 {unread > 0 ? '(' + unread + ')' : ''}</Link></>}
+    {!canReviewAssociation(user) && !admin && user.position === '회장' && !isPersonalClub(user.club) && <><i aria-hidden="true" /><Link href="/members/transfer">이적 요청 {chairPending > 0 ? '(' + chairPending + ')' : ''}</Link></>}
     <i aria-hidden="true" />
     <button type="button" onClick={logout} className="utilityLogout">로그아웃</button>
   </>;
