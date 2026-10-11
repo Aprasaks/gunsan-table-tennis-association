@@ -274,3 +274,52 @@
     font-size:16px;
   }
 }
+
+
+/* 게시판과 같은 목록 스타일을 사용하되, 공지사항의 공개 설정을 구분합니다. */
+.noticeListPage .noticeListHeading{margin-bottom:20px;}
+.noticeListPage .noticeWriteButton{display:inline-flex;align-items:center;justify-content:center;min-height:43px;text-decoration:none;}
+.noticeListTable .boardTitleCell .noticePrivateBadge{margin-top:5px;font-size:11px;vertical-align:middle;}
+.noticeSearchReset{display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 15px;border:1px solid #ccd0d2;border-radius:3px;background:#fff;color:#606970;font-size:14px;text-decoration:none;white-space:nowrap}
+.noticeSearchReset:hover{background:#f7f7f6;}
+.noticePagination a,.noticePagination span{display:inline-flex;align-items:center;justify-content:center;min-width:37px;height:37px;padding:0 10px;border:1px solid #d9dcdd;border-radius:3px;background:#fff;color:#535b60;font-size:14px;text-decoration:none;}
+.noticePagination a:hover{border-color:#a32835;color:#a32835;}
+.noticePagination a[aria-current="page"]{background:#30363a;border-color:#30363a;color:#fff;font-weight:700;}
+.noticePagination span[aria-disabled="true"]{color:#b3b8ba;}
+.noticeDetailHeader{text-align:left;padding:30px 32px 24px}
+.noticeDetailHeader h1{margin-bottom:18px;font-size:27px;color:#282d31;overflow-wrap:anywhere}
+.noticeDetailMeta{justify-content:flex-start;flex-wrap:wrap;color:#6f787e}
+.noticeDetailBody{color:#343d42;overflow-wrap:anywhere}
+.noticeRichBody img{max-width:min(100%,780px);max-height:1000px;height:auto;}
+.noticeAttachments a{color:#93313a}
+.noticeDetailActions{justify-content:flex-end}
+.noticeListButton{color:#343d42;border-color:#c9cccd}
+.noticeListButton:hover{background:#f6f6f5;border-color:#aeb3b5}
+.noticeEditButton{color:#30363a;background:#f7f7f6;border-color:#bfc4c6}
+.noticeEditButton:hover{background:#eceeed}
+.noticeDeleteButton{color:#9b3039;background:#fff;border-color:#d9b2b6}
+.noticeDeleteButton:hover{background:#fff5f5}
+.noticeActionError{margin:18px 0 0;padding:13px 16px;border:1px solid #dfb2b6;background:#fff8f8;color:#922c35;font-size:14px}
+.noticeEditorHeading{max-width:860px;margin:0 auto 18px}
+.noticeEditorHeading h1{margin:0;font-size:24px;letter-spacing:-.045em;color:#282d31}
+.noticeEditorHeading p{margin:5px 0 0;color:#727b80;font-size:14px}
+@media(max-width:768px){
+ .noticeListHeading{align-items:flex-start}
+ .noticeListHeading .noticeWriteButton{width:auto;padding:0 12px;font-size:14px}
+ .noticeListTable .boardNumber{display:none}
+ .noticeListTable .boardAuthorColumn{width:90px}
+ .noticeListTable .boardDateColumn{width:106px}
+ .noticeListTable .boardTitleCell{padding-left:10px}
+ .noticeSearchReset{padding:0 10px}
+ .noticeDetailHeader{text-align:left;padding:22px 17px}
+ .noticeDetailHeader h1{font-size:23px}
+ .noticeDetailMeta{justify-content:flex-start}
+ .noticeDetailActions{justify-content:flex-end;flex-direction:row;flex-wrap:wrap}
+ .noticeListButton,.noticeEditButton,.noticeDeleteButton{width:auto;min-width:86px;height:44px;font-size:14px}
+}
+@media(max-width:410px){
+ .noticeListTable .boardAuthorColumn{width:70px}
+ .noticeListTable .boardDateColumn{width:94px}
+ .noticeListTable .boardAuthorCell{font-size:12px}
+ .noticeListTable .boardDateCell{font-size:11px!important}
+}
