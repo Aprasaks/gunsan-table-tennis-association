@@ -142,7 +142,7 @@ export default function MemberRegistrationPage() {
         setClubName(currentUser.club);
         setClubAddress(draft?.clubAddress ?? '');
         setOfficers(draft?.officers ?? blankOfficers(currentUser));
-        setMembers(draft?.members?.length ? draft.members : [blankMember('member-1')]);
+        setMembers(draft?.members?.length ? draft.members : [blankMember(crypto.randomUUID())]);
         lastSavedAtRef.current = result.savedAt ?? null;
         setLastSavedAt(result.savedAt ?? '');
         setLoaded(true);
