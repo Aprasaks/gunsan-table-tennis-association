@@ -25,7 +25,6 @@ type PendingUpload = UploadDescriptor & { file: File; previewUrl?: string };
 type Props = {
   kind: 'notice' | 'board';
   postId: string;
-  authorName?: string;
   initialTitle?: string;
   initialContentHtml?: string;
   initialAttachments?: PostAttachment[];
@@ -132,7 +131,6 @@ async function optimizeImageFile(file: File) {
 export default function PostEditor({
   kind,
   postId,
-  authorName,
   initialTitle = '',
   initialContentHtml = '',
   initialAttachments = [],
@@ -161,9 +159,9 @@ export default function PostEditor({
   useEffect(() => {
     if (editorRef.current) {
       editorRef.current.innerHTML = initialContentHtml;
-      if (kind === 'board') restoreYouTubePreviews(editorRef.current);
+      restoreYouTubePreviews(editorRef.current);
     }
-  }, [initialContentHtml, kind]);
+  }, [initialContentHtml]);
 
   useEffect(() => {
     pendingRef.current = pending;
@@ -253,7 +251,6 @@ export default function PostEditor({
   }
 
   function handleEditorPaste(event: ClipboardEvent<HTMLDivElement>) {
-    if (kind !== 'board') return;
     const id = youtubeVideoId(event.clipboardData.getData('text/plain'));
     if (!id) return;
     event.preventDefault();
@@ -389,7 +386,6 @@ export default function PostEditor({
   return (
     <form className={styles.wrap} onSubmit={submit}>
       {message && <p className={styles.message} aria-live="polite">{message}</p>}
-      {kind === 'notice' && authorName && <div className={styles.row}><label>작성자</label><input value={authorName} readOnly /></div>}
       <div className={styles.row}>
         <label htmlFor="post-title">제목</label>
         <input id="post-title" value={title} onChange={(event) => setTitle(event.target.value)} placeholder={kind === 'notice' ? '공지사항 제목' : '게시글 제목'} maxLength={180} />
@@ -406,12 +402,12 @@ export default function PostEditor({
             <label className={styles.colorControl}><span>글자색</span><input type="color" defaultValue="#222222" onMouseDown={rememberSelection} onChange={(event) => command('foreColor', event.target.value)} /></label>
             <button type="button" onClick={() => imageInputRef.current?.click()} disabled={Boolean(busyStatus)}>이미지</button>
             <button type="button" onClick={addLink}>링크</button>
-            {kind === 'board' && <button type="button" onMouseDown={rememberSelection} onClick={addYouTubeVideo}>유튜브 영상</button>}
+            <button type="button" onMouseDown={rememberSelection} onClick={addYouTubeVideo}>유튜브 영상</button>
           </div>
           <div ref={editorRef} className={styles.editor} contentEditable suppressContentEditableWarning data-placeholder={placeholder} onMouseUp={rememberSelection} onKeyUp={rememberSelection} onInput={rememberSelection} onPaste={handleEditorPaste} onClick={handleEditorClick} />
           <input ref={imageInputRef} className={styles.hiddenInput} type="file" accept={POST_IMAGE_ACCEPT} multiple onChange={addImages} />
         </div>
-        {kind === 'board' && <p className={styles.editorHelp}>사진은 본문에서 원하는 위치에 넣을 수 있습니다. 유튜브 주소를 붙여넣으면 영상으로 표시됩니다.</p>}
+        <p className={styles.editorHelp}>사진은 본문에서 원하는 위치에 넣을 수 있습니다. 유튜브 주소를 붙여넣으면 영상으로 표시됩니다.</p>
       </div>
       <div className={styles.row}>
         <label>첨부파일</label>
