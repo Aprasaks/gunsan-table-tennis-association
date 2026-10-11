@@ -89,7 +89,7 @@ export default function AdminMembersPage() {
   }
 
   return <>
-    <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME / 관리자 / 회원 명부</span><h1>회원 명부와 직책</h1><p>전체 가입 회원을 확인하고 협회 직책을 부여하거나 해제합니다.</p></div></section>
+    <h1 className="visuallyHidden">회원 명부와 직책</h1>
     <section className="siteShell pageContent"><div className={styles.panel}>
       {error && <p role="alert" className={styles.error}>{error}</p>}
       {legacyCount > 0 && <p className={styles.notice}>이 브라우저에 저장된 기존 회원 {legacyCount}명을 가져올 수 있습니다. <button type="button" onClick={importLocal}>기존 회원 가져오기</button></p>}

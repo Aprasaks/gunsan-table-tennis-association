@@ -73,7 +73,7 @@ export default function EditSchedulePage() {
   if (!item && !message) return <div className="siteShell pageContent">대회정보를 불러오고 있습니다.</div>;
 
   return <>
-    <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME / 관리자 / 대회정보 수정</span><h1>대회정보 수정</h1><p>대회 기본정보와 공개 상태를 수정합니다.</p></div></section>
+    <h1 className="visuallyHidden">대회정보 수정</h1>
     <div className="siteShell pageContent">
       <form className={styles.wrap} onSubmit={submit}>
         {message && <p className={styles.message}>{message}</p>}

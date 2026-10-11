@@ -41,7 +41,7 @@ export default function BoardDetailPage() {
 
   if (!post) {
     return <>
-      <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME &gt; 게시판</span><h1>게시판</h1><p>요청하신 게시글을 찾을 수 없습니다.</p></div></section>
+      <h1 className="visuallyHidden">게시판</h1>
       <div className="siteShell pageContent boardDetailWrap"><Link href="/board" className="boardListButton">목록으로</Link></div>
     </>;
   }
@@ -50,13 +50,7 @@ export default function BoardDetailPage() {
   const canDelete = Boolean(user && (isOwner || isAdmin(user)));
 
   return <>
-    <section className="subHero">
-      <div className="siteShell subHeroInner">
-        <span className="crumb">HOME &gt; 게시판 &gt; 상세</span>
-        <h1>게시판</h1>
-        <p>군산시 탁구 동호인들이 자유롭게 의견과 정보를 나누는 공간입니다.</p>
-      </div>
-    </section>
+    <h1 className="visuallyHidden">게시판</h1>
 
     <div className="siteShell pageContent boardDetailWrap">
       <article className="boardDetail">

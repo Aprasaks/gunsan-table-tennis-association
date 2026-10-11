@@ -67,13 +67,7 @@ export default function NewSchedulePage() {
   if (!ready) return <div className="siteShell pageContent">관리자 권한을 확인하고 있습니다.</div>;
 
   return <>
-    <section className="subHero">
-      <div className="siteShell subHeroInner">
-        <span className="crumb">HOME / 관리자 / 대회정보 등록</span>
-        <h1>대회정보 등록</h1>
-        <p>대회 일정과 요강 자료를 등록합니다.</p>
-      </div>
-    </section>
+    <h1 className="visuallyHidden">대회정보 등록</h1>
 
     <div className="siteShell pageContent">
       <form className={styles.wrap} onSubmit={submit}>

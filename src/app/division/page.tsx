@@ -32,32 +32,7 @@ const divisionSchedule = [
 export default function DivisionPage() {
   return (
     <>
-      <section className="divisionHero">
-        <div className="siteShell divisionHeroInner">
-          <span className="crumb">HOME / 디비전리그</span>
-          <div className="divisionHeroGrid">
-            <div>
-              <span className="divisionLabel">2026 군산시 디비전리그</span>
-              <h1>군산에서 시작하는 공식 생활탁구 리그</h1>
-              <p>
-                내 부수에 맞춰 정식으로 경기하고, 좋은 성적을 내면 전북 본선리그까지
-                도전할 수 있습니다.
-              </p>
-            </div>
-            <div className="divisionHeroPanel" aria-label="디비전리그 핵심 안내">
-              <strong>참가 전 꼭 확인하세요</strong>
-              <span>마이페이지에서 지역, 부수, 부수승인 요청 후 접수 가능</span>
-              <b>접수 마감 2026.06.03</b>
-            </div>
-          </div>
-          <div className="divisionBadges" aria-label="디비전리그 특징">
-            <span>공식 리그</span>
-            <span>부수별 경기</span>
-            <span>전북 본선 도전</span>
-            <span>생활탁구 성장</span>
-          </div>
-        </div>
-      </section>
+      <h1 className="visuallyHidden">군산에서 시작하는 공식 생활탁구 리그</h1>
 
       <section className="siteShell pageContent divisionPage">
         <section className="divisionIntro">

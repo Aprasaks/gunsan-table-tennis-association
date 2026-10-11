@@ -52,13 +52,7 @@ export default function ScheduleDetailPage() {
   const attachments = item.files.filter((file) => file.fileKind === 'attachment');
 
   return <>
-    <section className="subHero">
-      <div className="siteShell subHeroInner">
-        <span className="crumb">HOME &gt; 대회일정 &gt; 상세</span>
-        <h1>대회일정</h1>
-        <p>대회 요강과 첨부자료를 확인합니다.</p>
-      </div>
-    </section>
+    <h1 className="visuallyHidden">대회일정</h1>
 
     <div className="siteShell pageContent scheduleDetailWrap">
       <article className="scheduleDetail">

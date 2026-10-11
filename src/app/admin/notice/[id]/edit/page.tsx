@@ -46,7 +46,7 @@ export default function EditNoticePage() {
   if (!notice) return <div className="siteShell pageContent">공지사항을 찾을 수 없습니다.</div>;
 
   return <>
-    <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME / 관리자 / 공지사항 수정</span><h1>공지사항 수정</h1><p>공지 내용과 이미지, 링크, 첨부파일을 수정합니다.</p></div></section>
+    <h1 className="visuallyHidden">공지사항 수정</h1>
     <div className="siteShell pageContent">
       <PostEditor
         kind="notice"

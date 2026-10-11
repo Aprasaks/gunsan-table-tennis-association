@@ -120,13 +120,7 @@ export default function ProfilePage() {
 
   return (
     <>
-      <section className="subHero">
-        <div className="siteShell subHeroInner">
-          <span className="crumb">HOME &gt; 정보수정</span>
-          <h1>회원 정보수정</h1>
-          <p>기본정보와 서명을 수정합니다. 직책과 소속은 관리자 승인으로 변경됩니다.</p>
-        </div>
-      </section>
+      <h1 className="visuallyHidden">회원 정보수정</h1>
 
       <div className="siteShell pageContent">
         <form className={styles.wrap} onSubmit={handleSubmit}>

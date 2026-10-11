@@ -43,7 +43,7 @@ export default function OfficerNotificationsPage() {
     }
   }
   return <>
-    <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME / 협회 임원 / 알림함</span><h1>협회 임원 알림함</h1><p>희망부 신규 가입·선수등록과 협회 이적 승인 대기를 함께 확인합니다.</p></div></section>
+    <h1 className="visuallyHidden">협회 임원 알림함</h1>
     <section className="siteShell pageContent"><div className={styles.panel}>
       <div className={styles.head}><div><h2>새 알림 {alerts.filter((item) => !item.read).length}건</h2><p>확인 상태는 임원 계정마다 따로 저장됩니다.</p></div></div>
       {error && <p role="alert" className={styles.error}>{error}</p>}

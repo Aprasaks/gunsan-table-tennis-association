@@ -3,13 +3,7 @@ import styles from '../auth.module.css';
 export default function PrivacyPage() {
   return (
     <>
-      <section className="subHero">
-        <div className="siteShell subHeroInner">
-          <span className="crumb">HOME &gt; 개인정보 처리 안내</span>
-          <h1>개인정보 처리 안내</h1>
-          <p>군산시탁구협회 홈페이지에서 회원정보가 어떻게 사용되는지 안내합니다.</p>
-        </div>
-      </section>
+      <h1 className="visuallyHidden">개인정보 처리 안내</h1>
       <div className="siteShell pageContent">
         <article className={styles.policy}>
           <h2>회원정보 수집·이용 안내</h2>

@@ -149,13 +149,7 @@ export default function TransferPage() {
 
   return (
     <>
-      <section className="subHero">
-        <div className="siteShell subHeroInner">
-          <span className="crumb">HOME / 회원등록·이적 / 이적신청</span>
-          <h1>회원 이적신청</h1>
-          <p>{user.club} 회장 업무 · 우리 동호회 선수의 이적 신청</p>
-        </div>
-      </section>
+      <h1 className="visuallyHidden">회원 이적신청</h1>
       <section className="siteShell pageContent">
         <form className={styles.panel} onSubmit={submit}>
           <div className={styles.head}>
