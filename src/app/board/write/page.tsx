@@ -19,7 +19,7 @@ export default function BoardWritePage() {
 
   if (!user || !postId) return <div className="siteShell pageContent">로그인 정보를 확인하고 있습니다.</div>;
   return <>
-    <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME / 게시판 / 글쓰기</span><h1>게시판 글쓰기</h1><p>{user.name} 회원님 이름으로 게시글이 등록됩니다.</p></div></section>
+    <h1 className="visuallyHidden">게시판 글쓰기</h1>
     <div className="siteShell pageContent"><PostEditor kind="board" postId={postId} authorName={user.name} endpoint="/api/mvp/posts?kind=board" successHref={`/board/${postId}`} cancelHref="/board" submitLabel="게시글 등록" placeholder="내용을 입력하세요." /></div>
   </>;
 }

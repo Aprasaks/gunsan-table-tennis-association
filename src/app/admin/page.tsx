@@ -83,10 +83,7 @@ export default function AdminPage() {
   const unreadAlerts = overview?.alerts.filter((alert) => !alert.read).length ?? 0;
 
   return <>
-    <section className="subHero"><div className="siteShell subHeroInner">
-      <span className="crumb">HOME / 협회 임원</span><h1>협회 임원진 대시보드</h1>
-      <p>회원 현황과 승인 업무, 선수등록 및 협회 알림을 한곳에서 확인합니다.</p>
-    </div></section>
+    <h1 className="visuallyHidden">협회 임원진 대시보드</h1>
     <section className="siteShell pageContent">
       {error && <p role="alert" className={styles.error}>{error}</p>}
       {!overview && !error && <p role="status">협회 운영 현황을 불러오는 중입니다.</p>}

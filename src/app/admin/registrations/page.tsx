@@ -24,7 +24,7 @@ export default function RegistrationsPage() {
     });
   }, [router]);
   return <>
-    <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME / 협회 임원 / 선수등록</span><h1>제출된 선수등록 명단</h1><p>구장 담당자가 협회에 제출한 명단과 희망부 등록을 확인합니다.</p></div></section>
+    <h1 className="visuallyHidden">제출된 선수등록 명단</h1>
     <section className="siteShell pageContent"><div className={styles.panel}>
       {error && <p role="alert" className={styles.error}>{error}</p>}
       {!loaded && <p role="status">제출 명단을 불러오는 중입니다.</p>}

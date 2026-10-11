@@ -28,13 +28,7 @@ export default function BoardPage() {
   }
 
   return <>
-    <section className="subHero">
-      <div className="siteShell subHeroInner">
-        <span className="crumb">HOME &gt; 게시판</span>
-        <h1>게시판</h1>
-        <p>군산시 탁구 동호인들이 자유롭게 의견과 정보를 나누는 공간입니다.</p>
-      </div>
-    </section>
+    <h1 className="visuallyHidden">게시판</h1>
 
     <div className="siteShell pageContent">
       <div className="boardToolbar boardToolbarLarge">
