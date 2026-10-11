@@ -73,7 +73,7 @@ export default function TransferPage() {
         if (!clubsResponse.ok) throw new Error(clubs.message ?? '동호회 목록을 불러오지 못했습니다.');
         if (cancelled) return;
         const members: DraftMember[] = Array.isArray(roster.draft?.members) ? roster.draft.members : [];
-        setDraftMembers(members.filter((member) => member.registrationType === '이적' && member.name?.trim()));
+        setDraftMembers(members.filter((member) => member.name?.trim()));
         setFromClubs((clubs.clubs ?? []).filter((club: string) => club !== current.club && !isPersonalClub(club)));
         await refreshInbox();
       } catch (cause) {
@@ -97,8 +97,8 @@ export default function TransferPage() {
     event.preventDefault();
     setError('');
     setMessage('');
-    if (!selected || !fromClub) {
-      setError('등록구분이 이적인 선수와 기존 소속 동호회를 선택해주세요.');
+    if (!selected || selected.registrationType !== '이적' || !fromClub) {
+      setError('이적 신청할 선수의 등록구분을 회원등록 명단에서 ‘이적’으로 바꾸고 저장한 후 기존 소속을 선택해주세요.');
       return;
     }
     if (!window.confirm(selected.name + ' 회원의 이적을 ' + fromClub + ' 회장에게 요청하시겠습니까?\n\n회장이 수락하기 전에는 서명이나 소속 변경이 일어나지 않습니다.')) return;
@@ -161,9 +161,11 @@ export default function TransferPage() {
               <select id="draft-member" value={draftMemberId} onChange={(event) => setDraftMemberId(event.target.value)}>
                 <option value="">이적 선수 선택</option>
                 {draftMembers.map((member) =>
-                  <option key={member.id} value={member.id}>{member.name} · {member.birthDate} · {member.rank || '부수 미입력'}</option>)}
+                  <option key={member.id} value={member.id}>{member.name} · {member.birthDate} · {member.rank || '부수 미입력'} · [{member.registrationType || '구분 미지정'}]</option>)}
               </select>
-              {!draftMembers.length && <p className={styles.helper}>저장된 이적 선수 명단이 없습니다. 회원등록 화면에서 등록구분을 ‘이적’으로 변경하고 저장한 뒤 이 화면을 다시 열어주세요.</p>}
+              {!draftMembers.length && <p className={styles.helper}>저장된 선수 명단이 없습니다. 회원등록 화면에서 선수를 추가하고 저장해주세요.</p>}
+              {selected && selected.registrationType !== '이적' && <p className={styles.helper} role="status">이 선수는 현재 ‘{selected.registrationType || '미지정'}’으로 저장되어 있습니다. 회원등록 명단에서 구분을 ‘이적’으로 변경하고 저장한 후 다시 이 화면에 접속해주세요.</p>}
+              {!!draftMembers.length && !draftMembers.some((member) => member.registrationType === '이적') && !selected && <p className={styles.helper}>저장된 선수 {draftMembers.length}명을 불러왔습니다. 현재 ‘이적’으로 지정된 선수가 없습니다. 선수 선택 시 저장된 구분을 확인할 수 있습니다.</p>}
             </div>
             <div className={styles.field}>
               <label htmlFor="source-club">기존 소속 동호회 (A)</label>
@@ -183,7 +185,7 @@ export default function TransferPage() {
           {message && <p className={styles.message} role="status">{message}</p>}
           <div className={styles.actions}>
             <Link href="/members" className={styles.secondary}>업무 목록</Link>
-            <button type="submit" className={styles.primary} disabled={submitting || !draftMembers.length || !fromClubs.length}>
+            <button type="submit" className={styles.primary} disabled={submitting || !selected || selected.registrationType !== '이적' || !fromClubs.length}>
               {submitting ? '접수 중…' : '기존 회장에게 이적 동의 요청'}
             </button>
           </div>
