@@ -113,13 +113,7 @@ export default function SignupPage() {
 
   return (
     <>
-      <section className="subHero">
-        <div className="siteShell subHeroInner">
-          <span className="crumb">HOME &gt; 회원가입</span>
-          <h1>회원가입</h1>
-          <p>군산시탁구협회 홈페이지 이용을 위한 기본 정보를 등록합니다.</p>
-        </div>
-      </section>
+      <h1 className="visuallyHidden">회원가입</h1>
 
       <div className="siteShell pageContent">
         <form className={styles.wrap} onSubmit={handleSubmit}>

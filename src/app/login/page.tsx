@@ -47,13 +47,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <section className="subHero">
-        <div className="siteShell subHeroInner">
-          <span className="crumb">HOME &gt; 로그인</span>
-          <h1>로그인</h1>
-          <p>회원가입 시 등록한 휴대폰번호와 비밀번호로 로그인합니다.</p>
-        </div>
-      </section>
+      <h1 className="visuallyHidden">로그인</h1>
 
       <div className="siteShell pageContent">
         <form className={styles.wrap} onSubmit={handleSubmit}>

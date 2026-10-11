@@ -4,13 +4,7 @@ import styles from '../auth.module.css';
 export default function ForgotPasswordPage() {
   return (
     <>
-      <section className="subHero">
-        <div className="siteShell subHeroInner">
-          <span className="crumb">HOME &gt; 비밀번호 찾기</span>
-          <h1>비밀번호 찾기</h1>
-          <p>회원 비밀번호는 확인할 수 없으며, 필요한 경우 안전하게 초기화합니다.</p>
-        </div>
-      </section>
+      <h1 className="visuallyHidden">비밀번호 찾기</h1>
       <div className="siteShell pageContent">
         <section className={styles.wrap}>
           <h2>비밀번호 초기화 안내</h2>

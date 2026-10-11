@@ -290,13 +290,7 @@ export default function MemberRegistrationPage() {
 
   return (
     <>
-      <section className="subHero">
-        <div className="siteShell subHeroInner">
-          <span className="crumb">HOME &gt; 회원등록/이적 &gt; 회원등록</span>
-          <h1>회원등록</h1>
-          <p>희망부는 상시 등록할 수 있습니다. 명단을 협회에 제출하면 임원진에게 알림이 표시됩니다.</p>
-        </div>
-      </section>
+      <h1 className="visuallyHidden">회원등록</h1>
 
       <div className="siteShell pageContent">
         <div className={styles.panel}>

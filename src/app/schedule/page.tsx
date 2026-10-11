@@ -63,13 +63,7 @@ export default async function SchedulePage() {
   }
 
   return <>
-    <section className="subHero">
-      <div className="siteShell subHeroInner">
-        <span className="crumb">HOME &gt; 대회일정</span>
-        <h1>대회일정</h1>
-        <p>군산시탁구협회와 전북특별자치도 주요 탁구대회 일정을 안내합니다.</p>
-      </div>
-    </section>
+    <h1 className="visuallyHidden">대회일정</h1>
 
     <div className="siteShell pageContent">
       {admin && (

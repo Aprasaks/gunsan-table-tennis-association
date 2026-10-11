@@ -60,7 +60,7 @@ export default function MembersPage() {
 
   return (
     <>
-      <section className="subHero"><div className="siteShell subHeroInner"><span className="crumb">HOME / 회원등록·이적</span><h1>회원등록 · 이적</h1><p>상·하반기 회원등록과 클럽 이적 업무를 온라인으로 처리합니다.</p></div></section>
+      <h1 className="visuallyHidden">회원등록 · 이적</h1>
       <section className="siteShell pageContent">
         <div className="memberServiceGrid">
           <article className="memberServiceCard">
