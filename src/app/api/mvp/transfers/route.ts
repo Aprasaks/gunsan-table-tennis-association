@@ -34,7 +34,13 @@ export async function GET() {
         (current.user.position === '회장' && !isPersonalClub(current.user.club) &&
           (row.requested_by === current.user.id || row.source_chair_user_id === current.user.id ||
            row.to_club === current.user.club)));
-    return NextResponse.json({ requests: rows.map(transferView) });
+    const requests = rows.map((row) => {
+      const view = transferView(row);
+      const maySeeSignature = current.admin || isAssociationOfficer(current.user) ||
+        row.source_chair_user_id === current.user.id;
+      return maySeeSignature ? view : { ...view, sourceChairSignatureDataUrl: '' };
+    });
+    return NextResponse.json({ requests });
   } catch (cause) {
     logServerError('[api/mvp/transfers] list failed', cause);
     return NextResponse.json({ message: '이적 신청을 불러오지 못했습니다.' }, { status: 503 });
