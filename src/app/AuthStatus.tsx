@@ -44,8 +44,12 @@ export default function AuthStatus() {
       }
     };
     update();
+    window.addEventListener('gunsan-tt-alerts-change', update);
     const interval = window.setInterval(update, 15000);
-    return () => window.clearInterval(interval);
+    return () => {
+      window.removeEventListener('gunsan-tt-alerts-change', update);
+      window.clearInterval(interval);
+    };
   }, [user?.id, user?.associationTitle]);
 
   async function logout() {
