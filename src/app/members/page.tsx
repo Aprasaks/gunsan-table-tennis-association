@@ -68,7 +68,7 @@ export default function MembersPage() {
             <Link href="/members/register" onClick={openRegistration}>회원등록 시작하기</Link>
           </article>
           <article className="memberServiceCard">
-            <span>02</span><h2>회원 이적신청</h2><p>새 소속 동호회 회장이 신청하면 기존 소속 회장에게 동의 요청이 전달됩니다.</p>
+            <span>02</span><h2>회원 이적신청</h2><p>기존 소속 동호회 회장이 자기 명부에서 선수를 선택해 새 동호회로 이적을 신청합니다.</p>
             <Link href="/members/transfer" onClick={openTransfer}>이적 신청하기</Link>
           </article>
           <article className="memberServiceCard">

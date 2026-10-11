@@ -27,14 +27,14 @@ export async function GET() {
     if (!current.admin && !isAssociationOfficer(current.user)) {
       const id = current.user.id;
       query = current.user.position === '회장' && !isPersonalClub(current.user.club)
-        ? query.or(`requested_by.eq.${id},source_chair_user_id.eq.${id},member_id.eq.${id}`)
+        ? query.or('requested_by.eq.' + id + ',source_chair_user_id.eq.' + id + ',member_id.eq.' + id)
         : query.eq('member_id', id);
     }
     const { data, error } = await query;
     if (error) throw error;
     return NextResponse.json({ requests: (data ?? []).map(transferView) });
   } catch (cause) {
-    logServerError('[api/mvp/transfers] failed to list transfers', cause);
+    logServerError('[api/mvp/transfers] list failed', cause);
     return NextResponse.json({ message: '이적 신청을 불러오지 못했습니다.' }, { status: 503 });
   }
 }
@@ -54,79 +54,69 @@ export async function POST(request: Request) {
   try {
     const current = await actor();
     if (!current || current.admin || current.user.position !== '회장' || isPersonalClub(current.user.club)) {
-      return NextResponse.json({ message: '이적 신청은 받는 동호회의 회장만 할 수 있습니다.' }, { status: 403 });
+      return NextResponse.json({ message: '이적 신청은 기존 소속 동호회 회장만 할 수 있습니다.' }, { status: 403 });
     }
     const body = await request.json().catch(() => null);
-    const fromClub = String(body?.fromClub ?? '').trim();
-    const draftMemberId = String(body?.draftMemberId ?? '').trim();
-    if (!fromClub || fromClub.length > 100 || !draftMemberId || draftMemberId.length > 100 ||
-        fromClub === current.user.club || isPersonalClub(fromClub)) {
-      return NextResponse.json({ message: '기존 동호회와 이적할 회원을 확인해주세요.' }, { status: 400 });
+    const destination = String(body?.toClub ?? '').trim();
+    const rowId = String(body?.draftMemberId ?? '').trim();
+    if (!destination || destination.length > 100 || !rowId || rowId.length > 100 ||
+        destination === current.user.club || isPersonalClub(destination)) {
+      return NextResponse.json({ message: '이적할 선수와 새 소속 동호회를 확인해주세요.' }, { status: 400 });
     }
 
     const client = db();
-    // 선수등록 초안은 로그인 계정과 별개다. 반드시 B회장이 저장한 '이적' 행을 선택한다.
     const { data: roster, error: rosterError } = await client.from('mvp_rosters')
       .select('club,draft').eq('manager_id', current.user.id).maybeSingle();
     if (rosterError) throw rosterError;
     if (!roster || roster.club !== current.user.club || roster.draft?.clubName !== current.user.club) {
-      return NextResponse.json({ message: '먼저 새 소속의 선수등록 명단을 저장해주세요.' }, { status: 400 });
+      return NextResponse.json({ message: '먼저 현재 동호회의 선수등록 명단을 저장해주세요.' }, { status: 400 });
     }
-    const rows: RegistrationRow[] = Array.isArray(roster.draft?.members) ? roster.draft.members : [];
-    const member = rows.find((row) => row?.id === draftMemberId && row.registrationType === '이적');
-    if (!member) return NextResponse.json({ message: '회원등록 명단에서 등록구분이 이적인 선수를 선택해주세요.' }, { status: 400 });
 
-    const name = String(member.name ?? '').trim();
-    const birthDate = String(member.birthDate ?? '').trim();
-    const gender = String(member.gender ?? '');
-    const rank = String(member.rank ?? '').trim();
-    const phone = String(member.phone ?? '').replace(/\D/g, '');
+    const players: RegistrationRow[] = Array.isArray(roster.draft?.members) ? roster.draft.members : [];
+    const player = players.find((item) => item?.id === rowId);
+    if (!player) {
+      return NextResponse.json({ message: '기존 소속 선수등록 명단에서 선수를 선택해주세요.' }, { status: 400 });
+    }
+    const name = String(player.name ?? '').trim();
+    const birthDate = String(player.birthDate ?? '').trim();
+    const gender = String(player.gender ?? '');
+    const rank = String(player.rank ?? '').trim();
+    const phone = String(player.phone ?? '').replace(/\D/g, '');
     if (!name || name.length > 80 || !/^\d{6}$/.test(birthDate) ||
-      !['남', '여'].includes(gender) || !rank || rank.length > 40 || !/^\d{10,11}$/.test(phone)) {
-      return NextResponse.json({ message: '이적 회원의 성명, 생년월일, 성별, 부수, 연락처를 먼저 완성해주세요.' }, { status: 400 });
+        !['남', '여'].includes(gender) || !rank || rank.length > 40 || !/^\d{10,11}$/.test(phone)) {
+      return NextResponse.json({ message: '선수 명부에서 성명, 생년월일, 성별, 부수, 연락처를 먼저 완성해주세요.' }, { status: 400 });
     }
 
-    const { data: chairs, error: chairError } = await client.from('mvp_members')
-      .select('id,name').eq('club', fromClub).eq('position', '회장').eq('member_status', 'active');
-    if (chairError) throw chairError;
-    if (!chairs?.length) return NextResponse.json({ message: '기존 동호회 회장 계정이 없습니다. 관리자에게 직책 지정을 요청해주세요.' }, { status: 409 });
-    if (chairs.length !== 1) return NextResponse.json({ message: '기존 동호회 회장이 여러 명으로 지정되어 있습니다. 관리자에게 확인해주세요.' }, { status: 409 });
-    const chair = chairs[0];
+    const { data: chairs, error: chairsError } = await client.from('mvp_members')
+      .select('id').eq('club', destination).eq('position', '회장').eq('member_status', 'active');
+    if (chairsError) throw chairsError;
+    if (!chairs?.length) return NextResponse.json({ message: '새 소속 동호회의 회장 계정이 없습니다. 관리자에게 직책 지정을 요청해주세요.' }, { status: 409 });
+    if (chairs.length !== 1) return NextResponse.json({ message: '새 소속 회장이 여러 명입니다. 관리자에게 확인해주세요.' }, { status: 409 });
 
     const { data: pending, error: pendingError } = await client.from('mvp_transfers')
-      .select('id').eq('from_club', fromClub).eq('member_name', name)
+      .select('id').eq('from_club', current.user.club).eq('member_name', name)
       .eq('birth_date', birthDate).in('status', ['pending_source_chair', 'pending_admin']).limit(1);
     if (pendingError) throw pendingError;
     if (pending?.length) return NextResponse.json({ message: '이미 처리 대기 중인 이적 신청입니다.' }, { status: 409 });
 
-    const { data: transfer, error } = await client.from('mvp_transfers').insert({
-      member_id: null,
-      requested_by: current.user.id, draft_member_id: draftMemberId, birth_date: birthDate,
-      member_name: name, gender, rank, phone,
-      from_club: fromClub, to_club: current.user.club,
-      source_chair_user_id: chair.id, source_chair_name: chair.name,
+    // 기존 소속 회장이 신청한다. 이 단계에서는 서명을 사용하거나 소속을 변경하지 않는다.
+    const { data: transfer, error: insertError } = await client.from('mvp_transfers').insert({
+      member_id: null, requested_by: current.user.id, draft_member_id: rowId,
+      birth_date: birthDate, member_name: name, gender, rank, phone,
+      from_club: current.user.club, to_club: destination,
+      source_chair_user_id: current.user.id, source_chair_name: current.user.name,
       source_chair_signature_data_url: '',
       request_date: new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Seoul' }),
       status: 'pending_source_chair',
     }).select('id').single();
-    if (error) {
-      if (error.code === '23505') return NextResponse.json({ message: '이미 처리 대기 중인 이적 신청입니다.' }, { status: 409 });
-      throw error;
+    if (insertError) {
+      if (insertError.code === '23505') return NextResponse.json({ message: '이미 처리 대기 중인 이적 신청입니다.' }, { status: 409 });
+      throw insertError;
     }
-    const { error: alertError } = await client.from('mvp_alerts').insert({
-      kind: 'transfer', title: '이적 동의 요청',
-      detail: `${name} · ${fromClub} → ${current.user.club}`,
-      target_url: '/members/transfer',
-      recipient_key: chair.id,
-    });
-    if (alertError) {
-      const { error: cleanupError } = await client.from('mvp_transfers').delete().eq('id', transfer.id);
-      if (cleanupError) logServerError('[api/mvp/transfers] failed to roll back request after alert failure', cleanupError);
-      throw alertError;
-    }
+    // 서명 동의·최종 승인 전에는 신청자에게만 진행 상태가 보인다.
     return NextResponse.json({ ok: true, id: transfer.id, status: 'pending_source_chair' }, { status: 201 });
   } catch (cause) {
-    logServerError('[api/mvp/transfers] failed to submit transfer', cause);
-    return NextResponse.json({ message: '이적 요청을 저장하지 못했습니다.' }, { status: 503 });
+    logServerError('[api/mvp/transfers] request failed', cause);
+    return NextResponse.json({ message: '이적 신청을 저장하지 못했습니다.' }, { status: 503 });
   }
 }

@@ -16,7 +16,10 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
       return NextResponse.json({ message: '협회장·사무국장·총무만 승인할 수 있습니다.' }, { status: 403 });
     }
     if (transfer.status === 'pending_source_chair') {
-      return NextResponse.json({ message: '기존 동호회 회장의 동의가 완료되지 않았습니다.' }, { status: 409 });
+      return NextResponse.json({ message: '기존 동호회 회장의 서명 확인이 완료되지 않았습니다.' }, { status: 409 });
+    }
+    if (!transfer.member_id && transfer.draft_member_id) {
+      return NextResponse.json({ message: '선수명부 자동 이전 기능을 검증하기 전까지 최종 승인할 수 없습니다.' }, { status: 409 });
     }
     const by = current.user.id;
     const { data: outcome, error: rpcError } = await db().rpc('process_mvp_transfer', {
