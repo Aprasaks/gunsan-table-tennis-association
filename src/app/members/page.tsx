@@ -65,14 +65,17 @@ export default function MembersPage() {
         <div className="memberServiceGrid">
           <article className="memberServiceCard">
             <span>01</span><h2>회원등록</h2>
+            <p className="memberServiceAccess"><span>이용 권한</span><strong>동호회 회장 · 총무만</strong></p>
             <Link href="/members/register" onClick={openRegistration}>회원등록 시작하기</Link>
           </article>
           <article className="memberServiceCard">
             <span>02</span><h2>회원 이적신청</h2>
+            <p className="memberServiceAccess"><span>이용 권한</span><strong>동호회 회장만</strong></p>
             <Link href="/members/transfer" onClick={openTransfer}>이적 신청하기</Link>
           </article>
           <article className="memberServiceCard">
             <span>03</span><h2>협회 승인 업무</h2>
+            <p className="memberServiceAccess"><span>이용 권한</span><strong>협회 임원진만 (협회장 · 사무국장 · 총무)</strong></p>
             <Link href="/members/approvals" onClick={openApprovals}>승인 업무 보기</Link>
           </article>
         </div>

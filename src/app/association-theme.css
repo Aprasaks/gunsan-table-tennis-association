@@ -64,6 +64,20 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .memberServiceCard>span{color:#a32835;font-weight:800;}
 .memberServiceCard a{color:#882733;border-color:#d6aab0;background:#fffafa;}
 .memberServiceCard a:hover{background:#fbf0f1;}
+/* 회원 업무 카드: 불필요한 소개 대신 실제 접근 가능 직책만 안내 */
+.memberServiceCard .memberServiceAccess{
+  min-height:0;
+  margin:8px 0 14px;
+  color:#636970;
+  font-size:13px;
+  line-height:1.6;
+}
+.memberServiceAccess span{margin-right:9px;font-weight:600;}
+.memberServiceAccess strong{color:#902b35;font-weight:750;}
+@media(max-width:720px){
+  .memberServiceCard .memberServiceAccess{font-size:13px;margin:8px 0 14px;}
+}
+
 .boardToolbarLarge button,.contentAdminButton,.primaryAction{background:#a32835;border-color:#a32835;color:#fff;}
 .boardToolbarLarge button:hover{background:#81222c;}
 .boardTitleCell a:hover,.noticeTitleCell a:hover,.scheduleTitle a:hover,.scheduleAttachments a,.boardAttachments a{color:#a32835;}
