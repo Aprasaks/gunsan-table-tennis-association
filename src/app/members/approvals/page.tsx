@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { canApproveAssociation, refreshCurrentUser, type MvpUser } from '@/lib/mvpAuth';
 import type { TransferRequest } from '@/lib/mvpTransfer';
 import styles from '../transfer/transfer.module.css';
+import TransferDocumentPreview, { type TransferDocumentKind } from './TransferDocumentPreview';
 
 const statusLabel: Record<string, string> = {
   pending_admin: '협회 승인 대기',
@@ -18,6 +19,7 @@ export default function ApprovalsPage() {
   const [downloading, setDownloading] = useState('');
   const [working, setWorking] = useState('');
   const [message, setMessage] = useState('');
+  const [preview, setPreview] = useState<{ request: TransferRequest; kind: TransferDocumentKind } | null>(null);
 
   const sync = useCallback(async () => {
     try {
@@ -42,7 +44,7 @@ export default function ApprovalsPage() {
     return () => { document.removeEventListener('visibilitychange', refresh); window.clearInterval(interval); };
   }, [router, sync]);
 
-  async function download(request: TransferRequest, kind: 'consent' | 'application') {
+  async function download(request: TransferRequest, kind: TransferDocumentKind) {
     const key = request.id + kind;
     setDownloading(key);
     try {
@@ -91,13 +93,21 @@ export default function ApprovalsPage() {
             {request.adminNote && <p>반려 사유: {request.adminNote}</p>}
             {done && <p role="status">처리 완료된 승인입니다.{request.processedBy ? ' 처리자: ' + (request.processedBy === 'admin' ? '관리자' : '협회 담당자') : ''}</p>}
             <div className={styles.itemActions}>
-              {officer && <><button type="button" onClick={() => download(request, 'consent')} disabled={!!downloading}>이적동의서 HWP</button>
-                <button type="button" onClick={() => download(request, 'application')} disabled={!!downloading}>이적·소속변경 신청서 HWP</button></>}
+              {officer && request.sourceChairSignatureDataUrl && !['pending_source_chair', 'pending_destination'].includes(request.status) && <>
+                <button type="button" onClick={() => setPreview({ request, kind: 'consent' })}>이적동의서 미리보기</button>
+                <button type="button" onClick={() => download(request, 'consent')} disabled={!!downloading}>이적동의서 HWP</button>
+                <button type="button" onClick={() => setPreview({ request, kind: 'application' })}>소속변경 신청서 미리보기</button>
+                <button type="button" onClick={() => download(request, 'application')} disabled={!!downloading}>소속변경 신청서 HWP</button>
+              </>}
+              {officer && (!request.sourceChairSignatureDataUrl || ['pending_source_chair', 'pending_destination'].includes(request.status)) && <span className={styles.meta}>서명과 접수 완료 후 서류를 미리 볼 수 있습니다.</span>}
               {officer && request.status === 'pending_admin' && <><button type="button" className={styles.approve} disabled={!!working} onClick={() => process(request, 'approve')}>최종 승인</button>
                 <button type="button" className={styles.reject} disabled={!!working} onClick={() => process(request, 'reject')}>반려</button></>}
             </div>
           </article>;
         })}</div>}
     </div></section>
+    {preview && <TransferDocumentPreview request={preview.request} kind={preview.kind}
+      onClose={() => setPreview(null)} onDownload={() => download(preview.request, preview.kind)}
+      downloading={!!downloading} />}
   </>;
 }
